@@ -1,15 +1,15 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-#from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from datetime import date
 from django.db.models import Q
 from django.urls import reverse
+from el_pay.models import ElectricalCounter
 
 # Data validators
 def validate_number(value):
-    """Makes number validation (use only numbers)."""
+    """Makes number validation (only numeric symbols)."""
     wrong_char_list = []
     for char in value:
         if ord(char) > 57 or ord(char) < 48:
@@ -24,21 +24,21 @@ def validate_20_length(value):
     """Makes 20 length number validation."""
     if len(value) < 20:
         raise ValidationError(
-            _('Неверный номер (меньше 20-и знаков)')
+            _('Указанный номер меньше 20-и знаков')
         )
 
 def validate_10_length(value):
     """Makes 10 length number validation."""
     if len(value) < 10:
         raise ValidationError(
-            _('Неверный номер (меньше 10-и знаков)')
+            _('Указанный номер меньше 10-и знаков')
         )
 
 def validate_9_length(value):
     """Makes 9 length numbers validation."""
     if len(value) < 9:
         raise ValidationError(
-            _('Неверный номер (меньше 9-и знаков)')
+            _('Указанный номер меньше 9-и знаков')
         )
 
 def validate_human_names(value):
@@ -51,7 +51,7 @@ def validate_human_names(value):
 
 # Create your models here.
 class Snt(models.Model):
-    """Model representing a SNT with basic information such as
+    """Model represents SNT with basic information such as
     SNT name, chairman, payment details, address."""
     name = models.CharField(
         "Название СНТ",
@@ -98,7 +98,7 @@ class Snt(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='председатель',
-        help_text="Председатель садоводства",
+        help_text="председатель садоводства",
     )
 
     class Meta:
@@ -106,11 +106,11 @@ class Snt(models.Model):
         verbose_name_plural = "СНТ"
 
     def __str__(self):
-        """String for representing the Model object."""
+        """String to represent the Model(class) object."""
         return self.name 
     
     def get_absolute_url(self): 
-        """Returns the url to access a detail record for this snt.""" 
+        """Returns url to access an instance of the model."""
         return reverse('snt-detail', args=[str(self.id)])
 
 class LandPlot(models.Model):
@@ -142,7 +142,7 @@ class LandPlot(models.Model):
         help_text="Владелец участка",
         )   
     electrical_counter = models.OneToOneField(
-        'ElectricalCounter',
+        ElectricalCounter,
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Счетчик',
@@ -162,11 +162,11 @@ class LandPlot(models.Model):
         verbose_name_plural = "участки"
 
     def __str__(self):
-        """String for representing the Model object."""
+        """String to represent the Model(class) object."""
         return self.plot_number
 
     def get_absolute_url(self):
-        """Returns the url to access a detail record for land plot."""
+        """Returns url to access an instance of the model."""
         return reverse('land-plot-detail', args=[str(self.id)])
 
 class ChairMan(models.Model):
@@ -197,11 +197,11 @@ class ChairMan(models.Model):
         verbose_name_plural = "председатели"
 
     def __str__(self):
-        """String for representing the Model object."""
+        """String to represent the Model(class) object."""
         return self.last_name + ' ' + self.first_name + ' ' + self.middle_name
 
     def get_absolute_url(self):
-        """Returns the url to access a detail record for this chairman."""
+        """Returns url to access an instance of the model."""
         return reverse('chairman-detail', args=[str(self.id)])
 
 class Owner(models.Model):
@@ -251,9 +251,42 @@ class Owner(models.Model):
         verbose_name_plural = "владельцы"
 
     def __str__(self):
-        """String for representing the Model object."""
+        """String to represent the Model(class) object."""
         return self.last_name + ' ' + self.first_name + ' ' + self.middle_name
 
     def get_absolute_url(self):
-        """Returns the url to access a detail record for this chairman."""
+        """Returns url to access an instance of the model."""
         return reverse('owner-detail', args=[str(self.id)])
+
+class Docs(models.Model):
+    """Represents different kinds of documents to be published on site."""
+    
+    class Meta:
+        verbose_name = "документ"
+        verbose_name_plural = "документы"
+
+    def __str__(self):
+        """String to represent the Model(class) object."""
+        pass
+
+    def get_absolute_url(self):
+        """Returns url to access an instance of the model."""
+        pass
+
+
+class Info(models.Model):
+    """Represents different kinds of information to be published on site."""
+    
+    class Meta:
+        verbose_name = "информация"
+        verbose_name_plural = "информация"
+
+    def __str__(self):
+        """String to represent the Model(class) object."""
+        pass
+
+    def get_absolute_url(self):
+        """Returns url to access an instance of the model."""
+        pass
+
+

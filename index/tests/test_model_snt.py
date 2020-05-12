@@ -11,7 +11,7 @@
 # coverage report
 
 from django.test import TestCase
-from data.models import *
+from index.models import *
 from datetime import date
 from decimal import *
 
@@ -40,7 +40,7 @@ class SntModelTest(TestCase):
         field_label = snt._meta.get_field('name').verbose_name
         help_text = snt._meta.get_field('name').help_text
         max_length = snt._meta.get_field('name').max_length
-        self.assertEquals(field_label, 'Наименование СНТ')   
+        self.assertEquals(field_label, 'Название СНТ')   
         self.assertEqual(max_length, 200)
         self.assertEqual(help_text, 'Полное название СНТ')
 
@@ -105,16 +105,16 @@ class SntModelTest(TestCase):
         help_text = snt._meta.get_field('chair_man').help_text
         self.assertEqual(snt.chair_man, ch_m_obj)
         self.assertEqual(field_label, 'председатель')
-        self.assertEqual(help_text, 'Председатель садоводства')
+        self.assertEqual(help_text, 'председатель садоводства')
     
     def test_object_name(self):
         snt = Snt.objects.get(id=1)
         object_name = f'{snt.name}'
         self.assertEquals(object_name, str(snt))
 
-    def test_get_absolute_url(self):
-        snt = Snt.objects.get(id=1)
-        self.assertEquals(snt.get_absolute_url(), '/data/snt-detail/1')
+#    def test_get_absolute_url(self):
+#        snt = Snt.objects.get(id=1)
+#        self.assertEquals(snt.get_absolute_url(), '/data/snt-detail/1')
 
     def test_verbose_names(self):
         self.assertEquals(Snt._meta.verbose_name, 'СНТ')
