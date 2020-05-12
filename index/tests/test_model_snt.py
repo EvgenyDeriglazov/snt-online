@@ -1,19 +1,17 @@
 # --- Collectstatic (ValueError: Missing staticfiles manifest entry...) ---
-# python3 manage.py collectstatic
+#  $python3 manage.py collectstatic
 # --- Verbosity ---
-# python3 manage.py test --verbosity (1-default, 0, 1, 2, 3)
+#  $python3 manage.py test --verbosity (1-default, 0, 1, 2, 3)
 # --- Run specific test modules ---
-# python3 manage.py test data.tests
-# python3 manage.py test data.tests.test_models
-# python3 manage.py test data.tests.test_models.TestClass
+#  $python3 manage.py test data.tests
+#  $python3 manage.py test data.tests.test_models
+#  $python3 manage.py test data.tests.test_models.TestClass
 # --- Coverage.py --- 
-# coverage run --source='.' manage.py test <appname>
-# coverage report
+#  $coverage run --source='.' manage.py test <appname>
+#  $coverage report
 
 from django.test import TestCase
-from index.models import *
-from datetime import date
-from decimal import *
+from index.models import ChairMan, Snt
 
 class SntModelTest(TestCase):
     @classmethod
