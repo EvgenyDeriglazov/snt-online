@@ -37,22 +37,12 @@ class LandPlotModelTest(TestCase):
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
-            status='c',
-            start_owner_date=date(2020, 1, 1),
-            end_owner_date=None,
-        )
-        ElectricMeter.objects.create(
-            model="НЕВА",
-            serial_number="123456789",
-            model_type="T1",
-            acceptance_date=None,
         )
         LandPlot.objects.create(
             plot_number="10",
             plot_area=6000,
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
-            electric_meter=ElectricMeter.objects.get(id=1),
         )
     # Test functions
     def test_plot_number_field(self):

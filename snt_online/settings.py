@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'index',
-    'el_pay',
-    'mem_pay',
+    'electricity',
+    'membership',
 ]
 
 MIDDLEWARE = [

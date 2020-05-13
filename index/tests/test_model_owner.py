@@ -11,9 +11,7 @@
 # coverage report
 
 from django.test import TestCase
-from data.models import *
-from datetime import date
-from decimal import *
+from index.models import *
 
 class OwnerModelTest(TestCase):
     @classmethod
@@ -22,9 +20,6 @@ class OwnerModelTest(TestCase):
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
-            status='p',
-            start_owner_date=date(2020, 1, 1),
-            end_owner_date=None,
         )
     # Test functions
     def test_first_name_field(self):
@@ -62,41 +57,13 @@ class OwnerModelTest(TestCase):
         self.assertEquals(help_text, 'Введите фамилию')
         self.assertEquals(validators[0:1], [validate_human_names])
         self.assertEquals(owner_obj.last_name, "Сергеев")
-    
-    def test_status_field(self):
-        owner_obj = Owner.objects.get(id=1)
-        OWNER_STATUS = [
-            ('c', 'Настоящий'),
-            ('p', 'Прежний'),
-        ]
-        field_label = owner_obj._meta.get_field('status').verbose_name
-        max_length = owner_obj._meta.get_field('status').max_length
-        owner_status = owner_obj._meta.get_field('status').choices
-        defaults = owner_obj._meta.get_field('status').default
-        help_text = owner_obj._meta.get_field('status').help_text
-        self.assertEquals(field_label, 'Статус владельца')
-        self.assertEquals(max_length, 1)
-        self.assertEquals(owner_status, OWNER_STATUS)
-        self.assertEquals(defaults, 'c')
-        self.assertEquals(help_text, 'Статус владельца')
-        self.assertEquals(owner_obj.status, 'p')
-    
-    def test_start_owner_date_field(self):
-        owner_obj = Owner.objects.get(id=1)
-        field_label = owner_obj._meta.get_field('start_owner_date').verbose_name
-        self.assertEquals(field_label, 'дата начала владения')
-        self.assertEquals(owner_obj.start_owner_date, date(2020, 1, 1))
-    
-    def test_end_owner_date_field(self):
-        owner_obj = Owner.objects.get(id=1)
-        field_label = owner_obj._meta.get_field('end_owner_date').verbose_name
-        blank = owner_obj._meta.get_field('end_owner_date').blank
-        null = owner_obj._meta.get_field('end_owner_date').null
-        self.assertEquals(field_label, 'дата окончания владения')
-        self.assertEquals(blank, True)
-        self.assertEquals(null, True)
-        self.assertEquals(owner_obj.end_owner_date, None)
-    
+
+    def test_phone_field(self):
+        pass
+
+    def test_email_field(self):
+        pass
+   
     def test_object_name(self):
         obj = Owner.objects.get(id=1)
         obj_name = f'{obj.last_name} {obj.first_name} {obj.middle_name}'

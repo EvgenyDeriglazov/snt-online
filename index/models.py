@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from datetime import date
 from django.db.models import Q
 from django.urls import reverse
-from el_pay.models import ElectricalCounter
 
 # Data validators
 def validate_number(value):
@@ -141,13 +140,6 @@ class LandPlot(models.Model):
         verbose_name="владелец участка",
         help_text="Владелец участка",
         )   
-    electrical_counter = models.OneToOneField(
-        ElectricalCounter,
-        on_delete=models.SET_NULL,
-        null=True,
-        verbose_name='Счетчик',
-        help_text="Данные прибора учета электроэнергии",
-        )
     user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -191,6 +183,18 @@ class ChairMan(models.Model):
         help_text="Введите фамилию",
         validators = [validate_human_names],
     )
+    phone = models.CharField(
+        max_length=12,
+        unique=True,
+        blank=True,
+        null=True,
+        )
+
+    email = models.EmailField(
+        unique=True,
+        blank=True,
+        null=True,
+        )
 
     class Meta:
         verbose_name = "председатель"
@@ -226,26 +230,20 @@ class Owner(models.Model):
         help_text="Введите отчество",
         validators = [validate_human_names],
     )
-    OWNER_STATUS = [
-        ('c', 'Настоящий'),
-        ('p', 'Прежний'),
-    ]
-    status = models.CharField(
-        "Статус владельца",
-        max_length=1,
-        choices=OWNER_STATUS,
-        default='c',
-        help_text="Статус владельца",
-    )
-    start_owner_date = models.DateField(
-        verbose_name="дата начала владения",
-    )
-    end_owner_date = models.DateField(
-        verbose_name="дата окончания владения",
+    phone = models.CharField(
+        max_length=12,
+        unique=True,
         blank=True,
         null=True,
-    )
-    
+        )
+
+    email = models.EmailField(
+        unique=True,
+        blank=True,
+        null=True,
+        )
+
+   
     class Meta:
         verbose_name = "владелец"
         verbose_name_plural = "владельцы"

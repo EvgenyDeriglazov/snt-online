@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class ElectricalCounter(models.Model):
+class ECounter(models.Model):
     """Draft model for electrical counter."""
     class Meta:
          verbose_name = "счетчик эл.энергии"
