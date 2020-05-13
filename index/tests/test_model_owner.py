@@ -23,40 +23,40 @@ class OwnerModelTest(TestCase):
         )
     # Test functions
     def test_first_name_field(self):
-        owner_obj = Owner.objects.get(id=1)
-        field_label = owner_obj._meta.get_field('first_name').verbose_name
-        max_length = owner_obj._meta.get_field('first_name').max_length
-        help_text = owner_obj._meta.get_field('first_name').help_text
-        validators = owner_obj._meta.get_field('first_name').validators
+        obj = Owner.objects.get(id=1)
+        field_label = obj._meta.get_field('first_name').verbose_name
+        max_length = obj._meta.get_field('first_name').max_length
+        help_text = obj._meta.get_field('first_name').help_text
+        validators = obj._meta.get_field('first_name').validators
         self.assertEquals(field_label, 'Имя')
         self.assertEquals(max_length, 50)
         self.assertEquals(help_text, 'Введите имя')
         self.assertEquals(validators[0:1], [validate_human_names])
-        self.assertEquals(owner_obj.first_name, "Сергей")
+        self.assertEquals(obj.first_name, "Сергей")
        
     def test_middle_name_field(self):
-        owner_obj = Owner.objects.get(id=1)
-        field_label = owner_obj._meta.get_field('middle_name').verbose_name
-        max_length = owner_obj._meta.get_field('middle_name').max_length
-        help_text = owner_obj._meta.get_field('middle_name').help_text
-        validators = owner_obj._meta.get_field('middle_name').validators
+        obj = Owner.objects.get(id=1)
+        field_label = obj._meta.get_field('middle_name').verbose_name
+        max_length = obj._meta.get_field('middle_name').max_length
+        help_text = obj._meta.get_field('middle_name').help_text
+        validators = obj._meta.get_field('middle_name').validators
         self.assertEquals(field_label, 'Отчество')
         self.assertEquals(max_length, 50)
         self.assertEquals(help_text, 'Введите отчество')
         self.assertEquals(validators[0:1], [validate_human_names])
-        self.assertEquals(owner_obj.middle_name, "Сергеевич")
+        self.assertEquals(obj.middle_name, "Сергеевич")
     
     def test_last_name_field(self):
-        owner_obj = Owner.objects.get(id=1)
-        field_label = owner_obj._meta.get_field('last_name').verbose_name
-        max_length = owner_obj._meta.get_field('last_name').max_length
-        help_text = owner_obj._meta.get_field('last_name').help_text
-        validators = owner_obj._meta.get_field('last_name').validators
+        obj = Owner.objects.get(id=1)
+        field_label = obj._meta.get_field('last_name').verbose_name
+        max_length = obj._meta.get_field('last_name').max_length
+        help_text = obj._meta.get_field('last_name').help_text
+        validators = obj._meta.get_field('last_name').validators
         self.assertEquals(field_label, 'Фамилия')
         self.assertEquals(max_length, 50)
         self.assertEquals(help_text, 'Введите фамилию')
         self.assertEquals(validators[0:1], [validate_human_names])
-        self.assertEquals(owner_obj.last_name, "Сергеев")
+        self.assertEquals(obj.last_name, "Сергеев")
 
     def test_phone_field(self):
         pass
