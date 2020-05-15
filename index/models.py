@@ -19,6 +19,22 @@ def validate_number(value):
             _('Некорректный символ - (' + wrong_string + ')')
         )
 
+def validate_phone(value):
+    """Makes phone number validation."""
+    wrong_char_list = []
+    for char in value:
+        if ord(char) > 57 or (ord(char) < 48 and ord(char) != 43):
+            wrong_char_list.append(char)
+    if wrong_char_list:
+        wrong_string = ", ".join(wrong_char_list)
+        raise ValidationError(
+            _('Некорректный символ - (' + wrong_string + ')')
+        )
+    if value[0] != "+":
+        raise ValidationError(
+            _('Неверный формат номера - ' + value)
+        )
+
 def validate_20_length(value):
     """Makes 20 length number validation."""
     if len(value) < 20:
@@ -92,6 +108,11 @@ class Snt(models.Model):
         help_text="КПП (9-и значное число)",
         validators=[validate_number, validate_9_length],
     )
+    address = models.CharField(
+        "Адрес",
+        max_length=200,
+        help_text="Полный адрес садоводства включая область и р-он",
+        )
     chair_man = models.OneToOneField(
         'ChairMan',
         on_delete=models.SET_NULL,
@@ -140,15 +161,7 @@ class LandPlot(models.Model):
         verbose_name="владелец участка",
         help_text="Владелец участка",
         )   
-    user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Логин",
-        help_text="Аккаунт пользователя на сайте",
-        )
-    
+   
     class Meta:
         verbose_name = "участок"
         verbose_name_plural = "участки"
@@ -231,18 +244,31 @@ class Owner(models.Model):
         validators = [validate_human_names],
     )
     phone = models.CharField(
+        "Телефон",
         max_length=12,
+        help_text="Введите телефон в формате +7xxxxxxxxx",
         unique=True,
         blank=True,
         null=True,
+        validators=[validate_phone],
         )
 
     email = models.EmailField(
+        "Почта",
         unique=True,
         blank=True,
         null=True,
+        help_text="Адрес электронной почты",
         )
 
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Логин",
+        help_text="Аккаунт пользователя на сайте",
+        )
    
     class Meta:
         verbose_name = "владелец"

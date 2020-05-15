@@ -11,17 +11,26 @@
 # coverage report
 
 from django.test import TestCase
+from django.contrib.auth.models import User
 from index.models import *
 
 class OwnerModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        User.objects.create(
+            username="user1",
+            password="mypass",
+        )
         Owner.objects.create(
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
+            phone="+79990001122",
+            email="my@email.com",
+            user=User.objects.get(id=1),
+
         )
-    # Test functions
+   # Test functions
     def test_first_name_field(self):
         obj = Owner.objects.get(id=1)
         field_label = obj._meta.get_field('first_name').verbose_name
@@ -59,11 +68,50 @@ class OwnerModelTest(TestCase):
         self.assertEquals(obj.last_name, "Сергеев")
 
     def test_phone_field(self):
-        pass
+        obj = Owner.objects.get(id=1)
+        field_label = obj._meta.get_field('phone').verbose_name
+        max_length = obj._meta.get_field('phone').max_length
+        help_text = obj._meta.get_field('phone').help_text
+        is_unique = obj._meta.get_field('phone').unique
+        is_blank = obj._meta.get_field('phone').blank
+        is_null = obj._meta.get_field('phone').null
+        validators = obj._meta.get_field('phone').validators
+        self.assertEquals(field_label, 'Телефон')
+        self.assertEquals(max_length, 12)
+        self.assertEquals(help_text, 'Введите телефон в формате +7xxxxxxxxx')
+        self.assertEquals(validators[0:1], [validate_phone])
+        self.assertEquals(is_unique, True)
+        self.assertEquals(is_blank, True)
+        self.assertEquals(is_null, True)
+        self.assertEquals(obj.phone, "+79990001122")
 
     def test_email_field(self):
-        pass
+        obj = Owner.objects.get(id=1)
+        field_label = obj._meta.get_field('email').verbose_name
+        help_text = obj._meta.get_field('email').help_text
+        is_unique = obj._meta.get_field('email').unique
+        is_blank = obj._meta.get_field('email').blank
+        is_null = obj._meta.get_field('email').null
+        self.assertEquals(field_label, 'Почта')
+        self.assertEquals(help_text, 'Адрес электронной почты')
+        self.assertEquals(is_unique, True)
+        self.assertEquals(is_blank, True)
+        self.assertEquals(is_null, True)
+        self.assertEquals(obj.email, "my@email.com")
    
+    def test_user_field(self):
+        obj = Owner.objects.get(id=1)
+        user_obj = User.objects.get(id=1)
+        field_label = obj._meta.get_field('user').verbose_name
+        help_text = obj._meta.get_field('user').help_text
+        is_blank = obj._meta.get_field('user').blank
+        is_null = obj._meta.get_field('user').null
+        self.assertEquals(field_label, 'Логин')
+        self.assertEquals(help_text, 'Аккаунт пользователя на сайте')
+        self.assertEquals(is_blank, True)
+        self.assertEquals(is_null, True)
+        self.assertEquals(obj.user, user_obj)
+
     def test_object_name(self):
         obj = Owner.objects.get(id=1)
         obj_name = f'{obj.last_name} {obj.first_name} {obj.middle_name}'
