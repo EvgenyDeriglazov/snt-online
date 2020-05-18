@@ -31,44 +31,45 @@ class InfoModelTest(TestCase):
         
     # Test functions
     def test_pub_date_field(self):
+        # Attributes test
+        field = Info._meta.get_field('pub_date')
+        self.assertEqual(field.verbose_name, "Дата публикации")
+        self.assertEqual(field.auto_now_add, True)
+        self.assertEqual(field.help_text, "Дата и время публикации")
+        self.assertEqual(field.blank, True)
+        # Data test
         obj = Info.objects.get(id=1)
-        field_label = obj._meta.get_field('pub_date').verbose_name
-        auto_now_add = obj._meta.get_field('pub_date').auto_now_add
-        help_text = obj._meta.get_field('pub_date').help_text 
-        blank = obj._meta.get_field('pub_date').blank 
-        self.assertEqual(field_label, "Дата публикации")
-        self.assertEqual(auto_now_add, True)
-        self.assertEqual(help_text, "Дата и время публикации")
-        self.assertEqual(blank, True)
         self.assertEqual(type(obj.pub_date), type(datetime.now()))
 
     def test_title_field(self):
+        # Attributes test
+        field = Info._meta.get_field('title')
+        self.assertEqual(field.verbose_name, "Заголовок")
+        self.assertEqual(field.max_length, 200)
+        self.assertEqual(field.help_text, "Заголовок объявления")
+        # Data test
         obj = Info.objects.get(id=1)
-        field_label = obj._meta.get_field('title').verbose_name
-        max_length = obj._meta.get_field('title').max_length
-        help_text = obj._meta.get_field('title').help_text 
-        self.assertEqual(field_label, "Заголовок")
-        self.assertEqual(max_length, 200)
-        self.assertEqual(help_text, "Заголовок объявления")
         self.assertEqual(obj.title, "Мой заголовок")
 
     def test_body_field(self):
+        # Attributes test
+        field = Info._meta.get_field('body')
+        self.assertEqual(field.verbose_name, "Текст")
+        self.assertEqual(field.help_text, "Текст объявления")
+        # Data test
         obj = Info.objects.get(id=1)
-        field_label = obj._meta.get_field('body').verbose_name
-        help_text = obj._meta.get_field('body').help_text 
-        self.assertEqual(field_label, "Текст")
-        self.assertEqual(help_text, "Текст объявления")
         self.assertEqual(obj.body, "Мой текст")
 
     def test_author_field(self):
+        # Attributes test
+        field = Info._meta.get_field('author')
+        #on_delete = obj._meta.get_field('author').on_delete
+        self.assertEqual(field.verbose_name, "Автор")
+        self.assertEqual(field.help_text, "Автор объявления (действующий председатель)")
+        #self.assertEqual(obj_field.on_delete, models.SET_NULL)
+        # Data test
         obj = Info.objects.get(id=1)
         author_obj = ChairMan.objects.get(id=1)
-        field_label = obj._meta.get_field('author').verbose_name
-        help_text = obj._meta.get_field('author').help_text
-        #on_delete = obj._meta.get_field('author').on_delete
-        self.assertEqual(field_label, "Автор")
-        self.assertEqual(help_text, "Автор объявления (действующий председатель)")
-        #self.assertEqual(obj_field.on_delete, models.SET_NULL)
         self.assertEqual(obj.author, author_obj)
 
     def test_object_name(self):
@@ -82,5 +83,5 @@ class InfoModelTest(TestCase):
         self.assertEquals(obj.get_absolute_url(), '/data/land-plot-detail/1')
 
     def test_verbose_names(self):
-        self.assertEquals(LandPlot._meta.verbose_name, 'участок')
-        self.assertEquals(LandPlot._meta.verbose_name_plural, 'участки')
+        self.assertEquals(Info._meta.verbose_name, 'информация')
+        self.assertEquals(Info._meta.verbose_name_plural, 'информация')
