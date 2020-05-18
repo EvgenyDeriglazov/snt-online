@@ -12,9 +12,9 @@
 
 from django.test import TestCase
 from index.models import *
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
-class LandPlotModelTest(TestCase):
+class InfoModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ChairMan.objects.create(
@@ -22,33 +22,18 @@ class LandPlotModelTest(TestCase):
             middle_name='Иванович',
             last_name='Иванов',
             )
-        Snt.objects.create(
-            name='СНТ Бобровка',
-            personal_acc='01234567898765432101',
-            bank_name='Банк',
-            bic='123456789',
-            corresp_acc='01234567898765432101',
-            inn='0123456789',
-            kpp='123456789',
-            chair_man=ChairMan.objects.get(id=1),
+        Info.objects.create(
+            title='Заголовок',
+            body='Текст',
+            author=ChairMan.objects.get(id=1),
             )
-        Owner.objects.create(
-            first_name="Сергей",
-            middle_name="Сергеевич",
-            last_name="Сергеев",
-        )
-        LandPlot.objects.create(
-            plot_number="10",
-            plot_area=6000,
-            snt=Snt.objects.get(id=1),
-            owner=Owner.objects.get(id=1),
-        )
+        
     # Test functions
-    def test_plot_number_field(self):
-        obj = LandPlot.objects.get(id=1)
-        field_label = obj._meta.get_field('plot_number').verbose_name
-        max_length = obj._meta.get_field('plot_number').max_length
-        help_text = obj._meta.get_field('plot_number').help_text 
+    def test_title_field(self):
+        obj = Info.objects.get(id=1)
+        field_label = obj._meta.get_field('title').verbose_name
+        max_length = obj._meta.get_field('title').max_length
+        help_text = obj._meta.get_field('title').help_text 
         unique_prop = obj._meta.get_field('plot_number').unique
         self.assertEqual(field_label, "Номер участка")
         self.assertEqual(max_length, 10)

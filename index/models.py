@@ -300,6 +300,27 @@ class Docs(models.Model):
 
 class Info(models.Model):
     """Represents different kinds of information to be published on site."""
+    pub_date = models.DateTimeField(
+        "Дата публикации",
+        auto_now_add=True,
+        help_text="Дата и время публикации",
+        blank=True,
+        )
+    title = models.CharField(
+        "Заголовок",
+        max_length=200,
+        help_text="Заголовок объявления",
+        )
+
+    body = models.TextField(
+        "Текст",
+        help_text="Текст объявления",
+        )
+    author = models.ForeignKey(
+        ChairMan, 
+        on_delete=models.CASCADE,
+        verbose_name="Автор",
+        )
     
     class Meta:
         verbose_name = "информация"
@@ -312,5 +333,3 @@ class Info(models.Model):
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
         pass
-
-
