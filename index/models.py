@@ -320,6 +320,7 @@ class Info(models.Model):
         ChairMan, 
         on_delete=models.CASCADE,
         verbose_name="Автор",
+        help_text="Автор объявления (действующий председатель)",
         )
     
     class Meta:
@@ -328,7 +329,7 @@ class Info(models.Model):
 
     def __str__(self):
         """String to represent the Model(class) object."""
-        pass
+        return self.title
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
