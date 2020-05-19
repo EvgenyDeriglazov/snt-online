@@ -64,7 +64,11 @@ def validate_human_names(value):
                 _('Можно использовать только русские символы')
             )
 
-# Create your models here.
+def upload_directory(instance, filename):
+    """Callable to create upload_to argument."""
+    return 'docs/%Y/{0}/{1}'.format(instance.user.id, filename)
+
+#Create your models here.
 class Snt(models.Model):
     """Model represents SNT with basic information such as
     SNT name, chairman, payment details, address."""
@@ -284,14 +288,36 @@ class Owner(models.Model):
 
 class Docs(models.Model):
     """Represents different kinds of documents to be published on site."""
+    upload_date = models.DateField(
+        "Дата загрузки",
+        auto_now_add=True,
+        help_text="Дата загрузки документа",
+        blank=True,
+        )
+    title = models.CharField(
+        "Название документа",
+        max_length=200,
+        help_text="Укажите название документа",
+        )
     
+    upload = models.FileField(
+        upload_to=upload_directory,
+        verbose_name="Файл документа",
+        help_text="Выберите файл для загрузки",
+        )
+    doc_user = models.ForeignKey(
+        User,
+        verbose_name="Пользователь",
+        on_delete=models.CASCADE,
+        )
+
     class Meta:
         verbose_name = "документ"
         verbose_name_plural = "документы"
 
     def __str__(self):
         """String to represent the Model(class) object."""
-        pass
+        return self.title
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
