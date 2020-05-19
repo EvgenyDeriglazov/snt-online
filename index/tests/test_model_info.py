@@ -74,14 +74,14 @@ class InfoModelTest(TestCase):
 
     def test_object_name(self):
         obj = Info.objects.get(id=1)
-        object_name = f'{obj}'
+        object_name = f"{obj.title}"
         self.assertEquals(object_name, obj.__str__())
         # or self.assertEquals(object_name, str(obj))
     
     def test_get_absolute_url(self):
         obj = Info.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), '/data/land-plot-detail/1')
+        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
 
     def test_verbose_names(self):
-        self.assertEquals(Info._meta.verbose_name, 'информация')
-        self.assertEquals(Info._meta.verbose_name_plural, 'информация')
+        self.assertEquals(Info._meta.verbose_name, "информация")
+        self.assertEquals(Info._meta.verbose_name_plural, "информация")

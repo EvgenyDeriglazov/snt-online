@@ -72,14 +72,13 @@ class DocsModelTest(TestCase):
 
     def test_object_name(self):
         obj = Docs.objects.get(id=1)
-        object_name = f"{obj}"
+        object_name = f"{obj.title}"
         self.assertEquals(object_name, obj.__str__())
-        self.assertEquals(object_name, "Тестовый документ")
         # or self.assertEquals(object_name, str(obj))
     
     def test_get_absolute_url(self):
         obj = Docs.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), '/data/land-plot-detail/1')
+        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
 
     def test_verbose_names(self):
         self.assertEquals(Docs._meta.verbose_name, "документ")

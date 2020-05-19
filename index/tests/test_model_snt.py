@@ -36,98 +36,84 @@ class SntModelTest(TestCase):
     # Test functions
     def test_name_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('name').verbose_name
-        help_text = obj._meta.get_field('name').help_text
-        max_length = obj._meta.get_field('name').max_length
-        self.assertEquals(field_label, 'Название СНТ')   
-        self.assertEqual(max_length, 200)
-        self.assertEqual(help_text, 'Полное название СНТ')
+        field = obj._meta.get_field('name')
+        self.assertEquals(field.verbose_name, "Название СНТ")   
+        self.assertEqual(field.max_length, 200)
+        self.assertEqual(field.help_text, "Полное название СНТ")
 
     def test_personal_acc_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('personal_acc').verbose_name
-        max_length = obj._meta.get_field('personal_acc').max_length
-        help_text = obj._meta.get_field('personal_acc').help_text
-        self.assertEqual(field_label, 'Номер расчетного счета')
-        self.assertEqual(max_length, 20)
-        self.assertEqual(help_text, 'Номер расчетного счета (20-и значное число)')
+        field = obj._meta.get_field('personal_acc')
+        self.assertEqual(field.verbose_name, "Номер расчетного счета")
+        self.assertEqual(field.max_length, 20)
+        self.assertEqual(
+            field.help_text,
+            "Номер расчетного счета (20-и значное число)"
+            )
 
     def test_bank_name_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('bank_name').verbose_name
-        max_length = obj._meta.get_field('bank_name').max_length
-        help_text = obj._meta.get_field('bank_name').help_text
-        self.assertEqual(field_label, 'Наименование банка получателя')
-        self.assertEqual(max_length, 45)
-        self.assertEqual(help_text, 'Наименование банка получателя')
+        field = obj._meta.get_field('bank_name')
+        self.assertEqual(field.verbose_name, "Наименование банка получателя")
+        self.assertEqual(field.max_length, 45)
+        self.assertEqual(field.help_text, "Наименование банка получателя")
 
     def test_bic_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('bic').verbose_name
-        max_length = obj._meta.get_field('bic').max_length
-        help_text = obj._meta.get_field('bic').help_text
-        self.assertEqual(field_label, 'БИК')
-        self.assertEqual(max_length, 9)
-        self.assertEqual(help_text, 'БИК (9-и значное число)')
+        field = obj._meta.get_field('bic')
+        self.assertEqual(field.verbose_name, "БИК")
+        self.assertEqual(field.max_length, 9)
+        self.assertEqual(field.help_text, "БИК (9-и значное число)")
 
     def test_corresp_acc_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('corresp_acc').verbose_name
-        max_length = obj._meta.get_field('corresp_acc').max_length
-        help_text = obj._meta.get_field('corresp_acc').help_text
-        self.assertEqual(field_label, 'Номер кор./счета')
-        self.assertEqual(max_length, 20)
-        self.assertEqual(help_text, 'Номер кор./счета (20-и значное число)')
+        field = obj._meta.get_field('corresp_acc')
+        self.assertEqual(field.verbose_name, "Номер кор./счета")
+        self.assertEqual(field.max_length, 20)
+        self.assertEqual(field.help_text, "Номер кор./счета (20-и значное число)")
 
     def test_inn_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('inn').verbose_name
-        max_length = obj._meta.get_field('inn').max_length
-        help_text = obj._meta.get_field('inn').help_text
-        self.assertEqual(field_label, 'ИНН')
-        self.assertEqual(max_length, 10)
-        self.assertEqual(help_text, 'ИНН (10-и значное число)')
+        field = obj._meta.get_field('inn')
+        self.assertEqual(field.verbose_name, "ИНН")
+        self.assertEqual(field.max_length, 10)
+        self.assertEqual(field.help_text, "ИНН (10-и значное число)")
 
     def test_kpp_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('kpp').verbose_name
-        max_length = obj._meta.get_field('kpp').max_length
-        help_text = obj._meta.get_field('kpp').help_text
-        self.assertEqual(field_label, 'КПП')
-        self.assertEqual(max_length, 9)
-        self.assertEqual(help_text, 'КПП (9-и значное число)')
+        field = obj._meta.get_field('kpp')
+        self.assertEqual(field.verbose_name, "КПП")
+        self.assertEqual(field.max_length, 9)
+        self.assertEqual(field.help_text, "КПП (9-и значное число)")
 
     def test_address_field(self):
         obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('address').verbose_name
-        max_length = obj._meta.get_field('address').max_length
-        help_text = obj._meta.get_field('address').help_text
-        self.assertEqual(field_label, 'Адрес')
-        self.assertEqual(max_length, 200)
+        field = obj._meta.get_field('address')
+        self.assertEqual(field.verbose_name, "Адрес")
+        self.assertEqual(field.max_length, 200)
         self.assertEqual(
-            help_text, 
-            'Полный адрес садоводства включая область и р-он',
+            field.help_text, 
+            "Полный адрес садоводства включая область и р-он",
             )
-        self.assertEqual(obj.address, '123СТАР')
+        self.assertEqual(obj.address, "123СТАР")
  
     def test_chair_man_field(self):
         obj = Snt.objects.get(id=1)
         ch_m_obj = ChairMan.objects.get(id=1)
-        field_label = obj._meta.get_field('chair_man').verbose_name
-        help_text = obj._meta.get_field('chair_man').help_text
+        field = obj._meta.get_field('chair_man')
         self.assertEqual(obj.chair_man, ch_m_obj)
-        self.assertEqual(field_label, 'председатель')
-        self.assertEqual(help_text, 'председатель садоводства')
+        self.assertEqual(field.verbose_name, "председатель")
+        self.assertEqual(field.help_text, "председатель садоводства")
     
     def test_object_name(self):
         obj = Snt.objects.get(id=1)
-        object_name = f'{obj.name}'
-        self.assertEquals(object_name, str(obj))
+        object_name = f"{obj.name}"
+        self.assertEquals(object_name, obj.__str__())
 
     def test_get_absolute_url(self):
         obj = Snt.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), '/data/obj-detail/1')
+        self.assertEquals(obj.get_absolute_url(), "/data/obj-detail/1")
 
     def test_verbose_names(self):
-        self.assertEquals(Snt._meta.verbose_name, 'СНТ')
-        self.assertEquals(Snt._meta.verbose_name_plural, 'СНТ')
+        self.assertEquals(Snt._meta.verbose_name, "СНТ")
+        self.assertEquals(Snt._meta.verbose_name_plural, "СНТ")

@@ -162,7 +162,7 @@ class LandPlot(models.Model):
         'Owner',
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name="владелец участка",
+        verbose_name="Владелец участка",
         help_text="Владелец участка",
         )   
    
@@ -201,16 +201,21 @@ class ChairMan(models.Model):
         validators = [validate_human_names],
     )
     phone = models.CharField(
+        "Номер телефона",
         max_length=12,
+        help_text="Укажите номер в формате +7xxxxxxxxxx",
         unique=True,
         blank=True,
         null=True,
+        validators=[validate_phone],
         )
 
     email = models.EmailField(
+        "Почта",
         unique=True,
         blank=True,
         null=True,
+        help_text="Адрес электронной почты",
         )
 
     class Meta:

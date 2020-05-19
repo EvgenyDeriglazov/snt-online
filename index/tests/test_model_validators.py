@@ -11,12 +11,16 @@
 # coverage report
 
 from django.test import TestCase
-from data.models import *
+from index.models import *
 from datetime import date
 from decimal import *
 from django.utils.translation import gettext_lazy as _
 
 class DateValidatorsTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up non-modified objects used by all test methods
+        correct_phone = "+79998887766"
 
     def test_wrong_number(self):
         self.assertRaises(ValidationError, validate_number, '124gf')
@@ -32,7 +36,7 @@ class DateValidatorsTest(TestCase):
             "['Некорректный символ - (g, f)']",
         ):validate_number('124gf')
 
-    def test_validate_20_length_function(self):
+    def test_validate_20_length(self):
         value = ""
         for i in range(19):
             value += "1"
@@ -46,7 +50,7 @@ class DateValidatorsTest(TestCase):
         value += "1"
         validate_20_length(value)
     
-    def test_validate_10_length_function(self):
+    def test_validate_10_length(self):
         value = ""
         for i in range(9):
             value += "1"
@@ -60,7 +64,7 @@ class DateValidatorsTest(TestCase):
         value += "1"
         validate_10_length(value)
  
-    def test_validate_9_length_function(self):
+    def test_validate_9_length(self):
         value = ""
         for i in range(8):
             value += "1"
@@ -74,7 +78,7 @@ class DateValidatorsTest(TestCase):
         value += "1"
         validate_9_length(value)
  
-    def test_validate_human_names_function(self):
+    def test_validate_human_names(self):
         value = ""
         for i in range(1040):
             value = chr(i)
@@ -95,4 +99,25 @@ class DateValidatorsTest(TestCase):
                 validate_human_names,
                 value,
             )
+
+    def test_validate_phone(self):
+        value = ""
+        for i in range(57, 49):
+            if i == 43:
+                continue
+            value = chr(i)
+            self.assertRaises(ValidationError, validate_phone)
+            self.assertRaisesRegex(
+                ValidationError,
+                "['Некорректный символ - (r, k)']",
+                validate_phone,
+                "+799999999rk",
+                )
+            self.assertRaisesRegex(
+                ValidationError,
+                "['Неверный формат номера - 079998887766']",
+                validate_phone,
+                correct_phone,
+                )
+
  

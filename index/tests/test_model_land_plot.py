@@ -46,56 +46,49 @@ class LandPlotModelTest(TestCase):
     # Test functions
     def test_plot_number_field(self):
         obj = LandPlot.objects.get(id=1)
-        field_label = obj._meta.get_field('plot_number').verbose_name
-        max_length = obj._meta.get_field('plot_number').max_length
-        help_text = obj._meta.get_field('plot_number').help_text 
-        unique_prop = obj._meta.get_field('plot_number').unique
-        self.assertEqual(field_label, "Номер участка")
-        self.assertEqual(max_length, 10)
-        self.assertEqual(help_text, "Номер участка")
-        self.assertEqual(unique_prop, True)
+        field = obj._meta.get_field('plot_number').verbose_name
+        self.assertEqual(field.verbose_name, "Номер участка")
+        self.assertEqual(field.max_length, 10)
+        self.assertEqual(field.help_text, "Номер участка")
+        self.assertEqual(field.unique, True)
         self.assertEqual(obj.plot_number, "10")
 
     def test_plot_area_field(self):
         obj = LandPlot.objects.get(id=1)
-        field_label = obj._meta.get_field('plot_area').verbose_name
-        help_text = obj._meta.get_field('plot_area').help_text 
-        self.assertEqual(field_label, "Размер участка")
-        self.assertEqual(help_text, "Единица измерения кв.м")
+        field = obj._meta.get_field('plot_area')
+        self.assertEqual(field.verbose_name, "Размер участка")
+        self.assertEqual(field.help_text, "Единица измерения кв.м")
         self.assertEqual(obj.plot_area, 6000)
 
     def test_snt_field(self):
         obj = LandPlot.objects.get(id=1)
         snt_obj = Snt.objects.get(id=1)
-        field_label = obj._meta.get_field('snt').verbose_name
-        help_text = obj._meta.get_field('snt').help_text 
-        self.assertEqual(field_label, "СНТ")
-        self.assertEqual(help_text, "Расположен в СНТ")
+        field = obj._meta.get_field('snt')
+        self.assertEqual(field.verbose_name, "СНТ")
+        self.assertEqual(field.help_text, "Расположен в СНТ")
         self.assertEqual(obj.snt, snt_obj)
 
     def test_owner_field(self):
         obj = LandPlot.objects.get(id=1)
         owner_obj = Owner.objects.get(id=1)
-        field_label = obj._meta.get_field('owner').verbose_name
-        help_text = obj._meta.get_field('owner').help_text
-        is_null = obj._meta.get_field('owner').null
+        field = obj._meta.get_field('owner').verbose_name
         #on_delete = obj._meta.get_field('owner').on_delete
-        self.assertEqual(field_label, "владелец участка")
-        self.assertEqual(help_text, "Владелец участка")
-        self.assertEqual(is_null, True)
+        self.assertEqual(field.verbose_name, "Владелец участка")
+        self.assertEqual(field.help_text, "Владелец участка")
+        self.assertEqual(field.null, True)
         #self.assertEqual(on_delete, models.SET_NULL)
         self.assertEqual(obj.owner, owner_obj)
 
     def test_object_name(self):
         obj = LandPlot.objects.get(id=1)
-        object_name = f'{obj.plot_number}'
+        object_name = f"{obj.plot_number}"
         self.assertEquals(object_name, obj.__str__())
         # or self.assertEquals(object_name, str(obj))
     
     def test_get_absolute_url(self):
         obj = LandPlot.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), '/data/land-plot-detail/1')
+        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
 
     def test_verbose_names(self):
-        self.assertEquals(LandPlot._meta.verbose_name, 'участок')
-        self.assertEquals(LandPlot._meta.verbose_name_plural, 'участки')
+        self.assertEquals(LandPlot._meta.verbose_name, "участок")
+        self.assertEquals(LandPlot._meta.verbose_name_plural, "участки")
