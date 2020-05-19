@@ -61,9 +61,9 @@ class OwnerModelTest(TestCase):
     def test_phone_field(self):
         obj = Owner.objects.get(id=1)
         field = obj._meta.get_field('phone')
-        self.assertEquals(field.verbose_name, "Телефон")
+        self.assertEquals(field.verbose_name, "Номер телефона")
         self.assertEquals(field.max_length, 12)
-        self.assertEquals(field.help_text, "Введите телефон в формате +7xxxxxxxxx")
+        self.assertEquals(field.help_text, "Укажите номер в формате +7xxxxxxxxxx")
         self.assertEquals(field.validators[0:1], [validate_phone])
         self.assertEquals(field.unique, True)
         self.assertEquals(field.blank, True)

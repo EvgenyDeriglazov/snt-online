@@ -17,10 +17,9 @@ from decimal import *
 from django.utils.translation import gettext_lazy as _
 
 class DateValidatorsTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        # Set up non-modified objects used by all test methods
-        correct_phone = "+79998887766"
+    # Set up non-modified objects used by all test methods
+    correct_phone = "+79998887766"
+    wrong_phone = "+7999888776g"
 
     def test_wrong_number(self):
         self.assertRaises(ValidationError, validate_number, '124gf')
@@ -106,18 +105,19 @@ class DateValidatorsTest(TestCase):
             if i == 43:
                 continue
             value = chr(i)
-            self.assertRaises(ValidationError, validate_phone)
-            self.assertRaisesRegex(
-                ValidationError,
-                "['Некорректный символ - (r, k)']",
-                validate_phone,
-                "+799999999rk",
-                )
-            self.assertRaisesRegex(
-                ValidationError,
-                "['Неверный формат номера - 079998887766']",
-                validate_phone,
-                correct_phone,
-                )
+        self.assertRaises(ValidationError, validate_phone, "+7999888776g")
+        self.assertRaisesRegex(
+            ValidationError,
+            #"['Некорректный символ - (r)']",
+            "[Некорректный]",
+            validate_phone,
+            "+7999888776r",
+            )
+        self.assertRaisesRegex(
+            ValidationError,
+            "['Неверный формат номера - 079998887766']",
+            validate_phone,
+            "079998887766",
+            )
 
  

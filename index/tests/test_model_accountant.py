@@ -14,14 +14,14 @@ from django.test import TestCase
 from index.models import *
 from django.contrib.auth.models import User
 
-class ChairManModelTest(TestCase):
+class AccountantModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         User.objects.create(
             username="username",
             password="password",
             )
-        ChairMan.objects.create(
+        Accountant.objects.create(
             first_name='Иван',
             middle_name='Иванович',
             last_name='Иванов',
@@ -29,7 +29,7 @@ class ChairManModelTest(TestCase):
             )
     # Test functions
     def test_first_name_field(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         field = obj._meta.get_field('first_name')
         self.assertEquals(field.verbose_name, "Имя")
         self.assertEquals(field.max_length, 50)
@@ -37,7 +37,7 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.help_text, "Введите имя")
 
     def test_middle_name_field(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         field = obj._meta.get_field('middle_name')
         self.assertEquals(field.verbose_name, "Отчество")
         self.assertEquals(field.max_length, 50)
@@ -45,7 +45,7 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.help_text, "Введите отчество")
     
     def test_last_name_field(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         field = obj._meta.get_field('last_name')
         self.assertEquals(field.verbose_name, "Фамилия")
         self.assertEquals(field.max_length, 50)
@@ -53,7 +53,7 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.help_text, "Введите фамилию")
 
     def test_phone_field(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         field = obj._meta.get_field('phone')
         self.assertEquals(field.verbose_name, "Номер телефона")
         self.assertEquals(field.max_length, 12)
@@ -67,7 +67,7 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.validators[0:1], [validate_phone])
 
     def test_email_field(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         field = obj._meta.get_field('email')
         self.assertEquals(field.verbose_name, "Почта")
         self.assertEquals(field.unique, True)
@@ -76,7 +76,7 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.help_text, "Адрес электронной почты")
     
     def test_user_field(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         user_obj = User.objects.get(id=1)
         field = obj._meta.get_field('user')
         self.assertEquals(field.verbose_name, "Логин")
@@ -86,14 +86,14 @@ class ChairManModelTest(TestCase):
         self.assertEquals(obj.user, user_obj)
  
     def test_object_name(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         object_name = f"{obj.last_name} {obj.first_name} {obj.middle_name}"
         self.assertEquals(object_name, obj.__str__())
 
     def test_get_absolute_url(self):
-        obj = ChairMan.objects.get(id=1)
+        obj = Accountant.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/chairman-detail/1")
 
     def test_verbose_names(self):
-        self.assertEquals(ChairMan._meta.verbose_name, "председатель")
-        self.assertEquals(ChairMan._meta.verbose_name_plural, "председатели")
+        self.assertEquals(Accountant._meta.verbose_name, "бухгалтер")
+        self.assertEquals(Accountant._meta.verbose_name_plural, "бухгалтеры")

@@ -217,7 +217,15 @@ class ChairMan(models.Model):
         null=True,
         help_text="Адрес электронной почты",
         )
-
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Логин",
+        help_text="Аккаунт пользователя на сайте",
+        )
+ 
     class Meta:
         verbose_name = "председатель"
         verbose_name_plural = "председатели"
@@ -253,9 +261,9 @@ class Owner(models.Model):
         validators = [validate_human_names],
     )
     phone = models.CharField(
-        "Телефон",
+        "Номер телефона",
         max_length=12,
-        help_text="Введите телефон в формате +7xxxxxxxxx",
+        help_text="Укажите номер в формате +7xxxxxxxxxx",
         unique=True,
         blank=True,
         null=True,
@@ -290,6 +298,68 @@ class Owner(models.Model):
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
         return reverse('owner-detail', args=[str(self.id)])
+
+class Accountant(models.Model):
+    """Model representing snt accountant basic infromation
+    such as first name, last name, status (current or former), 
+    land plot (many-to-many), start owner date, end owner date."""
+    last_name = models.CharField(
+        "Фамилия",
+        max_length=50,
+        help_text="Введите фамилию",
+        validators = [validate_human_names],
+    )
+    first_name = models.CharField(
+        "Имя",
+        max_length=50,
+        help_text="Введите имя",
+        validators = [validate_human_names],
+    )
+    middle_name = models.CharField(
+        "Отчество",
+        max_length=50,
+        help_text="Введите отчество",
+        validators = [validate_human_names],
+    )
+    phone = models.CharField(
+        "Номер телефона",
+        max_length=12,
+        help_text="Укажите номер в формате +7xxxxxxxxxx",
+        unique=True,
+        blank=True,
+        null=True,
+        validators=[validate_phone],
+        )
+
+    email = models.EmailField(
+        "Почта",
+        unique=True,
+        blank=True,
+        null=True,
+        help_text="Адрес электронной почты",
+        )
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Логин",
+        help_text="Аккаунт пользователя на сайте",
+        )
+   
+    class Meta:
+        verbose_name = "бухгалтер"
+        verbose_name_plural = "бухгалтеры"
+
+    def __str__(self):
+        """String to represent the Model(class) object."""
+        return self.last_name + ' ' + self.first_name + ' ' + self.middle_name
+
+    def get_absolute_url(self):
+        """Returns url to access an instance of the model."""
+        return reverse('owner-detail', args=[str(self.id)])
+
 
 class Docs(models.Model):
     """Represents different kinds of documents to be published on site."""
