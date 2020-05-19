@@ -46,7 +46,7 @@ class LandPlotModelTest(TestCase):
     # Test functions
     def test_plot_number_field(self):
         obj = LandPlot.objects.get(id=1)
-        field = obj._meta.get_field('plot_number').verbose_name
+        field = obj._meta.get_field('plot_number')
         self.assertEqual(field.verbose_name, "Номер участка")
         self.assertEqual(field.max_length, 10)
         self.assertEqual(field.help_text, "Номер участка")
@@ -71,7 +71,7 @@ class LandPlotModelTest(TestCase):
     def test_owner_field(self):
         obj = LandPlot.objects.get(id=1)
         owner_obj = Owner.objects.get(id=1)
-        field = obj._meta.get_field('owner').verbose_name
+        field = obj._meta.get_field('owner')
         #on_delete = obj._meta.get_field('owner').on_delete
         self.assertEqual(field.verbose_name, "Владелец участка")
         self.assertEqual(field.help_text, "Владелец участка")
