@@ -13,6 +13,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from index.models import *
+import datetime
 
 class OwnerModelTest(TestCase):
     @classmethod
@@ -28,9 +29,10 @@ class OwnerModelTest(TestCase):
             phone="+79990001122",
             email="my@email.com",
             user=User.objects.get(id=1),
-
+            join_date=datetime.date.today(),
         )
-   # Test functions
+
+   # Model fields properties tests
     def test_first_name_field(self):
         obj = Owner.objects.get(id=1)
         field = obj._meta.get_field('first_name')
@@ -89,7 +91,27 @@ class OwnerModelTest(TestCase):
         self.assertEquals(field.blank, True)
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)
+    
+    def test_join_date_field(self):
+        obj = Owner.objects.get(id=1)
+        field = obj._meta.get_field('join_date')
+        self.assertEquals(field.verbose_name, "Дата вступления в СНТ")
+        self.assertEquals(field.help_text, "Укажите дату вступления в члены СНТ")
+        self.assertEquals(obj.join_date, datetime.date.today())
 
+    def test_leave_date_field(self):
+        obj = Owner.objects.get(id=1)
+        field = obj._meta.get_field('leave_date')
+        self.assertEquals(field.verbose_name, "Дата выхода из СНТ")
+        self.assertEquals(field.help_text, "Укажите дату выхода из членов СНТ")
+        self.assertEquals(field.blank, True)
+        self.assertEquals(field.null, True)
+        self.assertEquals(obj.leave_date, None)
+
+    def test_verbose_names(self):
+        self.assertEquals(Owner._meta.verbose_name, "владелец")
+        self.assertEquals(Owner._meta.verbose_name_plural, "владельцы")
+ 
     def test_object_name(self):
         obj = Owner.objects.get(id=1)
         obj_name = f"{obj.last_name} {obj.first_name} {obj.middle_name}"
@@ -99,8 +121,3 @@ class OwnerModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = Owner.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/owner-detail/1")
-
-    def test_verbose_names(self):
-        self.assertEquals(Owner._meta.verbose_name, "владелец")
-        self.assertEquals(Owner._meta.verbose_name_plural, "владельцы")
- 

@@ -70,6 +70,10 @@ class DocsModelTest(TestCase):
         doc_user_obj = User.objects.get(id=1)
         self.assertEqual(obj.doc_user, doc_user_obj)
 
+    def test_verbose_names(self):
+        self.assertEquals(Docs._meta.verbose_name, "документ")
+        self.assertEquals(Docs._meta.verbose_name_plural, "документы")
+
     def test_object_name(self):
         obj = Docs.objects.get(id=1)
         object_name = f"{obj.title}"
@@ -79,7 +83,3 @@ class DocsModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = Docs.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
-
-    def test_verbose_names(self):
-        self.assertEquals(Docs._meta.verbose_name, "документ")
-        self.assertEquals(Docs._meta.verbose_name_plural, "документы")

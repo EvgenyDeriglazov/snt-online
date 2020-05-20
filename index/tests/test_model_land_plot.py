@@ -13,6 +13,7 @@
 from django.test import TestCase
 from index.models import *
 from django.contrib.auth.models import User
+import datetime
 
 class LandPlotModelTest(TestCase):
     @classmethod
@@ -21,6 +22,7 @@ class LandPlotModelTest(TestCase):
             first_name='Иван',
             middle_name='Иванович',
             last_name='Иванов',
+            join_date=datetime.date.today(),
             )
         Snt.objects.create(
             name='СНТ Бобровка',
@@ -36,6 +38,7 @@ class LandPlotModelTest(TestCase):
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
+            join_date=datetime.date.today(),
         )
         LandPlot.objects.create(
             plot_number="10",
@@ -79,6 +82,10 @@ class LandPlotModelTest(TestCase):
         #self.assertEqual(on_delete, models.SET_NULL)
         self.assertEqual(obj.owner, owner_obj)
 
+    def test_verbose_names(self):
+        self.assertEquals(LandPlot._meta.verbose_name, "участок")
+        self.assertEquals(LandPlot._meta.verbose_name_plural, "участки")
+
     def test_object_name(self):
         obj = LandPlot.objects.get(id=1)
         object_name = f"{obj.plot_number}"
@@ -88,7 +95,3 @@ class LandPlotModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = LandPlot.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
-
-    def test_verbose_names(self):
-        self.assertEquals(LandPlot._meta.verbose_name, "участок")
-        self.assertEquals(LandPlot._meta.verbose_name_plural, "участки")

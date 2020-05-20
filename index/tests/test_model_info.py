@@ -12,7 +12,7 @@
 
 from django.test import TestCase
 from index.models import *
-from datetime import datetime
+import datetime
 # from django.contrib.auth.models import User
 
 class InfoModelTest(TestCase):
@@ -22,6 +22,7 @@ class InfoModelTest(TestCase):
             first_name='Иван',
             middle_name='Иванович',
             last_name='Иванов',
+            join_date=datetime.date.today(),
             )
         Info.objects.create(
             title='Мой заголовок',
@@ -39,7 +40,7 @@ class InfoModelTest(TestCase):
         self.assertEqual(field.blank, True)
         # Data test
         obj = Info.objects.get(id=1)
-        self.assertEqual(type(obj.pub_date), type(datetime.now()))
+        self.assertEqual(type(obj.pub_date), type(datetime.datetime.now()))
 
     def test_title_field(self):
         # Attributes test
@@ -72,6 +73,10 @@ class InfoModelTest(TestCase):
         author_obj = ChairMan.objects.get(id=1)
         self.assertEqual(obj.author, author_obj)
 
+    def test_verbose_names(self):
+        self.assertEquals(Info._meta.verbose_name, "информация")
+        self.assertEquals(Info._meta.verbose_name_plural, "информация")
+
     def test_object_name(self):
         obj = Info.objects.get(id=1)
         object_name = f"{obj.title}"
@@ -81,7 +86,3 @@ class InfoModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = Info.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
-
-    def test_verbose_names(self):
-        self.assertEquals(Info._meta.verbose_name, "информация")
-        self.assertEquals(Info._meta.verbose_name_plural, "информация")

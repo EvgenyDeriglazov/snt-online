@@ -12,6 +12,7 @@
 
 from django.test import TestCase
 from index.models import ChairMan, Snt
+import datetime
 
 class SntModelTest(TestCase):
     @classmethod
@@ -21,6 +22,7 @@ class SntModelTest(TestCase):
             first_name='Иван',
             middle_name='Иванович',
             last_name='Иванов',
+            join_date=datetime.date.today()
             )
         Snt.objects.create(
             name='СНТ Бобровка',
@@ -104,7 +106,11 @@ class SntModelTest(TestCase):
         self.assertEqual(obj.chair_man, ch_m_obj)
         self.assertEqual(field.verbose_name, "председатель")
         self.assertEqual(field.help_text, "председатель садоводства")
-    
+
+    def test_verbose_names(self):
+        self.assertEquals(Snt._meta.verbose_name, "СНТ")
+        self.assertEquals(Snt._meta.verbose_name_plural, "СНТ")   
+
     def test_object_name(self):
         obj = Snt.objects.get(id=1)
         object_name = f"{obj.name}"
@@ -114,6 +120,4 @@ class SntModelTest(TestCase):
         obj = Snt.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/obj-detail/1")
 
-    def test_verbose_names(self):
-        self.assertEquals(Snt._meta.verbose_name, "СНТ")
-        self.assertEquals(Snt._meta.verbose_name_plural, "СНТ")
+

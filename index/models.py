@@ -187,19 +187,19 @@ class ChairMan(models.Model):
         max_length=50,
         help_text="Введите имя",
         validators = [validate_human_names],
-    )
+        )
     middle_name = models.CharField(
         "Отчество",
         max_length=50,
         help_text="Введите отчество",
         validators = [validate_human_names],
-    )
+        )
     last_name = models.CharField(
         "Фамилия",
         max_length=50,
         help_text="Введите фамилию",
         validators = [validate_human_names],
-    )
+        )
     phone = models.CharField(
         "Номер телефона",
         max_length=12,
@@ -209,7 +209,6 @@ class ChairMan(models.Model):
         null=True,
         validators=[validate_phone],
         )
-
     email = models.EmailField(
         "Почта",
         unique=True,
@@ -225,7 +224,16 @@ class ChairMan(models.Model):
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
         )
- 
+    join_date = models.DateField(
+        "Дата вступления в должность",
+        help_text="Укажите дату вступления в должность",
+        )
+    leave_date = models.DateField(
+        "Дата ухода с должности",
+        help_text="Укажите дату ухода с должности",
+        blank=True,
+        null=True,
+        )
     class Meta:
         verbose_name = "председатель"
         verbose_name_plural = "председатели"
@@ -285,6 +293,16 @@ class Owner(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
+        )
+    join_date = models.DateField(
+        "Дата вступления в СНТ",
+        help_text="Укажите дату вступления в члены СНТ",
+        )
+    leave_date = models.DateField(
+        "Дата выхода из СНТ",
+        help_text="Укажите дату выхода из членов СНТ",
+        blank=True,
+        null=True,
         )
    
     class Meta:
@@ -346,6 +364,16 @@ class Accountant(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
+        )
+    join_date = models.DateField(
+        "Дата вступления в должность",
+        help_text="Укажите дату вступления в должность",
+        )
+    leave_date = models.DateField(
+        "Дата ухода с должности",
+        help_text="Укажите дату ухода с должности",
+        blank=True,
+        null=True,
         )
    
     class Meta:

@@ -13,6 +13,7 @@
 from django.test import TestCase
 from index.models import *
 from django.contrib.auth.models import User
+import datetime
 
 class ChairManModelTest(TestCase):
     @classmethod
@@ -26,6 +27,7 @@ class ChairManModelTest(TestCase):
             middle_name='Иванович',
             last_name='Иванов',
             user=User.objects.get(id=1),
+            join_date=datetime.date.today(),
             )
     # Test functions
     def test_first_name_field(self):
@@ -85,6 +87,26 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)
  
+    def test_join_date_field(self):
+        obj = ChairMan.objects.get(id=1)
+        field = obj._meta.get_field('join_date')
+        self.assertEquals(field.verbose_name, "Дата вступления в должность")
+        self.assertEquals(field.help_text, "Укажите дату вступления в должность")
+        self.assertEquals(obj.join_date, datetime.date.today())
+
+    def test_leave_date_field(self):
+        obj = ChairMan.objects.get(id=1)
+        field = obj._meta.get_field('leave_date')
+        self.assertEquals(field.verbose_name, "Дата ухода с должности")
+        self.assertEquals(field.help_text, "Укажите дату ухода с должности")
+        self.assertEquals(field.blank, True)
+        self.assertEquals(field.null, True)
+        self.assertEquals(obj.leave_date, None)
+
+    def test_verbose_names(self):
+        self.assertEquals(ChairMan._meta.verbose_name, "председатель")
+        self.assertEquals(ChairMan._meta.verbose_name_plural, "председатели")
+
     def test_object_name(self):
         obj = ChairMan.objects.get(id=1)
         object_name = f"{obj.last_name} {obj.first_name} {obj.middle_name}"
@@ -94,6 +116,4 @@ class ChairManModelTest(TestCase):
         obj = ChairMan.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/chairman-detail/1")
 
-    def test_verbose_names(self):
-        self.assertEquals(ChairMan._meta.verbose_name, "председатель")
-        self.assertEquals(ChairMan._meta.verbose_name_plural, "председатели")
+

@@ -13,8 +13,8 @@
 from django.test import TestCase
 from index.models import *
 from membership.models import *
-from index.models import *
 from django.contrib.auth.models import User
+import datetime
 
 class MPaymentModelTest(TestCase):
     @classmethod
@@ -23,8 +23,8 @@ class MPaymentModelTest(TestCase):
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
+            join_date=datetime.date.today(),
             )
- 
         Snt.objects.create(
             name='СНТ Бобровка',
             personal_acc='01234567898765432101',
@@ -39,6 +39,7 @@ class MPaymentModelTest(TestCase):
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
+            join_date=datetime.date.today(),
             )
         LandPlot.objects.create(
             plot_number="10",
@@ -150,5 +151,3 @@ class MPaymentModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = LandPlot.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
-
-
