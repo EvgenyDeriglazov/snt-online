@@ -10,6 +10,7 @@ class MPayment(models.Model):
         "Дата оплаты",
         help_text="Фактическая дата оплаты",
         blank=True,
+        null=True,
         )
     year_period = models.CharField(
         "Год",
@@ -20,8 +21,10 @@ class MPayment(models.Model):
     month_period = models.CharField(
         "Месяц",
         help_text="Членский взнос за определенный месяц",
+        blank=True,
+        null=True,
         )
-    fee = models.DecimalField(
+    rate = models.DecimalField(
         "Размер взноса",
         help_text="Размер членского взноса за сотку (100 м.кв)",
         max_digits=7,
@@ -31,9 +34,9 @@ class MPayment(models.Model):
     	"Площадь участка",
     	help_text="Площадь участка в метрах квадратных",
     	)
-    fee_amount = models.DecimalField(
+    amount = models.DecimalField(
     	"Сумма",
-        help_text="Общая сумма к оплате",
+        help_text="Сумма взноса к оплате",
         max_digits=7,
         decimal_places=2,
     	)
@@ -45,7 +48,7 @@ class MPayment(models.Model):
         help_text="Номер участка",
     	)
    	STATUS = [
-        ('n', 'Новые показания'),
+        ('n', 'Неоплачено'),
         ('p', 'Оплачено'),
         ('c', 'Оплата подтверждена'),
     	] 

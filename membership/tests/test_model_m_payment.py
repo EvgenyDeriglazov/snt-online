@@ -18,11 +18,7 @@ from django.contrib.auth.models import User
 class MPaymentModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        MPayment.objects.create(
-            first_name='Иван',
-            middle_name='Иванович',
-            last_name='Иванов',
-            )
+
         Snt.objects.create(
             name='СНТ Бобровка',
             personal_acc='01234567898765432101',
@@ -37,37 +33,47 @@ class MPaymentModelTest(TestCase):
             first_name="Сергей",
             middle_name="Сергеевич",
             last_name="Сергеев",
-        )
+            )
         LandPlot.objects.create(
             plot_number="10",
             plot_area=6000,
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
-        )
+            )
+        MPayment.objects.create(
+            year_period='2020',
+            rate=1000,
+            plot_area=LandPlot.objects.get(id=1).plot_area,
+            amount=1000,
+            land_plot=LandPlot.objects.get(id=1),
+            status='n',
+            )
     # Test functions
-    def test_plot_number_field(self):
-        obj = LandPlot.objects.get(id=1)
-        field = obj._meta.get_field('plot_number')
-        self.assertEqual(field.verbose_name, "Номер участка")
-        self.assertEqual(field.max_length, 10)
-        self.assertEqual(field.help_text, "Номер участка")
-        self.assertEqual(field.unique, True)
-        self.assertEqual(obj.plot_number, "10")
+    def test_payment_date_field(self):
+        obj = MPayment.objects.get(id=1)
+        field = obj._meta.get_field('payment_date')
+        self.assertEqual(field.verbose_name, "Дата оплаты")
+        self.assertEqual(field.help_text, "Фактическая дата оплаты")
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.payment_date, Null)
 
-    def test_plot_area_field(self):
-        obj = LandPlot.objects.get(id=1)
-        field = obj._meta.get_field('plot_area')
-        self.assertEqual(field.verbose_name, "Размер участка")
-        self.assertEqual(field.help_text, "Единица измерения кв.м")
-        self.assertEqual(obj.plot_area, 6000)
+    def test_year_period_field(self):
+        obj = MPayment.objects.get(id=1)
+        field = obj._meta.get_field('year_period')
+        self.assertEqual(field.verbose_name, "Год")
+        self.assertEqual(field.help_text, "Членский взнос за поределенный год")
+        self.assertEqual(field.max_length, 4)
+        self.assertEqual(obj.year_period, 2020)
 
-    def test_snt_field(self):
-        obj = LandPlot.objects.get(id=1)
-        snt_obj = Snt.objects.get(id=1)
-        field = obj._meta.get_field('snt')
-        self.assertEqual(field.verbose_name, "СНТ")
-        self.assertEqual(field.help_text, "Расположен в СНТ")
-        self.assertEqual(obj.snt, snt_obj)
+    def test_month_period_field(self):
+        obj = MPayment.objects.get(id=1)
+        field = obj._meta.get_field('month_period')
+        self.assertEqual(field.verbose_name, "Месяц")
+        self.assertEqual(field.help_text, "Членский взнос за поределенный месяц")
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.month_period, Null)
 
     def test_owner_field(self):
         obj = LandPlot.objects.get(id=1)
