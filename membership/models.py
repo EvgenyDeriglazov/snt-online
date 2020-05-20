@@ -20,19 +20,20 @@ class MPayment(models.Model):
 
     month_period = models.CharField(
         "Месяц",
+        max_length=7,
         help_text="Членский взнос за определенный месяц",
         blank=True,
         null=True,
         )
     rate = models.DecimalField(
         "Размер взноса",
-        help_text="Размер членского взноса за сотку (100 м.кв)",
+        help_text="Размер членского взноса за сотку (100 м.кв)/рублей",
         max_digits=7,
         decimal_places=2,
         )
     plot_area = models.PositiveIntegerField(
     	"Площадь участка",
-    	help_text="Площадь участка в метрах квадратных",
+    	help_text="Площадь участка в квадратных метрах",
     	)
     amount = models.DecimalField(
     	"Сумма",
@@ -44,10 +45,10 @@ class MPayment(models.Model):
         LandPlot,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name="Номер участка",
-        help_text="Номер участка",
+        verbose_name="Участок",
+        help_text="Выберите участок",
     	)
-   	STATUS = [
+    STATUS_CHOICES = [
         ('n', 'Неоплачено'),
         ('p', 'Оплачено'),
         ('c', 'Оплата подтверждена'),
@@ -55,9 +56,9 @@ class MPayment(models.Model):
     status = models.CharField(
         "Статус",
         max_length=1,
-        choices=STATUS,
+        choices=STATUS_CHOICES,
         default='n',
-        help_text="Статус квитанции",
+        help_text="Статус записи",
     ) 
     class Meta:
         verbose_name = "членский взнос"
