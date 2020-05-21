@@ -71,8 +71,11 @@ class MPaymentModelTest(TestCase):
         field = obj._meta.get_field('year_period')
         self.assertEqual(field.verbose_name, "Год")
         self.assertEqual(field.max_length, 4)
-        self.assertEqual(field.help_text, "Членский взнос за определенный год")
-        self.assertEqual(field.validators[0:1], [validate_number])
+        self.assertEqual(field.help_text, "Укажите год в виде 4-х значного числа")
+        self.assertEqual(
+            field.validators[0:2],
+            [validate_number, validate_year_period_min_length]
+            )
         self.assertEqual(obj.year_period, '2020')
 
     def test_month_period_field(self):
@@ -95,7 +98,11 @@ class MPaymentModelTest(TestCase):
         ]
         self.assertEqual(field.verbose_name, "Месяц")
         self.assertEqual(field.max_length, 3)
-        self.assertEqual(field.help_text, "Членский взнос за определенный месяц")
+        self.assertEqual(
+            field.help_text,
+            "Выберите месяц, если начисления"
+            + " членских взносов расчитываются помесячно"
+            )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.choices, MONTH_PERIOD_CHOICES)
         self.assertEqual(field.default, '')

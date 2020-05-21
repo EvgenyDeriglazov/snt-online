@@ -11,3 +11,9 @@ def validate_number(value):
         raise ValidationError(
             _('Некорректный символ - (' + wrong_string + ')')
         )
+
+def validate_year_period_min_length(value):
+	if len(value) < 4:
+		raise ValidationError(
+			_('Укажите год в виде 4-х значного числа')
+			)

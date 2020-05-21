@@ -16,8 +16,8 @@ class MPayment(models.Model):
     year_period = models.CharField(
         "Год",
         max_length=4,
-        help_text="Членский взнос за определенный год",
-        validators=[validate_number],
+        help_text="Укажите год в виде 4-х значного числа",
+        validators=[validate_number, validate_year_period_min_length],
         )
     MONTH_PERIOD_CHOICES = [
     	('', ''),
@@ -36,7 +36,8 @@ class MPayment(models.Model):
     	]
     month_period = models.CharField(
         "Месяц",
-        help_text="Членский взнос за определенный месяц",
+        help_text="Выберите месяц, если начисления" 
+        + " членских взносов расчитываются помесячно",
         max_length=3,
         blank=True,
         choices=MONTH_PERIOD_CHOICES,
