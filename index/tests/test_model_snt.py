@@ -107,11 +107,11 @@ class SntModelTest(TestCase):
         self.assertEqual(field.verbose_name, "председатель")
         self.assertEqual(field.help_text, "председатель садоводства")
 
-    def test_verbose_names(self):
+    def test_meta_options(self):
         self.assertEquals(Snt._meta.verbose_name, "СНТ")
         self.assertEquals(Snt._meta.verbose_name_plural, "СНТ")   
 
-    def test_object_name(self):
+    def test_str_method(self):
         obj = Snt.objects.get(id=1)
         object_name = f"{obj.name}"
         self.assertEquals(object_name, obj.__str__())

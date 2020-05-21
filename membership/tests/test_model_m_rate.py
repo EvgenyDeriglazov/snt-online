@@ -11,13 +11,13 @@
 # coverage report
 
 from django.test import TestCase
-from index.models import *
 from membership.models import *
+from index.models import *
 from django.contrib.auth.models import User
 from membership.validators import *
 import datetime
 
-class MPaymentModelTest(TestCase):
+class MRateModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ChairMan.objects.create(
@@ -48,30 +48,31 @@ class MPaymentModelTest(TestCase):
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
             )
-        MPayment.objects.create(
-            year_period='2020',
+        MRate.objects.create(
+            date=datetime.date.today(),
+            year_period="2020",
+            month_period="",
             rate=1000,
-            plot_area=LandPlot.objects.get(id=1).plot_area,
-            amount=6000,
-            land_plot=LandPlot.objects.get(id=1),
-            status='n',
+            snt=Snt.objects.get(id=1),
             )
     # Test functions
-    def test_payment_date_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('payment_date')
-        self.assertEqual(field.verbose_name, "Дата оплаты")
-        self.assertEqual(field.help_text, "Фактическая дата оплаты")
-        self.assertEqual(field.blank, True)
-        self.assertEqual(field.null, True)
-        self.assertEqual(obj.payment_date, None)
+    def test_date_field(self):
+        obj = MRate.objects.get(id=1)
+        field = obj._meta.get_field('date')
+        self.assertEqual(field.verbose_name, "Дата")
+        self.assertEqual(field.help_text, "Укажите дату ввода тарифа")
+        self.assertEqual(obj.date, datetime.date.today())
 
     def test_year_period_field(self):
-        obj = MPayment.objects.get(id=1)
+        obj = MRate.objects.get(id=1)
         field = obj._meta.get_field('year_period')
         self.assertEqual(field.verbose_name, "Год")
         self.assertEqual(field.max_length, 4)
-        self.assertEqual(field.help_text, "Укажите год в виде 4-х значного числа")
+        self.assertEqual(
+            field.help_text,
+            "Укажите год периода для произведения расчета"
+            + " в виде 4-х значного числа"
+            )
         self.assertEqual(
             field.validators[0:2],
             [validate_number, validate_year_period_min_length]
@@ -79,7 +80,7 @@ class MPaymentModelTest(TestCase):
         self.assertEqual(obj.year_period, '2020')
 
     def test_month_period_field(self):
-        obj = MPayment.objects.get(id=1)
+        obj = MRate.objects.get(id=1)
         field = obj._meta.get_field('month_period')
         MONTH_PERIOD_CHOICES = [
         ('', ''),
@@ -109,67 +110,43 @@ class MPaymentModelTest(TestCase):
         self.assertEqual(obj.month_period, '')
 
     def test_rate_field(self):
-        obj = MPayment.objects.get(id=1)
+        obj = MRate.objects.get(id=1)
         field = obj._meta.get_field('rate')
         self.assertEqual(field.verbose_name, "Размер взноса")
         self.assertEqual(
             field.help_text,
-            "Размер членского взноса за сотку (100 м.кв)/рублей"
+            "Укажите размер членского взноса для" 
+            + " выбранного периода в рублях за сотку (100 м.кв)"
             )
-        self.assertEqual(obj.plot_area, 6000)
+        self.assertEqual(obj.rate, 1000)
 
-    def test_plot_area_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('plot_area')
-        self.assertEqual(field.verbose_name, "Площадь участка")
-        self.assertEqual(field.help_text, "Площадь участка в квадратных метрах")
-        self.assertEqual(obj.plot_area, 6000)
-
-    def test_amount_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('amount')
-        self.assertEqual(field.verbose_name, "Сумма")
-        self.assertEqual(field.help_text, "Сумма взноса к оплате")
-        self.assertEqual(field.max_digits, 7)
-        self.assertEqual(field.decimal_places, 2)
-        self.assertEqual(obj.amount, 6000)
-
-    def test_land_plot_field(self):
-        obj = MPayment.objects.get(id=1)
-        plot_obj = LandPlot.objects.get(id=1)
-        field = obj._meta.get_field('land_plot')
-        #on_delete = obj._meta.get_field('owner').on_delete
-        self.assertEqual(field.verbose_name, "Участок")
-        self.assertEqual(field.help_text, "Выберите участок")
+    def test_snt_field(self):
+        obj = MRate.objects.get(id=1)
+        snt_obj = Snt.objects.get(id=1)
+        field = obj._meta.get_field('snt')
         self.assertEqual(field.null, True)
-        #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.land_plot, plot_obj)
+        self.assertEqual(field.verbose_name, "СНТ")
+        self.assertEqual(
+            field.help_text,
+            "Укажите СНТ для которого будет применен тариф"
+            )
+        self.assertEqual(obj.snt, snt_obj)
 
-    def test_status_field(self):
-        obj = MPayment.objects.get(id=1)
-        plot_obj = LandPlot.objects.get(id=1)
-        STATUS_CHOICES = [
-            ('n', 'Неоплачено'),
-            ('p', 'Оплачено'),
-            ('c', 'Оплата подтверждена'),
-            ]
-        field = obj._meta.get_field('status')
-        #on_delete = obj._meta.get_field('owner').on_delete
-        self.assertEqual(field.verbose_name, "Статус")
-        self.assertEqual(field.max_length, 1)
-        self.assertEqual(field.choices, STATUS_CHOICES)
-        self.assertEqual(field.default, 'n')
-        self.assertEqual(field.help_text, "Статус записи")
-        #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.status, 'n')
 
     def test_meta_options(self):
-        self.assertEquals(MPayment._meta.verbose_name, "членский взнос")
-        self.assertEquals(MPayment._meta.verbose_name_plural, "членские взносы")
+        self.assertEquals(MRate._meta.verbose_name, "Тариф (членский взнос)")
+        self.assertEquals(
+            MRate._meta.verbose_name_plural,
+            "Тарифы (членский взнос)"
+            )
+        self.assertEquals(
+            MRate._meta.constraints[0].fields,
+            ('year_period','month_period')
+            )
    
     def test_str_method(self):
-        obj = MPayment.objects.get(id=1)
-        object_name = f"{obj.year_period} {obj.land_plot.plot_number}"
+        obj = MRate.objects.get(id=1)
+        object_name = f"{obj.year_period} {obj.month_period}"
         self.assertEquals(object_name, obj.__str__())
         # or self.assertEquals(object_name, str(obj))
  

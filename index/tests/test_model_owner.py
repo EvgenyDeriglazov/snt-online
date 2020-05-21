@@ -108,11 +108,11 @@ class OwnerModelTest(TestCase):
         self.assertEquals(field.null, True)
         self.assertEquals(obj.leave_date, None)
 
-    def test_verbose_names(self):
+    def test_meta_options(self):
         self.assertEquals(Owner._meta.verbose_name, "владелец")
         self.assertEquals(Owner._meta.verbose_name_plural, "владельцы")
  
-    def test_object_name(self):
+    def test_str_method(self):
         obj = Owner.objects.get(id=1)
         obj_name = f"{obj.last_name} {obj.first_name} {obj.middle_name}"
         self.assertEquals(obj_name, obj.__str__())

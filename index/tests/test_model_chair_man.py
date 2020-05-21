@@ -103,11 +103,11 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.null, True)
         self.assertEquals(obj.leave_date, None)
 
-    def test_verbose_names(self):
+    def test_meta_options(self):
         self.assertEquals(ChairMan._meta.verbose_name, "председатель")
         self.assertEquals(ChairMan._meta.verbose_name_plural, "председатели")
 
-    def test_object_name(self):
+    def test_str_method(self):
         obj = ChairMan.objects.get(id=1)
         object_name = f"{obj.last_name} {obj.first_name} {obj.middle_name}"
         self.assertEquals(object_name, obj.__str__())

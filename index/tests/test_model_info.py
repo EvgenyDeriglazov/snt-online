@@ -73,11 +73,11 @@ class InfoModelTest(TestCase):
         author_obj = ChairMan.objects.get(id=1)
         self.assertEqual(obj.author, author_obj)
 
-    def test_verbose_names(self):
+    def test_meta_options(self):
         self.assertEquals(Info._meta.verbose_name, "информация")
         self.assertEquals(Info._meta.verbose_name_plural, "информация")
 
-    def test_object_name(self):
+    def test_str_method(self):
         obj = Info.objects.get(id=1)
         object_name = f"{obj.title}"
         self.assertEquals(object_name, obj.__str__())

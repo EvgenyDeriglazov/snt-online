@@ -70,11 +70,11 @@ class DocsModelTest(TestCase):
         doc_user_obj = User.objects.get(id=1)
         self.assertEqual(obj.doc_user, doc_user_obj)
 
-    def test_verbose_names(self):
+    def test_meta_options(self):
         self.assertEquals(Docs._meta.verbose_name, "документ")
         self.assertEquals(Docs._meta.verbose_name_plural, "документы")
 
-    def test_object_name(self):
+    def test_str_method(self):
         obj = Docs.objects.get(id=1)
         object_name = f"{obj.title}"
         self.assertEquals(object_name, obj.__str__())

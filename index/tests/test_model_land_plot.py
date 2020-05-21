@@ -82,11 +82,11 @@ class LandPlotModelTest(TestCase):
         #self.assertEqual(on_delete, models.SET_NULL)
         self.assertEqual(obj.owner, owner_obj)
 
-    def test_verbose_names(self):
+    def test_meta_options(self):
         self.assertEquals(LandPlot._meta.verbose_name, "участок")
         self.assertEquals(LandPlot._meta.verbose_name_plural, "участки")
 
-    def test_object_name(self):
+    def test_str_method(self):
         obj = LandPlot.objects.get(id=1)
         object_name = f"{obj.plot_number}"
         self.assertEquals(object_name, obj.__str__())
