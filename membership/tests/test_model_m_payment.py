@@ -14,6 +14,7 @@ from django.test import TestCase
 from index.models import *
 from membership.models import *
 from django.contrib.auth.models import User
+from membership.validators import *
 import datetime
 
 class MPaymentModelTest(TestCase):
@@ -71,6 +72,7 @@ class MPaymentModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Год")
         self.assertEqual(field.max_length, 4)
         self.assertEqual(field.help_text, "Членский взнос за определенный год")
+        self.assertEqual(field.validators[0:1], [validate_number])
         self.assertEqual(obj.year_period, '2020')
 
     def test_month_period_field(self):

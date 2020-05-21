@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from index.models import LandPlot
+from membership.validators import *
 
 # Create your models here.
 class MPayment(models.Model):
@@ -16,6 +17,7 @@ class MPayment(models.Model):
         "Год",
         max_length=4,
         help_text="Членский взнос за определенный год",
+        validators=[validate_number],
         )
     MONTH_PERIOD_CHOICES = [
     	('', ''),
