@@ -17,13 +17,28 @@ class MPayment(models.Model):
         max_length=4,
         help_text="Членский взнос за определенный год",
         )
-
+    MONTH_PERIOD_CHOICES = [
+    	('', ''),
+    	('Jan', 'Январь'),
+    	('Feb', 'Февраль'),
+    	('Mar', 'Март'),
+    	('Apr', 'Апрель'),
+    	('May', 'Май'),
+    	('Jun', 'Июнь'),
+    	('Jul', 'Июль'),
+    	('Aug', 'Август'),
+    	('Sep', 'Сентябрь'),
+    	('Oct', 'Октябрь'),
+    	('Nov', 'Ноябрь'),
+    	('Dec', 'Декабрь'),
+    	]
     month_period = models.CharField(
         "Месяц",
-        max_length=7,
         help_text="Членский взнос за определенный месяц",
+        max_length=3,
         blank=True,
-        null=True,
+        choices=MONTH_PERIOD_CHOICES,
+        default='',
         )
     rate = models.DecimalField(
         "Размер взноса",

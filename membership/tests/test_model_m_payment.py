@@ -76,12 +76,28 @@ class MPaymentModelTest(TestCase):
     def test_month_period_field(self):
         obj = MPayment.objects.get(id=1)
         field = obj._meta.get_field('month_period')
+        MONTH_PERIOD_CHOICES = [
+        ('', ''),
+        ('Jan', 'Январь'),
+        ('Feb', 'Февраль'),
+        ('Mar', 'Март'),
+        ('Apr', 'Апрель'),
+        ('May', 'Май'),
+        ('Jun', 'Июнь'),
+        ('Jul', 'Июль'),
+        ('Aug', 'Август'),
+        ('Sep', 'Сентябрь'),
+        ('Oct', 'Октябрь'),
+        ('Nov', 'Ноябрь'),
+        ('Dec', 'Декабрь'),
+        ]
         self.assertEqual(field.verbose_name, "Месяц")
-        self.assertEqual(field.max_length, 7)
+        self.assertEqual(field.max_length, 3)
         self.assertEqual(field.help_text, "Членский взнос за определенный месяц")
         self.assertEqual(field.blank, True)
-        self.assertEqual(field.null, True)
-        self.assertEqual(obj.month_period, None)
+        self.assertEqual(field.choices, MONTH_PERIOD_CHOICES)
+        self.assertEqual(field.default, '')
+        self.assertEqual(obj.month_period, '')
 
     def test_rate_field(self):
         obj = MPayment.objects.get(id=1)
