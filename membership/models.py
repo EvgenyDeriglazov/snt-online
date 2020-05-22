@@ -81,7 +81,13 @@ class MPayment(models.Model):
     ) 
     class Meta:
         verbose_name = "членский взнос"
-        verbose_name_plural = "членские взносы"
+        verbose_name_plural = "членские взносы"i
+        constraints = [
+            models.UniqueConstraint(
+                fields=['year_period', 'month_period'],
+                name='unique membership rate',
+                )
+            ]
 
     def __str__(self):
         """String to represent the Model(class) object."""
