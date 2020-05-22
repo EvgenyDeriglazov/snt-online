@@ -71,7 +71,7 @@ class ECounter(models.Model):
          pass
 
 class ECounterRecord(models.Model):
-    """Represents electrical counter readings records
+    """Represents electrical counter readings records in kwh
     to control electrical consumption and calculate payment."""
     rec_date = models.DateField(
         "Дата показаний",
@@ -119,6 +119,53 @@ class ECounterRecord(models.Model):
     def __str__(self):
          """String to represent the Model(class) object."""
          return str(self.rec_date) + " уч-" + self.land_plot.plot_number
+
+    def get_absolute_url(self):
+         """Returns url to access an instance of the model."""
+         pass
+
+class ERate(models.Model):
+    """Represents electricity rate in rub per 1kwh to make
+    payment calculation for consumed electricity."""
+    date = models.DateField(
+        "Дата",
+        help_text="Текущая дата будет использована автоматически"
+        + " для нового тарифа за электроэнергию",
+        auto_now_add=True,
+        )
+    s = models.DecimalField(
+        "Однотарифный",
+        help_text="Рублей за один квт*ч (однотарифный)",
+        max_digits=7,
+        decimal_places=2,
+        )
+    t1 = models.DecimalField(
+        "День",
+        help_text="Рублей за один квт*ч для тарифа день (Т1)",
+        max_digits=7,
+        decimal_places=2,
+        )
+    t2 = models.DecimalField(
+        "Ночь",
+        help_text="Рублей за один квт*ч для тарифа ночь (Т2)",
+        max_digits=7,
+        decimal_places=2,
+        )
+    snt = models.ForeignKey(
+        Snt,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="СНТ",
+        help_text="Выберите СНТ для которого будет применен тариф",
+        )  
+
+    class Meta:
+         verbose_name = "тариф за электроэнергию"
+         verbose_name_plural = "тарифы за электроэнергию"
+
+    def __str__(self):
+         """String to represent the Model(class) object."""
+         return str(self.date)
 
     def get_absolute_url(self):
          """Returns url to access an instance of the model."""

@@ -146,7 +146,7 @@ class MRate(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name="СНТ",
-        help_text="Укажите СНТ для которого будет применен тариф",
+        help_text="Выберите СНТ для которого будет применен тариф",
         ) 
 
     class Meta:

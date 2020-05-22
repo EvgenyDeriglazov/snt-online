@@ -128,7 +128,7 @@ class MRateModelTest(TestCase):
         self.assertEqual(field.verbose_name, "СНТ")
         self.assertEqual(
             field.help_text,
-            "Укажите СНТ для которого будет применен тариф"
+            "Выберите СНТ для которого будет применен тариф"
             )
         self.assertEqual(obj.snt, snt_obj)
 
