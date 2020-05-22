@@ -16,7 +16,7 @@ from electricity.models import *
 from django.contrib.auth.models import User
 import datetime
 
-class ECounterModelTest(TestCase):
+class ECounterRecordModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ChairMan.objects.create(
@@ -57,88 +57,64 @@ class ECounterModelTest(TestCase):
             t2=None,
             land_plot=LandPlot.objects.get(id=1),
             )
+        ECounterRecord.objects.create(
+            s=200,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+
     # Test functions
     def test_payment_date_field(self):
-        obj = ECounter.objects.get(id=1)
-        field = obj._meta.get_field('reg_date')
-        self.assertEqual(field.verbose_name, "Дата регистрации")
+        obj = ECounterRecord.objects.get(id=1)
+        field = obj._meta.get_field('rec_date')
+        self.assertEqual(field.verbose_name, "Дата показаний")
         self.assertEqual(
             field.help_text,
-            "Укажите дату установки нового счетчика"
-            + " или приемки к учету в веб приложении уже имеющегося"
+            "Текущая дата будет использована автоматически"
+            + " для сохранения показаний"
             )
-        self.assertEqual(obj.reg_date, datetime.date.today())
-
-    def test_model_name_field(self):
-        obj = ECounter.objects.get(id=1)
-        field = obj._meta.get_field('model_name')
-        self.assertEqual(field.verbose_name, "Название модели")
-        self.assertEqual(field.max_length, 100)
-        self.assertEqual(field.help_text, "Укажите название модели счетчика")
-        self.assertEqual(obj.model_name, "test")
-
-    def test_sn_field(self):
-        obj = ECounter.objects.get(id=1)
-        field = obj._meta.get_field('sn')
-        self.assertEqual(field.verbose_name, "Серийный номер")
-        self.assertEqual(field.max_length, 50)
-        self.assertEqual(field.help_text, "Укажите серийный номер счетчика")
-        self.assertEqual(obj.sn, "sn123")
-
-    def test_model_type_field(self):
-        obj = ECounter.objects.get(id=1)
-        field = obj._meta.get_field('model_type')
-        MODEL_TYPE_CHOICES = [
-            ('single', 'Однотарифный'),
-            ('double', 'Двухтарифный'),
-            ]
-        self.assertEqual(field.verbose_name, "Тип")
-        self.assertEqual(field.max_length, 6)
-        self.assertEqual(field.help_text, "Выберите тип счетчика")
-        self.assertEqual(field.choices, MODEL_TYPE_CHOICES)
-        self.assertEqual(obj.model_type, "single")
+        self.assertEqual(obj.rec_date, datetime.date.today())
 
     def test_s_field(self):
-        obj = ECounter.objects.get(id=1)
+        obj = ECounterRecord.objects.get(id=1)
         field = obj._meta.get_field('s')
         self.assertEqual(field.verbose_name, "Однотарифный")
         self.assertEqual(
             field.help_text,
-            "Показания счетчика на момент установки"
-            + "/приемки к учету в веб приложении"
+            "Внесите показания счетчика (однотарифный)"
             )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
-        self.assertEqual(obj.s, 100)
+        self.assertEqual(obj.s, 200)
 
     def test_t1_field(self):
-        obj = ECounter.objects.get(id=1)
+        obj = ECounterRecord.objects.get(id=1)
         field = obj._meta.get_field('t1')
         self.assertEqual(field.verbose_name, "День")
         self.assertEqual(
             field.help_text,
-            "Показания счетчика (тариф день/Т1) на момент установки"
-            + "/приемки к учету в веб приложении"
+            "Внесите показания счетчика (тариф день/Т1)"
             )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
         self.assertEqual(obj.t1, None)
 
     def test_t2_field(self):
-        obj = ECounter.objects.get(id=1)
+        obj = ECounterRecord.objects.get(id=1)
         field = obj._meta.get_field('t2')
         self.assertEqual(field.verbose_name, "Ночь")
         self.assertEqual(
             field.help_text,
-            "Показания счетчика (тариф ночь/Т2) на момент установки"
-            + "/приемки к учету в веб приложении"
+            "Внесите показания счетчика (тариф ночь/Т2)"
             )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
         self.assertEqual(obj.t2, None)
 
     def test_land_plot_field(self):
-        obj = ECounter.objects.get(id=1)
+        obj = ECounterRecord.objects.get(id=1)
         plot_obj = LandPlot.objects.get(id=1)
         field = obj._meta.get_field('land_plot')
         #on_delete = obj._meta.get_field('owner').on_delete
@@ -148,19 +124,30 @@ class ECounterModelTest(TestCase):
         #self.assertEqual(on_delete, models.SET_NULL)
         self.assertEqual(obj.land_plot, plot_obj)
 
+    def test_e_counter_field(self):
+        obj = ECounterRecord.objects.get(id=1)
+        e_counter_obj = ECounter.objects.get(id=1)
+        field = obj._meta.get_field('e_counter')
+        #on_delete = obj._meta.get_field('owner').on_delete
+        self.assertEqual(field.verbose_name, "Счетчик")
+        self.assertEqual(field.help_text, "Выберите счетчик")
+        self.assertEqual(field.null, True)
+        #self.assertEqual(on_delete, models.SET_NULL)
+        self.assertEqual(obj.e_counter, e_counter_obj)
+
     def test_meta_options(self):
-        self.assertEquals(ECounter._meta.verbose_name, "счетчик эл.энергии")
+        self.assertEquals(ECounterRecord._meta.verbose_name, "показания счетчика")
         self.assertEquals(
-            ECounter._meta.verbose_name_plural,
-            "счетчики эл.энергии"
+            ECounterRecord._meta.verbose_name_plural,
+            "показания счетчиков"
             )
    
     def test_str_method(self):
-        obj = ECounter.objects.get(id=1)
-        object_name = f"{obj.model_name}"
+        obj = ECounterRecord.objects.get(id=1)
+        object_name = f"{obj.rec_date} уч-{obj.land_plot.plot_number}"
         self.assertEquals(object_name, obj.__str__())
         # or self.assertEquals(object_name, str(obj))
  
     def test_get_absolute_url(self):
-        obj = ECounter.objects.get(id=1)
+        obj = ECounterRecord.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")

@@ -81,11 +81,11 @@ class MPayment(models.Model):
     ) 
     class Meta:
         verbose_name = "членский взнос"
-        verbose_name_plural = "членские взносы"i
+        verbose_name_plural = "членские взносы"
         constraints = [
             models.UniqueConstraint(
                 fields=['year_period', 'month_period'],
-                name='unique membership rate',
+                name='unique membership payment',
                 )
             ]
 
