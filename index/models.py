@@ -76,42 +76,42 @@ class Snt(models.Model):
         "Название СНТ",
         max_length=200,
         help_text="Полное название СНТ",
-    )
+        )
     personal_acc = models.CharField(
         "Номер расчетного счета",
         max_length=20,
         help_text="Номер расчетного счета (20-и значное число)",
         validators=[validate_number, validate_20_length],
-    )
+        )
     bank_name = models.CharField(
         "Наименование банка получателя",
         max_length=45,
         help_text="Наименование банка получателя",
-    )
+        )
     bic = models.CharField(
         "БИК",
         max_length=9,
         help_text="БИК (9-и значное число)",
         validators=[validate_number, validate_9_length],
-    )
+        )
     corresp_acc = models.CharField(
         "Номер кор./счета",
         max_length=20,
         help_text="Номер кор./счета (20-и значное число)",
         validators=[validate_number, validate_20_length],
-    )
+        )
     inn = models.CharField(
         "ИНН",
         max_length=10,
         help_text="ИНН (10-и значное число)",
         validators=[validate_number, validate_10_length],
-    )
+        )
     kpp = models.CharField(
         "КПП",
         max_length=9,
         help_text="КПП (9-и значное число)",
         validators=[validate_number, validate_9_length],
-    )
+        )
     address = models.CharField(
         "Адрес",
         max_length=200,
@@ -123,7 +123,7 @@ class Snt(models.Model):
         null=True,
         verbose_name='председатель',
         help_text="председатель садоводства",
-    )
+        )
 
     class Meta:
         verbose_name = "СНТ"

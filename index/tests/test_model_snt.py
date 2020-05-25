@@ -11,7 +11,7 @@
 #  $coverage report
 
 from django.test import TestCase
-from index.models import ChairMan, Snt
+from index.models import *
 import datetime
 
 class SntModelTest(TestCase):
@@ -52,6 +52,10 @@ class SntModelTest(TestCase):
             field.help_text,
             "Номер расчетного счета (20-и значное число)"
             )
+        self.assertEqual(
+            field.validators[0:2],
+            [validate_number, validate_20_length]
+            )
 
     def test_bank_name_field(self):
         obj = Snt.objects.get(id=1)
@@ -66,6 +70,10 @@ class SntModelTest(TestCase):
         self.assertEqual(field.verbose_name, "БИК")
         self.assertEqual(field.max_length, 9)
         self.assertEqual(field.help_text, "БИК (9-и значное число)")
+        self.assertEqual(
+            field.validators[0:2],
+            [validate_number, validate_9_length],
+            )
 
     def test_corresp_acc_field(self):
         obj = Snt.objects.get(id=1)
@@ -73,6 +81,10 @@ class SntModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Номер кор./счета")
         self.assertEqual(field.max_length, 20)
         self.assertEqual(field.help_text, "Номер кор./счета (20-и значное число)")
+        self.assertEqual(
+            field.validators[0:2],
+            [validate_number, validate_20_length],
+            )
 
     def test_inn_field(self):
         obj = Snt.objects.get(id=1)
@@ -80,6 +92,10 @@ class SntModelTest(TestCase):
         self.assertEqual(field.verbose_name, "ИНН")
         self.assertEqual(field.max_length, 10)
         self.assertEqual(field.help_text, "ИНН (10-и значное число)")
+        self.assertEqual(
+            field.validators[0:2],
+            [validate_number, validate_10_length],
+            )
 
     def test_kpp_field(self):
         obj = Snt.objects.get(id=1)
@@ -87,6 +103,10 @@ class SntModelTest(TestCase):
         self.assertEqual(field.verbose_name, "КПП")
         self.assertEqual(field.max_length, 9)
         self.assertEqual(field.help_text, "КПП (9-и значное число)")
+        self.assertEqual(
+            field.validators[0:2],
+            [validate_number, validate_9_length],
+            )
 
     def test_address_field(self):
         obj = Snt.objects.get(id=1)
