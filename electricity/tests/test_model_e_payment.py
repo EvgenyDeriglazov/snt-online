@@ -12,12 +12,11 @@
 
 from django.test import TestCase
 from index.models import *
-from membership.models import *
+from electricity.models import *
 from django.contrib.auth.models import User
-from membership.validators import *
 import datetime
-
-class MPaymentModelTest(TestCase):
+from decimal import *
+class EPaymentModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ChairMan.objects.create(
@@ -48,105 +47,193 @@ class MPaymentModelTest(TestCase):
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
             )
-        MPayment.objects.create(
-            year_period='2020',
-            rate=1000,
-            plot_area=LandPlot.objects.get(id=1).plot_area,
-            amount=6000,
+        ECounter.objects.create(
+            reg_date=datetime.date.today(),
+            model_name="test",
+            sn="sn123",
+            model_type="single",
+            s=100,
+            t1=None,
+            t2=None,
             land_plot=LandPlot.objects.get(id=1),
-            status='n',
             )
+        ECounterRecord.objects.create(
+            s=200,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        ERate.objects.create(
+            s=1.5,
+            t1=3.5,
+            t2=2.5,
+            snt=Snt.objects.get(id=1),
+            )
+        EPayment.objects.create(
+            payment_date=datetime.date.today(),
+            s_new=200,
+            s_prev=50,
+            s_cons=150,
+            s_amount=300.55,
+            sum_total=300.55,
+            status='n',
+            land_plot=LandPlot.objects.get(id=1)
+            )
+
     # Test functions
     def test_payment_date_field(self):
-        obj = MPayment.objects.get(id=1)
+        obj = EPayment.objects.get(id=1)
         field = obj._meta.get_field('payment_date')
         self.assertEqual(field.verbose_name, "Дата оплаты")
         self.assertEqual(field.help_text, "Фактическая дата оплаты")
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
-        self.assertEqual(obj.payment_date, None)
+        self.assertEqual(obj.payment_date, datetime.date.today())
 
-    def test_year_period_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('year_period')
-        self.assertEqual(field.verbose_name, "Год")
-        self.assertEqual(field.max_length, 4)
-        self.assertEqual(field.help_text, "Укажите год в виде 4-х значного числа")
-        self.assertEqual(
-            field.validators[0:2],
-            [validate_number, validate_year_period_min_length]
-            )
-        self.assertEqual(obj.year_period, '2020')
-
-    def test_month_period_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('month_period')
-        MONTH_PERIOD_CHOICES = [
-        ('', ''),
-        ('Jan', 'Январь'),
-        ('Feb', 'Февраль'),
-        ('Mar', 'Март'),
-        ('Apr', 'Апрель'),
-        ('May', 'Май'),
-        ('Jun', 'Июнь'),
-        ('Jul', 'Июль'),
-        ('Aug', 'Август'),
-        ('Sep', 'Сентябрь'),
-        ('Oct', 'Октябрь'),
-        ('Nov', 'Ноябрь'),
-        ('Dec', 'Декабрь'),
-        ]
-        self.assertEqual(field.verbose_name, "Месяц")
-        self.assertEqual(field.max_length, 3)
+    def test_s_new_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('s_new')
+        self.assertEqual(field.verbose_name, "Текущее показание (однотарифный)")
         self.assertEqual(
             field.help_text,
-            "Выберите месяц, если начисления"
-            + " членских взносов расчитываются помесячно"
+            "Текущее показание э/счетчика (однотарифный) кВт/ч"
             )
         self.assertEqual(field.blank, True)
-        self.assertEqual(field.choices, MONTH_PERIOD_CHOICES)
-        self.assertEqual(field.default, '')
-        self.assertEqual(obj.month_period, '')
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.s_new, 200)
 
-    def test_rate_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('rate')
-        self.assertEqual(field.verbose_name, "Размер взноса")
+    def test_t1_new_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t1_new')
+        self.assertEqual(field.verbose_name, "Текущее показание (день)")
         self.assertEqual(
             field.help_text,
-            "Размер членского взноса за сотку (100 м.кв)/рублей"
+            "Текущее показание э/счетчика тариф Т1 (день) кВт/ч"
             )
-        self.assertEqual(obj.plot_area, 6000)
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t1_new, None)
 
-    def test_plot_area_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('plot_area')
-        self.assertEqual(field.verbose_name, "Площадь участка")
-        self.assertEqual(field.help_text, "Площадь участка в квадратных метрах")
-        self.assertEqual(obj.plot_area, 6000)
+    def test_t2_new_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t2_new')
+        self.assertEqual(field.verbose_name, "Текущее показание (ночь)")
+        self.assertEqual(
+            field.help_text,
+            "Текущее показание э/счетчика тариф Т2 (ночь) кВт/ч"
+            )
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t2_new, None)
 
-    def test_amount_field(self):
-        obj = MPayment.objects.get(id=1)
-        field = obj._meta.get_field('amount')
-        self.assertEqual(field.verbose_name, "Сумма")
-        self.assertEqual(field.help_text, "Сумма взноса к оплате")
+    def test_s_prev_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('s_prev')
+        self.assertEqual(field.verbose_name, "Предыдущее показание (однотарифный)")
+        self.assertEqual(
+            field.help_text,
+            "Предыдущее показание э/счетчика (однотарифный) кВт/ч"
+            )
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.s_prev, 50)
+
+    def test_t1_prev_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t1_prev')
+        self.assertEqual(field.verbose_name, "Предыдущее показание (день)")
+        self.assertEqual(
+            field.help_text,
+            "Предыдущее показание э/счетчика тариф Т1 (день) кВт/ч"
+            )
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t1_prev, None)
+
+    def test_t2_prev_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t2_prev')
+        self.assertEqual(field.verbose_name, "Предыдущее показание (ночь)")
+        self.assertEqual(
+            field.help_text,
+            "Предыдущее показание э/счетчика тариф Т2 (ночь) кВт/ч"
+            )
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t2_prev, None)
+
+    def test_s_cons_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('s_cons')
+        self.assertEqual(field.verbose_name, "Расход (однотарифный)")
+        self.assertEqual(field.help_text, "Расход кВт/ч (однотарифный)")
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.s_cons, 150)
+
+    def test_t1_cons_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t1_cons')
+        self.assertEqual(field.verbose_name, "Расход (день)")
+        self.assertEqual(field.help_text, "Расход кВт/ч тариф Т1 (день)")
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t1_cons, None)
+
+    def test_t2_cons_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t2_cons')
+        self.assertEqual(field.verbose_name, "Расход (ночь)")
+        self.assertEqual(field.help_text, "Расход кВт/ч тариф Т2 (ночь)")
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t2_cons, None)
+
+    def test_s_amount_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('s_amount')
+        self.assertEqual(field.verbose_name, "Сумма (однотарифный)")
+        self.assertEqual(field.help_text, "Сумма (однотарифный)")
         self.assertEqual(field.max_digits, 7)
         self.assertEqual(field.decimal_places, 2)
-        self.assertEqual(obj.amount, 6000)
-
-    def test_land_plot_field(self):
-        obj = MPayment.objects.get(id=1)
-        plot_obj = LandPlot.objects.get(id=1)
-        field = obj._meta.get_field('land_plot')
-        #on_delete = obj._meta.get_field('owner').on_delete
-        self.assertEqual(field.verbose_name, "Участок")
-        self.assertEqual(field.help_text, "Выберите участок")
+        self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
-        #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.land_plot, plot_obj)
+        self.assertEqual(obj.s_amount, Decimal('300.55'))
+
+    def test_t1_amount_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t1_amount')
+        self.assertEqual(field.verbose_name, "Сумма (день)")
+        self.assertEqual(field.help_text, "Сумма тариф Т1 (день)")
+        self.assertEqual(field.max_digits, 7)
+        self.assertEqual(field.decimal_places, 2)
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t1_amount, None)
+
+    def test_t2_amount_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('t2_amount')
+        self.assertEqual(field.verbose_name, "Сумма (ночь)")
+        self.assertEqual(field.help_text, "Сумма тариф Т2 (ночь)")
+        self.assertEqual(field.max_digits, 7)
+        self.assertEqual(field.decimal_places, 2)
+        self.assertEqual(field.blank, True)
+        self.assertEqual(field.null, True)
+        self.assertEqual(obj.t2_amount, None)
+
+    def test_sum_total_field(self):
+        obj = EPayment.objects.get(id=1)
+        field = obj._meta.get_field('sum_total')
+        self.assertEqual(field.verbose_name, "Итого")
+        self.assertEqual(field.help_text, "Итого")
+        self.assertEqual(field.max_digits, 8)
+        self.assertEqual(field.decimal_places, 2)
+        self.assertEqual(obj.sum_total, Decimal('300.55'))
 
     def test_status_field(self):
-        obj = MPayment.objects.get(id=1)
+        obj = EPayment.objects.get(id=1)
         field = obj._meta.get_field('status')
         STATUS_CHOICES = [
             ('n', 'Неоплачено'),
@@ -160,18 +247,29 @@ class MPaymentModelTest(TestCase):
         self.assertEqual(field.default, 'n')
         self.assertEqual(field.help_text, "Статус оплаты")
         #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.status, 'n')
+        self.assertEqual(obj.status, 'n') 
 
-    def test_meta_options(self):
-        self.assertEquals(MPayment._meta.verbose_name, "членский взнос")
-        self.assertEquals(MPayment._meta.verbose_name_plural, "членские взносы")
+    def test_land_plot_field(self):
+        obj = EPayment.objects.get(id=1)
+        plot_obj = LandPlot.objects.get(id=1)
+        field = obj._meta.get_field('land_plot')
+        #on_delete = obj._meta.get_field('owner').on_delete
+        self.assertEqual(field.verbose_name, "Участок")
+        self.assertEqual(field.help_text, "Выберите участок")
+        self.assertEqual(field.null, True)
+        #self.assertEqual(on_delete, models.SET_NULL)
+        self.assertEqual(obj.land_plot, plot_obj) 
    
+    def test_meta_options(self):
+        self.assertEquals(EPayment._meta.verbose_name, "взнос за э/энергию")
+        self.assertEquals(EPayment._meta.verbose_name_plural, "взонсы за э/энергию")
+
     def test_str_method(self):
-        obj = MPayment.objects.get(id=1)
-        object_name = f"{obj.year_period} {obj.land_plot.plot_number}"
+        obj = EPayment.objects.get(id=1)
+        object_name = f"{obj.payment_date}-{obj.land_plot.plot_number}"
         self.assertEquals(object_name, obj.__str__())
         # or self.assertEquals(object_name, str(obj))
  
     def test_get_absolute_url(self):
-        obj = MPayment.objects.get(id=1)
+        obj = EPayment.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")

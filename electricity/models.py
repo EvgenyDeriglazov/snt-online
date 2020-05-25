@@ -6,18 +6,18 @@ class ECounter(models.Model):
     """Draft model for electrical counter."""
     reg_date = models.DateField(
         "Дата регистрации",
-        help_text="Укажите дату установки нового счетчика"
+        help_text="Укажите дату установки нового э/счетчика"
         + " или приемки к учету в веб приложении уже имеющегося",
         )
     model_name = models.CharField(
         "Название модели",
         max_length=100,
-        help_text="Укажите название модели счетчика"
+        help_text="Укажите название модели э/счетчика"
         )
     sn = models.CharField(
         "Серийный номер",
         max_length=50,
-        help_text="Укажите серийный номер счетчика",
+        help_text="Укажите серийный номер э/счетчика",
         )
     MODEL_TYPE_CHOICES = [
         ('single', 'Однотарифный'),
@@ -26,26 +26,26 @@ class ECounter(models.Model):
     model_type = models.CharField(
         "Тип",
         max_length=6,
-        help_text="Выберите тип счетчика",
+        help_text="Выберите тип э/счетчика",
         choices=MODEL_TYPE_CHOICES,
         )
     s = models.PositiveIntegerField(
         "Однотарифный",
-        help_text="Показания счетчика на момент установки"
+        help_text="Показания э/счетчика на момент установки"
         + "/приемки к учету в веб приложении",
         blank=True,
         null=True,
         )
     t1 = models.PositiveIntegerField(
         "День",
-        help_text="Показания счетчика (тариф день/Т1)"
+        help_text="Показания э/счетчика тариф Т1 (день)"
         + " на момент установки/приемки к учету в веб приложении",
         blank=True,
         null=True,
         )
     t2 = models.PositiveIntegerField(
         "Ночь",
-        help_text="Показания счетчика (тариф ночь/Т2)"
+        help_text="Показания э/счетчика тариф Т2 (ночь)"
         + " на момент установки/приемки к учету в веб приложении",
         blank=True,
         null=True,
@@ -81,19 +81,19 @@ class ECounterRecord(models.Model):
         )
     s = models.PositiveIntegerField(
         "Однотарифный",
-        help_text="Внесите показания счетчика (однотарифный)",
+        help_text="Внесите показания э/счетчика (однотарифный)",
         blank=True,
         null=True,
         )
     t1 = models.PositiveIntegerField(
         "День",
-        help_text="Внесите показания счетчика (тариф день/Т1)",
+        help_text="Внесите показания э/счетчика тариф Т1 (день)",
         blank=True,
         null=True,
         )
     t2 = models.PositiveIntegerField(
         "Ночь",
-        help_text="Внесите показания счетчика (тариф ночь/Т2)",
+        help_text="Внесите показания э/счетчика тариф Т2 (ночь)",
         blank=True,
         null=True,
         )
@@ -113,7 +113,7 @@ class ECounterRecord(models.Model):
         )
 
     class Meta:
-         verbose_name = "показания счетчика"
+         verbose_name = "показания э/счетчика"
          verbose_name_plural = "показания счетчиков"
 
     def __str__(self):
@@ -135,19 +135,19 @@ class ERate(models.Model):
         )
     s = models.DecimalField(
         "Однотарифный",
-        help_text="Рублей за один квт*ч (однотарифный)",
+        help_text="Рублей за один кВт/ч для однотарифного э/счетчика",
         max_digits=7,
         decimal_places=2,
         )
     t1 = models.DecimalField(
         "День",
-        help_text="Рублей за один квт*ч для тарифа день (Т1)",
+        help_text="Рублей за один кВт/ч для тарифа Т1 (день)",
         max_digits=7,
         decimal_places=2,
         )
     t2 = models.DecimalField(
         "Ночь",
-        help_text="Рублей за один квт*ч для тарифа ночь (Т2)",
+        help_text="Рублей за один кВт/ч для тарифа Т2 (ночь)",
         max_digits=7,
         decimal_places=2,
         )
@@ -170,3 +170,129 @@ class ERate(models.Model):
     def get_absolute_url(self):
          """Returns url to access an instance of the model."""
          pass
+
+class EPayment(models.Model):
+    """Represents electricity payment records with all details
+    for specific land plot. Can be used to generate paper 
+    receipt or QR code."""
+    payment_date = models.DateField(
+        "Дата оплаты",
+        help_text="Фактическая дата оплаты",
+        blank=True,
+        null=True,
+        )
+    s_new = models.PositiveIntegerField(
+        "Текущее показание (однотарифный)",
+        help_text="Текущее показание э/счетчика (однотарифный) кВт/ч",
+        blank=True,
+        null=True,
+        )
+    t1_new = models.PositiveIntegerField(
+        "Текущее показание (день)",
+        help_text="Текущее показание э/счетчика тариф Т1 (день) кВт/ч",
+        blank=True,
+        null=True,
+        )
+    t2_new = models.PositiveIntegerField(
+        "Текущее показание (ночь)",
+        help_text="Текущее показание э/счетчика тариф Т2 (ночь) кВт/ч",
+        blank=True,
+        null=True,
+        )
+    s_prev = models.PositiveIntegerField(
+        "Предыдущее показание (однотарифный)",
+        help_text="Предыдущее показание э/счетчика (однотарифный) кВт/ч",
+        blank=True,
+        null=True,
+        )
+    t1_prev = models.PositiveIntegerField(
+        "Предыдущее показание (день)",
+        help_text="Предыдущее показание э/счетчика тариф Т1 (день) кВт/ч",
+        blank=True,
+        null=True,
+        )
+    t2_prev = models.PositiveIntegerField(
+        "Предыдущее показание (ночь)",
+        help_text="Предыдущее показание э/счетчика тариф Т2 (ночь) кВт/ч",
+        blank=True,
+        null=True,
+        )
+    s_cons = models.PositiveIntegerField(
+        "Расход (однотарифный)",
+        help_text="Расход кВт/ч (однотарифный)",
+        blank=True,
+        null=True,
+        )
+    t1_cons = models.PositiveIntegerField(
+        "Расход (день)",
+        help_text="Расход кВт/ч тариф Т1 (день)",
+        blank=True,
+        null=True,
+        )
+    t2_cons = models.PositiveIntegerField(
+        "Расход (ночь)",
+        help_text="Расход кВт/ч тариф Т2 (ночь)",
+        blank=True,
+        null=True,
+        )
+    s_amount = models.DecimalField(
+        "Сумма (однотарифный)",
+        help_text="Сумма (однотарифный)",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        )
+    t1_amount = models.DecimalField(
+        "Сумма (день)",
+        help_text="Сумма тариф Т1 (день)",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        )
+    t2_amount = models.DecimalField(
+        "Сумма (ночь)",
+        help_text="Сумма тариф Т2 (ночь)",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        )
+    sum_total = models.DecimalField(
+        "Итого",
+        help_text="Итого",
+        max_digits=8,
+        decimal_places=2,
+        )
+    STATUS_CHOICES = [
+        ('n', 'Неоплачено'),
+        ('p', 'Оплачено'),
+        ('c', 'Оплата подтверждена'),
+        ] 
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default='n',
+        help_text="Статус оплаты",
+        )  
+    land_plot = models.OneToOneField(
+        LandPlot,
+        verbose_name="Участок",
+        help_text="Выберите участок",
+        on_delete=models.SET_NULL,
+        null=True,
+        )
+    class Meta:
+         verbose_name = "взнос за э/энергию"
+         verbose_name_plural = "взонсы за э/энергию"
+
+    def __str__(self):
+         """String to represent the Model(class) object."""
+         return str(self.payment_date) + "-" + self.land_plot.plot_number
+
+    def get_absolute_url(self):
+         """Returns url to access an instance of the model."""
+         pass
+
