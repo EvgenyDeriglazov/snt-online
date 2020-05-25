@@ -89,7 +89,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Однотарифный")
         self.assertEqual(
             field.help_text,
-            "Рублей за один квт*ч (однотарифный)"
+            "Рублей за один кВт/ч для однотарифного э/счетчика"
             )
         self.assertEqual(field.max_digits, 7)
         self.assertEqual(field.decimal_places, 2)
@@ -101,7 +101,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(field.verbose_name, "День")
         self.assertEqual(
             field.help_text,
-            "Рублей за один квт*ч для тарифа день (Т1)"
+            "Рублей за один кВт/ч для тарифа Т1 (день)"
             )
         self.assertEqual(field.max_digits, 7)
         self.assertEqual(field.decimal_places, 2)
@@ -113,7 +113,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Ночь")
         self.assertEqual(
             field.help_text,
-            "Рублей за один квт*ч для тарифа ночь (Т2)"
+            "Рублей за один кВт/ч для тарифа Т2 (ночь)"
             )
         self.assertEqual(field.max_digits, 7)
         self.assertEqual(field.decimal_places, 2)
@@ -134,10 +134,10 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.snt, snt_obj)
 
     def test_meta_options(self):
-        self.assertEquals(ERate._meta.verbose_name, "тариф за электроэнергию")
+        self.assertEquals(ERate._meta.verbose_name, "тариф на э/энергию")
         self.assertEquals(
             ERate._meta.verbose_name_plural,
-            "тарифы за электроэнергию"
+            "тарифы на э/энергию"
             )
    
     def test_str_method(self):

@@ -64,7 +64,7 @@ class ECounterModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Дата регистрации")
         self.assertEqual(
             field.help_text,
-            "Укажите дату установки нового счетчика"
+            "Укажите дату установки нового э/счетчика"
             + " или приемки к учету в веб приложении уже имеющегося"
             )
         self.assertEqual(obj.reg_date, datetime.date.today())
@@ -74,7 +74,7 @@ class ECounterModelTest(TestCase):
         field = obj._meta.get_field('model_name')
         self.assertEqual(field.verbose_name, "Название модели")
         self.assertEqual(field.max_length, 100)
-        self.assertEqual(field.help_text, "Укажите название модели счетчика")
+        self.assertEqual(field.help_text, "Укажите название модели э/счетчика")
         self.assertEqual(obj.model_name, "test")
 
     def test_sn_field(self):
@@ -82,7 +82,7 @@ class ECounterModelTest(TestCase):
         field = obj._meta.get_field('sn')
         self.assertEqual(field.verbose_name, "Серийный номер")
         self.assertEqual(field.max_length, 50)
-        self.assertEqual(field.help_text, "Укажите серийный номер счетчика")
+        self.assertEqual(field.help_text, "Укажите серийный номер э/счетчика")
         self.assertEqual(obj.sn, "sn123")
 
     def test_model_type_field(self):
@@ -94,7 +94,7 @@ class ECounterModelTest(TestCase):
             ]
         self.assertEqual(field.verbose_name, "Тип")
         self.assertEqual(field.max_length, 6)
-        self.assertEqual(field.help_text, "Выберите тип счетчика")
+        self.assertEqual(field.help_text, "Выберите тип э/счетчика")
         self.assertEqual(field.choices, MODEL_TYPE_CHOICES)
         self.assertEqual(obj.model_type, "single")
 
@@ -104,7 +104,7 @@ class ECounterModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Однотарифный")
         self.assertEqual(
             field.help_text,
-            "Показания счетчика на момент установки"
+            "Показания э/счетчика на момент установки"
             + "/приемки к учету в веб приложении"
             )
         self.assertEqual(field.blank, True)
@@ -117,7 +117,7 @@ class ECounterModelTest(TestCase):
         self.assertEqual(field.verbose_name, "День")
         self.assertEqual(
             field.help_text,
-            "Показания счетчика (тариф день/Т1) на момент установки"
+            "Показания э/счетчика тариф Т1 (день) на момент установки"
             + "/приемки к учету в веб приложении"
             )
         self.assertEqual(field.blank, True)
@@ -130,7 +130,7 @@ class ECounterModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Ночь")
         self.assertEqual(
             field.help_text,
-            "Показания счетчика (тариф ночь/Т2) на момент установки"
+            "Показания э/счетчика тариф Т2 (ночь) на момент установки"
             + "/приемки к учету в веб приложении"
             )
         self.assertEqual(field.blank, True)
@@ -149,10 +149,10 @@ class ECounterModelTest(TestCase):
         self.assertEqual(obj.land_plot, plot_obj)
 
     def test_meta_options(self):
-        self.assertEquals(ECounter._meta.verbose_name, "счетчик эл.энергии")
+        self.assertEquals(ECounter._meta.verbose_name, "счетчик э/энергии")
         self.assertEquals(
             ECounter._meta.verbose_name_plural,
-            "счетчики эл.энергии"
+            "счетчики э/энергии"
             )
    
     def test_str_method(self):

@@ -83,7 +83,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Однотарифный")
         self.assertEqual(
             field.help_text,
-            "Внесите показания счетчика (однотарифный)"
+            "Внесите показания э/счетчика (однотарифный)"
             )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
@@ -95,7 +95,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(field.verbose_name, "День")
         self.assertEqual(
             field.help_text,
-            "Внесите показания счетчика (тариф день/Т1)"
+            "Внесите показания э/счетчика тариф Т1 (день)"
             )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
@@ -107,7 +107,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Ночь")
         self.assertEqual(
             field.help_text,
-            "Внесите показания счетчика (тариф ночь/Т2)"
+            "Внесите показания э/счетчика тариф Т2 (ночь)"
             )
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
@@ -136,10 +136,10 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.e_counter, e_counter_obj)
 
     def test_meta_options(self):
-        self.assertEquals(ECounterRecord._meta.verbose_name, "показания счетчика")
+        self.assertEquals(ECounterRecord._meta.verbose_name, "показания э/счетчика")
         self.assertEquals(
             ECounterRecord._meta.verbose_name_plural,
-            "показания счетчиков"
+            "показания э/счетчиков"
             )
    
     def test_str_method(self):

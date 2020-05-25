@@ -59,8 +59,8 @@ class ECounter(models.Model):
         )
 
     class Meta:
-         verbose_name = "счетчик эл.энергии"
-         verbose_name_plural = "счетчики эл.энергии"
+         verbose_name = "счетчик э/энергии"
+         verbose_name_plural = "счетчики э/энергии"
 
     def __str__(self):
          """String to represent the Model(class) object."""
@@ -114,7 +114,7 @@ class ECounterRecord(models.Model):
 
     class Meta:
          verbose_name = "показания э/счетчика"
-         verbose_name_plural = "показания счетчиков"
+         verbose_name_plural = "показания э/счетчиков"
 
     def __str__(self):
          """String to represent the Model(class) object."""
@@ -160,8 +160,8 @@ class ERate(models.Model):
         )  
 
     class Meta:
-         verbose_name = "тариф за электроэнергию"
-         verbose_name_plural = "тарифы за электроэнергию"
+         verbose_name = "тариф на э/энергию"
+         verbose_name_plural = "тарифы на э/энергию"
 
     def __str__(self):
          """String to represent the Model(class) object."""
