@@ -77,7 +77,7 @@ class MPayment(models.Model):
         max_length=1,
         choices=STATUS_CHOICES,
         default='n',
-        help_text="Статус записи",
+        help_text="Статус оплаты",
     ) 
     class Meta:
         verbose_name = "членский взнос"
@@ -85,7 +85,7 @@ class MPayment(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['year_period', 'month_period'],
-                name='unique membership payment',
+                name='%(app_label)s_%(class)s_year_month_period',
                 )
             ]
 
@@ -155,7 +155,7 @@ class MRate(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['year_period', 'month_period'],
-                name='unique membership rate',
+                name='%(app_label)s_%(class)s_year_month_period',
                 )
             ]
 
