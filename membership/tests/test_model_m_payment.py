@@ -171,7 +171,7 @@ class MPaymentModelTest(TestCase):
             )
         self.assertEquals(
             MPayment._meta.constraints[0].name,
-            'membership_mpayment_year_month_period'
+            'membership_mpayment_year_month_period_constraint'
             )
    
     def test_str_method(self):

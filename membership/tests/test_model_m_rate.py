@@ -143,6 +143,10 @@ class MRateModelTest(TestCase):
             MRate._meta.constraints[0].fields,
             ('year_period','month_period')
             )
+        self.assertEquals(
+            MRate._meta.constraints[0].name,
+            'membership_mrate_year_month_period_constraint'
+            )
    
     def test_str_method(self):
         obj = MRate.objects.get(id=1)

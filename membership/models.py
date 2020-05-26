@@ -85,7 +85,7 @@ class MPayment(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['year_period', 'month_period'],
-                name='%(app_label)s_%(class)s_year_month_period',
+                name='%(app_label)s_%(class)s_year_month_period_constraint',
                 )
             ]
 
@@ -155,7 +155,7 @@ class MRate(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['year_period', 'month_period'],
-                name='%(app_label)s_%(class)s_year_month_period',
+                name='%(app_label)s_%(class)s_year_month_period_constraint',
                 )
             ]
 
