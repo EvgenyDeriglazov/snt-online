@@ -106,6 +106,34 @@ class AccountantModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(Accountant._meta.verbose_name, "бухгалтер")
         self.assertEquals(Accountant._meta.verbose_name_plural, "бухгалтеры")
+        self.assertEquals(len(Accountant._meta.constraints), 3)
+        self.assertEquals(
+            Accountant._meta.constraints[0].fields,
+            ('join_date', 'leave_date')
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[0].name,
+            'index_accountant_join_date_not_null_leave_date_null_unique_constraint'
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[1].fields,
+            ('email',)
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[1].name,
+            'index_accountant_email_unique_constraint'
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[2].fields,
+            ('phone',)
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[2].name,
+            'index_accountant_phone_unique_constraint'
+            )
+
+
+
 
     def test_str_method(self):
         obj = Accountant.objects.get(id=1)

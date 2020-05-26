@@ -134,10 +134,10 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.snt, snt_obj)
 
     def test_meta_options(self):
-        self.assertEquals(ERate._meta.verbose_name, "тариф на э/энергию")
+        self.assertEquals(ERate._meta.verbose_name, "тариф за э/энергию")
         self.assertEquals(
             ERate._meta.verbose_name_plural,
-            "тарифы на э/энергию"
+            "тарифы за э/энергию"
             )
    
     def test_str_method(self):

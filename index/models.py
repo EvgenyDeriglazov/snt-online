@@ -250,7 +250,7 @@ class ChairMan(models.Model):
                 fields=['join_date', 'leave_date'],
                 condition=Q(join_date__isnull=False, leave_date__isnull=True),
                 name='%(app_label)s_%(class)s_join_date_not_null'
-                + '_leave_date_null_unique_constraint',
+                    + '_leave_date_null_unique_constraint',
                 ), 
             ]
 
@@ -413,6 +413,22 @@ class Accountant(models.Model):
     class Meta:
         verbose_name = "бухгалтер"
         verbose_name_plural = "бухгалтеры"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['join_date','leave_date'],
+                condition=Q(join_date__isnull=False, leave_date__isnull=True),
+                name='%(app_label)s_%(class)s_join_date_not_null'
+                    + '_leave_date_null_unique_constraint',
+                ), 
+            models.UniqueConstraint(
+                fields=['email'],
+                name='%(app_label)s_%(class)s_email_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['phone'],
+                name='%(app_label)s_%(class)s_phone_unique_constraint',
+                ),
+            ]
 
     def __str__(self):
         """String to represent the Model(class) object."""

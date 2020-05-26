@@ -160,8 +160,8 @@ class ERate(models.Model):
         )  
 
     class Meta:
-         verbose_name = "тариф на э/энергию"
-         verbose_name_plural = "тарифы на э/энергию"
+         verbose_name = "тариф за э/энергию"
+         verbose_name_plural = "тарифы за э/энергию"
 
     def __str__(self):
          """String to represent the Model(class) object."""
