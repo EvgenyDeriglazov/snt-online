@@ -106,7 +106,7 @@ class ChairManModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(ChairMan._meta.verbose_name, "председатель")
         self.assertEquals(ChairMan._meta.verbose_name_plural, "председатели")
-        self.assertEquals(len(ChairMan._meta.constraints), 2)
+        self.assertEquals(len(ChairMan._meta.constraints), 3)
         self.assertEquals(
             ChairMan._meta.constraints[0].fields,
             ('join_date',)
@@ -117,11 +117,15 @@ class ChairManModelTest(TestCase):
             )
         self.assertEquals(
             ChairMan._meta.constraints[0].name,
-            'index_chairman_join_date_constraint'
+            'index_chairman_join_date_unique_constraint'
             )
         self.assertEquals(
             ChairMan._meta.constraints[1].name,
-            'index_chairman_leave_date_constraint'
+            'index_chairman_leave_date_unique_constraint'
+            )
+        self.assertEquals(
+            ChairMan._meta.constraints[2].name,
+            'index_chairman_join_date_not_null_leave_date_null_unique_constraint'
             )
 
     def test_str_method(self):

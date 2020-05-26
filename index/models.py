@@ -240,11 +240,17 @@ class ChairMan(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['join_date'],
-                name='%(app_label)s_%(class)s_join_date_constraint',
+                name='%(app_label)s_%(class)s_join_date_unique_constraint',
                 ),
             models.UniqueConstraint(
                 fields=['leave_date'],
-                name='%(app_label)s_%(class)s_leave_date_constraint',
+                name='%(app_label)s_%(class)s_leave_date_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['join_date', 'leave_date'],
+                condition=Q(join_date__isnull=False, leave_date__isnull=True),
+                name='%(app_label)s_%(class)s_join_date_not_null'
+                + '_leave_date_null_unique_constraint',
                 ), 
             ]
 
