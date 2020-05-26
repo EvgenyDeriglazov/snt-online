@@ -237,6 +237,16 @@ class ChairMan(models.Model):
     class Meta:
         verbose_name = "председатель"
         verbose_name_plural = "председатели"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['join_date'],
+                name='%(app_label)s_%(class)s_join_date_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['leave_date'],
+                name='%(app_label)s_%(class)s_leave_date_constraint',
+                ), 
+            ]
 
     def __str__(self):
         """String to represent the Model(class) object."""
