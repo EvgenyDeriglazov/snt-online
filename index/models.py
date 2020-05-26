@@ -469,6 +469,17 @@ class Docs(models.Model):
         verbose_name="Пользователь",
         on_delete=models.CASCADE,
         )
+    STATUS_CHOICES = [
+         ('published', 'Опубликовано'),
+         ('unpublished', 'Неопубликовано'),
+         ]
+    status = models.CharField(
+         "Статус",
+         max_length=11,
+         help_text="Выберите статус для публикации или снятия с публикации",
+         choices=STATUS_CHOICES,
+         default='unpublished',
+         )
 
     class Meta:
         verbose_name = "документ"
@@ -506,6 +517,17 @@ class Info(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Автор",
         help_text="Автор объявления (действующий председатель)",
+        )
+    STATUS_CHOICES = [
+        ('published', 'Опубликовано'),
+        ('unpublished', 'Неопубликовано'),
+        ]
+    status = models.CharField(
+        "Статус",
+        max_length=11,
+        help_text="Выберите статус для публикации или снятия с публикации",
+        choices=STATUS_CHOICES,
+        default='unpublished',
         )
     
     class Meta:
