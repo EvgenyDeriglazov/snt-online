@@ -111,7 +111,26 @@ class OwnerModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(Owner._meta.verbose_name, "владелец")
         self.assertEquals(Owner._meta.verbose_name_plural, "владельцы")
- 
+        self.assertEquals(len(Owner._meta.constraints), 3)
+        self.assertEquals(
+            Owner._meta.constraints[0].fields,
+            ('last_name', 'first_name', 'middle_name', 'join_date', 'leave_date')
+            )
+        self.assertEquals(
+            Owner._meta.constraints[0].name,
+            'index_owner_active_owner_duplicate_constraint'
+            )
+        self.assertEquals(Owner._meta.constraints[1].fields, ('email',))
+        self.assertEquals(
+            Owner._meta.constraints[1].name,
+            'index_owner_email_unique_constraint'
+            )
+        self.assertEquals(Owner._meta.constraints[2].fields, ('phone',))
+        self.assertEquals(
+            Owner._meta.constraints[2].name,
+            'index_owner_phone_unique_constraint'
+            )
+
     def test_str_method(self):
         obj = Owner.objects.get(id=1)
         obj_name = f"{obj.last_name} {obj.first_name} {obj.middle_name}"

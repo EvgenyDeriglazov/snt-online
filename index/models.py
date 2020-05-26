@@ -324,6 +324,24 @@ class Owner(models.Model):
     class Meta:
         verbose_name = "владелец"
         verbose_name_plural = "владельцы"
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    'last_name', 'first_name', 'middle_name',
+                    'join_date','leave_date'
+                    ],
+                condition=Q(join_date__isnull=False, leave_date__isnull=True),
+                name='%(app_label)s_%(class)s_active_owner_duplicate_constraint',
+                ), 
+            models.UniqueConstraint(
+                fields=['email'],
+                name='%(app_label)s_%(class)s_email_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['phone'],
+                name='%(app_label)s_%(class)s_phone_unique_constraint',
+                ),
+            ]
 
     def __str__(self):
         """String to represent the Model(class) object."""
