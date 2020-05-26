@@ -169,6 +169,12 @@ class LandPlot(models.Model):
     class Meta:
         verbose_name = "участок"
         verbose_name_plural = "участки"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['plot_number'],
+                name='%(app_label)s_%(class)s_plot_number_unique_constraint',
+                ),
+            ]
 
     def __str__(self):
         """String to represent the Model(class) object."""

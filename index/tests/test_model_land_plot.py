@@ -85,6 +85,17 @@ class LandPlotModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(LandPlot._meta.verbose_name, "участок")
         self.assertEquals(LandPlot._meta.verbose_name_plural, "участки")
+        self.assertEquals(len(LandPlot._meta.constraints), 1)
+        self.assertEquals(
+            LandPlot._meta.constraints[0].fields,
+            ('plot_number',)
+            )
+        self.assertEquals(
+            LandPlot._meta.constraints[0].name,
+            'index_landplot_plot_number_unique_constraint'
+            )
+
+
 
     def test_str_method(self):
         obj = LandPlot.objects.get(id=1)
