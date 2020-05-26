@@ -116,6 +116,10 @@ class ChairManModelTest(TestCase):
             ('leave_date',)
             )
         self.assertEquals(
+            ChairMan._meta.constraints[2].fields,
+            ('join_date', 'leave_date',)
+            )
+        self.assertEquals(
             ChairMan._meta.constraints[0].name,
             'index_chairman_join_date_unique_constraint'
             )
