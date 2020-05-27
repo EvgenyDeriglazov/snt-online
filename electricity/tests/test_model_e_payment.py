@@ -65,6 +65,7 @@ class EPaymentModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         ERate.objects.create(
+            date=datetime.date.today(),
             s=1.5,
             t1=3.5,
             t2=2.5,
@@ -77,7 +78,7 @@ class EPaymentModelTest(TestCase):
             s_cons=150,
             s_amount=300.55,
             sum_total=300.55,
-            status='n',
+            status='not_paid',
             land_plot=LandPlot.objects.get(id=1)
             )
 
@@ -236,18 +237,18 @@ class EPaymentModelTest(TestCase):
         obj = EPayment.objects.get(id=1)
         field = obj._meta.get_field('status')
         STATUS_CHOICES = [
-            ('n', 'Неоплачено'),
-            ('p', 'Оплачено'),
-            ('c', 'Оплата подтверждена'),
+            ('not_paid', 'Неоплачено'),
+            ('paid', 'Оплачено'),
+            ('payment_confirmed', 'Оплата подтверждена'),
             ]
         #on_delete = obj._meta.get_field('owner').on_delete
         self.assertEqual(field.verbose_name, "Статус")
-        self.assertEqual(field.max_length, 1)
+        self.assertEqual(field.max_length, 17)
         self.assertEqual(field.choices, STATUS_CHOICES)
-        self.assertEqual(field.default, 'n')
+        self.assertEqual(field.default, 'not_paid')
         self.assertEqual(field.help_text, "Статус оплаты")
         #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.status, 'n') 
+        self.assertEqual(obj.status, 'not_paid') 
 
     def test_land_plot_field(self):
         obj = EPayment.objects.get(id=1)

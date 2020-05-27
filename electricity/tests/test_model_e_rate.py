@@ -66,6 +66,7 @@ class ECounterRecordModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         ERate.objects.create(
+            date=datetime.date.today(),
             s=1.5,
             t1=3.5,
             t2=2.5,

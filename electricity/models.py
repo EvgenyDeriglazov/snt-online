@@ -145,7 +145,6 @@ class ERate(models.Model):
         "Дата",
         help_text="Текущая дата будет использована автоматически"
         + " для нового тарифа за электроэнергию",
-        auto_now_add=True,
         )
     s = models.DecimalField(
         "Однотарифный",
@@ -291,15 +290,15 @@ class EPayment(models.Model):
         decimal_places=2,
         )
     STATUS_CHOICES = [
-        ('n', 'Неоплачено'),
-        ('p', 'Оплачено'),
-        ('c', 'Оплата подтверждена'),
+        ('not_paid', 'Неоплачено'),
+        ('paid', 'Оплачено'),
+        ('payment_confirmed', 'Оплата подтверждена'),
         ] 
     status = models.CharField(
         "Статус",
-        max_length=1,
+        max_length=17,
         choices=STATUS_CHOICES,
-        default='n',
+        default='not_paid',
         help_text="Статус оплаты",
         )  
     land_plot = models.OneToOneField(
