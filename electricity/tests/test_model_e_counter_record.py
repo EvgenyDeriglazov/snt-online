@@ -141,6 +141,16 @@ class ECounterRecordModelTest(TestCase):
             ECounterRecord._meta.verbose_name_plural,
             "показания э/счетчиков"
             )
+        self.assertEquals(len(ECounterRecord._meta.constraints), 1)
+        self.assertEquals(
+            ECounterRecord._meta.constraints[0].fields,
+            ('rec_date', 'land_plot', 'e_counter')
+            )
+        self.assertEquals(
+            ECounterRecord._meta.constraints[0].name,
+            'electricity_ecounterrecord_rec_date_land_plot_e_counter'
+                + '_unique_constraint'
+            )
    
     def test_str_method(self):
         obj = ECounterRecord.objects.get(id=1)

@@ -121,6 +121,13 @@ class ECounterRecord(models.Model):
     class Meta:
          verbose_name = "показания э/счетчика"
          verbose_name_plural = "показания э/счетчиков"
+         constraints = [
+            models.UniqueConstraint(
+                fields=['rec_date', 'land_plot', 'e_counter'],
+                name='%(app_label)s_%(class)s_rec_date_land_plot_e_counter'
+                    + '_unique_constraint',
+                )
+            ]
 
     def __str__(self):
          """String to represent the Model(class) object."""
