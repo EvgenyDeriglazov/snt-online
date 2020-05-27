@@ -112,6 +112,15 @@ class TPaymentModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(TPayment._meta.verbose_name, "целевой взнос")
         self.assertEquals(TPayment._meta.verbose_name_plural, "целевые взносы")
+        self.assertEquals(len(TPayment._meta.constraints), 1)
+        self.assertEquals(
+            TPayment._meta.constraints[0].fields,
+            ('target', 'land_plot')
+            )
+        self.assertEquals(
+            TPayment._meta.constraints[0].name,
+            'membership_tpayment_target_land_plot_unique_constraint'
+            )
    
     def test_str_method(self):
         obj = TPayment.objects.get(id=1)

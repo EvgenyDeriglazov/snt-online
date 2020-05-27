@@ -211,6 +211,12 @@ class TPayment(models.Model):
     class Meta:
         verbose_name = "целевой взнос"
         verbose_name_plural = "целевые взносы"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['target', 'land_plot'],
+                name='%(app_label)s_%(class)s_target_land_plot_unique_constraint',
+                )
+            ] 
 
     def __str__(self):
         """String to represent the Model(class) object."""
