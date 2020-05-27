@@ -1,5 +1,6 @@
 from django.db import models
 from index.models import Snt, LandPlot
+import datetime
 
 # Create your models here.
 class ECounter(models.Model):
@@ -125,7 +126,7 @@ class ECounterRecord(models.Model):
             models.UniqueConstraint(
                 fields=['rec_date', 'land_plot', 'e_counter'],
                 name='%(app_label)s_%(class)s_rec_date_land_plot_e_counter'
-                    + '_unique_constraint',
+                    + '_unique_constraint'
                 )
             ]
 
@@ -175,6 +176,17 @@ class ERate(models.Model):
     class Meta:
          verbose_name = "тариф за э/энергию"
          verbose_name_plural = "тарифы за э/энергию"
+         constraints = [
+            models.UniqueConstraint(
+                fields=['date'],
+                name='%(app_label)s_%(class)s_date_unique_constraint'
+                ),
+            models.CheckConstraint(
+                check=models.Q(date__gte=datetime.date.today()),
+                name='%(app_label)s_%(class)s_date_greater_or_equal_today'
+                    + '_constraint'
+                )
+            ]
 
     def __str__(self):
          """String to represent the Model(class) object."""
