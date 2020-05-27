@@ -54,7 +54,7 @@ class MPaymentModelTest(TestCase):
             plot_area=LandPlot.objects.get(id=1).plot_area,
             amount=6000,
             land_plot=LandPlot.objects.get(id=1),
-            status='n',
+            status='not_paid',
             )
     # Test functions
     def test_payment_date_field(self):
@@ -149,18 +149,18 @@ class MPaymentModelTest(TestCase):
         obj = MPayment.objects.get(id=1)
         field = obj._meta.get_field('status')
         STATUS_CHOICES = [
-            ('n', 'Неоплачено'),
-            ('p', 'Оплачено'),
-            ('c', 'Оплата подтверждена'),
+            ('not_paid', 'Неоплачено'),
+            ('paid', 'Оплачено'),
+            ('payment_confirmed', 'Оплата подтверждена'),
             ]
         #on_delete = obj._meta.get_field('owner').on_delete
         self.assertEqual(field.verbose_name, "Статус")
-        self.assertEqual(field.max_length, 1)
+        self.assertEqual(field.max_length, 17)
         self.assertEqual(field.choices, STATUS_CHOICES)
-        self.assertEqual(field.default, 'n')
+        self.assertEqual(field.default, 'not_paid')
         self.assertEqual(field.help_text, "Статус оплаты")
         #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.status, 'n')
+        self.assertEqual(obj.status, 'not_paid')
 
     def test_meta_options(self):
         self.assertEquals(MPayment._meta.verbose_name, "членский взнос")

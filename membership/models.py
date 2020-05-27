@@ -68,15 +68,15 @@ class MPayment(models.Model):
         help_text="Выберите участок",
         )
     STATUS_CHOICES = [
-        ('n', 'Неоплачено'),
-        ('p', 'Оплачено'),
-        ('c', 'Оплата подтверждена'),
+        ('not_paid', 'Неоплачено'),
+        ('paid', 'Оплачено'),
+        ('payment_confirmed', 'Оплата подтверждена'),
         ] 
     status = models.CharField(
         "Статус",
-        max_length=1,
+        max_length=17,
         choices=STATUS_CHOICES,
-        default='n',
+        default='not_paid',
         help_text="Статус оплаты",
     ) 
     class Meta:
@@ -196,15 +196,15 @@ class TPayment(models.Model):
         help_text="Выберите участок",
         )
     STATUS_CHOICES = [
-        ('n', 'Неоплачено'),
-        ('p', 'Оплачено'),
-        ('c', 'Оплата подтверждена'),
+        ('not_paid', 'Неоплачено'),
+        ('paid', 'Оплачено'),
+        ('payment_confirmed', 'Оплата подтверждена'),
         ] 
     status = models.CharField(
         "Статус",
-        max_length=1,
+        max_length=17,
         choices=STATUS_CHOICES,
-        default='n',
+        default='not_paid',
         help_text="Статус оплаты",
         ) 
  
