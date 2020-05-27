@@ -165,13 +165,14 @@ class MPaymentModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(MPayment._meta.verbose_name, "членский взнос")
         self.assertEquals(MPayment._meta.verbose_name_plural, "членские взносы")
+        self.assertEquals(len(MPayment._meta.constraints), 1)
         self.assertEquals(
             MPayment._meta.constraints[0].fields,
-            ('year_period','month_period')
+            ('year_period','month_period', 'land_plot')
             )
         self.assertEquals(
             MPayment._meta.constraints[0].name,
-            'membership_mpayment_year_month_period_constraint'
+            'membership_mpayment_year_month_period_land_plot_unique_constraint'
             )
    
     def test_str_method(self):
