@@ -137,6 +137,20 @@ class Snt(models.Model):
         """Returns url to access an instance of the model."""
         return reverse('snt-detail', args=[str(self.id)])
 
+    # Custom functions
+    def save(self, *args, **kwargs):
+        """Before saving entry to db checks against 'only one entry allowed'."""
+        all_snt = Snt.objects.all()
+        if len(all_snt) == 0:
+            super().save(*args, **kwargs)
+        elif len(all_snt) == 1:
+            if all_snt[0] == self:
+                super().save(*args, **kwargs)
+        else:
+            raise ValidationError(
+                _("Разрешено создать только одно СНТ в базе данных")
+                )
+
 class LandPlot(models.Model):
     """Model representing a land plot with basic information
     such as plot number (unique), area, owners (many-to-many), 

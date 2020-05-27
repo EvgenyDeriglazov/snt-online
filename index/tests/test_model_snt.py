@@ -42,6 +42,7 @@ class SntModelTest(TestCase):
         self.assertEquals(field.verbose_name, "Название СНТ")   
         self.assertEqual(field.max_length, 200)
         self.assertEqual(field.help_text, "Полное название СНТ")
+        self.assertEqual(obj.name, "СНТ Бобровка")
 
     def test_personal_acc_field(self):
         obj = Snt.objects.get(id=1)
@@ -56,6 +57,7 @@ class SntModelTest(TestCase):
             field.validators[0:2],
             [validate_number, validate_20_length]
             )
+        self.assertEqual(obj.personal_acc, "01234567898765432101")
 
     def test_bank_name_field(self):
         obj = Snt.objects.get(id=1)
@@ -63,6 +65,7 @@ class SntModelTest(TestCase):
         self.assertEqual(field.verbose_name, "Наименование банка получателя")
         self.assertEqual(field.max_length, 45)
         self.assertEqual(field.help_text, "Наименование банка получателя")
+        self.assertEqual(obj.bank_name, "Банк")
 
     def test_bic_field(self):
         obj = Snt.objects.get(id=1)
@@ -74,6 +77,7 @@ class SntModelTest(TestCase):
             field.validators[0:2],
             [validate_number, validate_9_length],
             )
+        self.assertEqual(obj.bic, "123456789")
 
     def test_corresp_acc_field(self):
         obj = Snt.objects.get(id=1)
@@ -85,6 +89,7 @@ class SntModelTest(TestCase):
             field.validators[0:2],
             [validate_number, validate_20_length],
             )
+        self.assertEqual(obj.corresp_acc, "01234567898765432101")
 
     def test_inn_field(self):
         obj = Snt.objects.get(id=1)
@@ -96,6 +101,7 @@ class SntModelTest(TestCase):
             field.validators[0:2],
             [validate_number, validate_10_length],
             )
+        self.assertEqual(obj.inn, "0123456789")
 
     def test_kpp_field(self):
         obj = Snt.objects.get(id=1)
@@ -107,6 +113,7 @@ class SntModelTest(TestCase):
             field.validators[0:2],
             [validate_number, validate_9_length],
             )
+        self.assertEqual(obj.kpp, "123456789")
 
     def test_address_field(self):
         obj = Snt.objects.get(id=1)
@@ -123,9 +130,9 @@ class SntModelTest(TestCase):
         obj = Snt.objects.get(id=1)
         ch_m_obj = ChairMan.objects.get(id=1)
         field = obj._meta.get_field('chair_man')
-        self.assertEqual(obj.chair_man, ch_m_obj)
         self.assertEqual(field.verbose_name, "председатель")
         self.assertEqual(field.help_text, "председатель садоводства")
+        self.assertEqual(obj.chair_man, ch_m_obj)
 
     def test_meta_options(self):
         self.assertEquals(Snt._meta.verbose_name, "СНТ")
@@ -139,5 +146,11 @@ class SntModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = Snt.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/obj-detail/1")
+
+    # Custom functions tests
+    def test_save_function(self):
+        obj = Snt.objects.get(id=1)
+        self.assertEquals(obj.save(), None)
+
 
 
