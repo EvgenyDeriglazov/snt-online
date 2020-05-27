@@ -154,6 +154,15 @@ class ECounterModelTest(TestCase):
             ECounter._meta.verbose_name_plural,
             "счетчики э/энергии"
             )
+        self.assertEquals(len(ECounter._meta.constraints), 1)
+        self.assertEquals(
+            ECounter._meta.constraints[0].fields,
+            ('model_name', 'sn')
+            )
+        self.assertEquals(
+            ECounter._meta.constraints[0].name,
+            'electricity_ecounter_model_name_sn_unique_constraint'
+            )
    
     def test_str_method(self):
         obj = ECounter.objects.get(id=1)

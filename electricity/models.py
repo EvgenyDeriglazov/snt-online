@@ -61,6 +61,12 @@ class ECounter(models.Model):
     class Meta:
          verbose_name = "счетчик э/энергии"
          verbose_name_plural = "счетчики э/энергии"
+         constraints = [
+            models.UniqueConstraint(
+                fields=['model_name', 'sn'],
+                name='%(app_label)s_%(class)s_model_name_sn_unique_constraint',
+                )
+            ]
 
     def __str__(self):
          """String to represent the Model(class) object."""
