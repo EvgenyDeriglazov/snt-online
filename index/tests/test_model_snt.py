@@ -151,6 +151,27 @@ class SntModelTest(TestCase):
     def test_save_function(self):
         obj = Snt.objects.get(id=1)
         self.assertEquals(obj.save(), None)
+        # Try to create new object and check
+        obj2 = Snt.objects.create(
+            name='тест',
+            personal_acc='01234567898765432100',
+            bank_name='Банк',
+            bic='123456780',
+            corresp_acc='01234567898765432100',
+            inn='0123456780',
+            kpp='123456780',
+            chair_man=ChairMan.objects.get(id=1),
+            address="123СТА0",
+                )
+        obj2.save()
+        self.assertEquals(Snt.objects.count(), 1)
+        # Try to update and check
+        Snt.objects.filter(id=1).update(name='New name')
+        self.assertEquals(Snt.objects.get(id=1).name, 'New name')
+        # Try to update via object instance
+        obj.name = 'xnew'
+        obj.save()
+        self.assertEquals(Snt.objects.get(id=1).name, 'xnew')
 
 
 
