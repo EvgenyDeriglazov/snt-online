@@ -1,5 +1,7 @@
 from django.db import models
 from index.models import Snt, LandPlot
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 import datetime
 
 # Create your models here.
@@ -31,9 +33,9 @@ class ECounter(models.Model):
         choices=MODEL_TYPE_CHOICES,
         )
     s = models.PositiveIntegerField(
-        "Однотарифный",
-        help_text="Показания э/счетчика на момент установки"
-        + "/приемки к учету в веб приложении",
+        "Один тариф",
+        help_text="Показания э/счетчика (один тариф) на момент"
+        + " установки/приемки к учету в веб приложении",
         blank=True,
         null=True,
         )
@@ -76,6 +78,57 @@ class ECounter(models.Model):
     def get_absolute_url(self):
          """Returns url to access an instance of the model."""
          pass
+
+    # Custom methods
+    def is_single(self):
+        """Checks if model type is "single"."""
+        if self.model_type == "single":
+            return True
+        else:
+            return False
+
+    def is_double(self):
+        """Checks if model type is "single"."""
+        if self.model_type == "double":
+            return True
+        else:
+            return False
+
+    def single_type_fields_ok(self):
+        """Validates data in s, t1 and t2 fields for single type model."""
+        error = ""
+        if self.s == None:
+            error = "Необходимо указать показания э/счетчика (один тариф)"\
+                + " на момент установки/приемки к учету в веб приложении"
+        if len(error) > 0:
+            raise ValidationError(_(error))
+        else:
+            self.t1 == None
+            self.t2 == None
+            return True
+
+    def double_type_fields_ok(self):
+        """Validates data in s, t1 and t2 fields for double type model."""
+        error = "" 
+        if self.t1 == None:
+            error += "Необходимо показания э/счетчика тариф Т1 (день)"\
+                + " на момент установки/приемки к учету в веб приложении"
+        if self.t2 == None:
+            error += "Необходимо показания э/счетчика тариф Т2 (ночь)"\
+                + " на момент установки/приемки к учету в веб приложении"
+        if len(error) > 0:
+            raise ValidationError(_(error))
+        else:
+            return True
+
+    def save(self, *args, **kwargs):
+        """Custom save method to prevent error in s, t1, t2, model_type fields."""
+        if self.is_single():
+            if self.single_type_fields_ok() == True:
+                super().save(*args, **kwargs)
+        if self.is_double():
+            if self.double_type_fields_ok() == True:
+                super().save(*args, **kwargs)
 
 class ECounterRecord(models.Model):
     """Represents electrical counter readings records in kwh

@@ -101,10 +101,10 @@ class ECounterModelTest(TestCase):
     def test_s_field(self):
         obj = ECounter.objects.get(id=1)
         field = obj._meta.get_field('s')
-        self.assertEqual(field.verbose_name, "Однотарифный")
+        self.assertEqual(field.verbose_name, "Один тариф")
         self.assertEqual(
             field.help_text,
-            "Показания э/счетчика на момент установки"
+            "Показания э/счетчика (один тариф) на момент установки"
             + "/приемки к учету в веб приложении"
             )
         self.assertEqual(field.blank, True)
@@ -173,3 +173,33 @@ class ECounterModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = ECounter.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+
+    def test_is_single_method(self):
+        """Test is_single() custom model method."""
+        obj = ECounter.objects.get(id=1)
+        self.assertEquals(obj.is_single(), True)
+        obj.model_type = "double"
+        self.assertEquals(obj.is_single(), False)
+    
+    def test_is_double_method(self):
+        """Test is_single() custom model method."""
+        obj = ECounter.objects.get(id=1)
+        self.assertEquals(obj.is_double(), False)
+        obj.model_type = "double"
+        self.assertEquals(obj.is_double(), True) 
+
+    def test_single_type_fields_ok(self):
+        """Test single_type_fields_ok() model method."""
+        pass
+
+    def test_double_type_fields_ok(self):
+        """Test double_type_fields_ok() model method."""
+        pass
+
+    def test_save_single_type(self):
+        """Test save() model method to save single type model."""
+        pass
+
+    def test_save_double_type(self):
+        """Test save() model method to save double type model."""
+        pass
