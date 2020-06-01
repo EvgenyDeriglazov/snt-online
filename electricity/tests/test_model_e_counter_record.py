@@ -169,3 +169,17 @@ class ECounterRecordModelTest(TestCase):
         ECounterRecord.objects.all().delete()
         self.assertEquals(obj.records_exist(), False)
 
+    def test_e_counter_is_single(self):
+        """Tests e_counter_is_single() model custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEquals(obj.e_counter_is_single(), True)
+        obj.e_counter.model_type = "double"
+        self.assertEquals(obj.e_counter_is_single(), False)
+
+    def test_e_counter_is_double(self):
+        """Tests e_counter_is_double() model custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEquals(obj.e_counter_is_double(), False)
+        obj.e_counter.model_type = "double"
+        self.assertEquals(obj.e_counter_is_double(), True)
+

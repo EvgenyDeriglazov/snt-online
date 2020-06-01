@@ -79,7 +79,7 @@ class ECounter(models.Model):
          """Returns url to access an instance of the model."""
          pass
 
-    # Custom methods
+    # Model custom methods
     def is_single(self):
         """Checks if model type is "single"."""
         if self.model_type == "single":
@@ -191,7 +191,7 @@ class ECounterRecord(models.Model):
          """Returns url to access an instance of the model."""
          pass
 
-    # Custom methods
+    # Model custom methods
     def records_exist(self):
         """Checks if any records already exist in database for
         LandPlot and ECounter."""
@@ -203,6 +203,23 @@ class ECounterRecord(models.Model):
             return True
         else:
             return False
+
+    def e_counter_is_single(self):
+        """Checks if field's object property (e_counter.model_type)
+        is "single"."""
+        if self.e_counter.model_type == "single":
+            return True
+        else:
+            return False
+
+    def e_counter_is_double(self):
+        """Checks if field's object property (e_counter.model_type)
+        is "double"."""
+        if self.e_counter.model_type == "double":
+            return True
+        else:
+            return False
+
 
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make
