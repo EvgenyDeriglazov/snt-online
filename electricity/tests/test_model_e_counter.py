@@ -182,7 +182,7 @@ class ECounterModelTest(TestCase):
         self.assertEquals(obj.is_single(), False)
     
     def test_is_double_method(self):
-        """Test is_single() custom model method."""
+        """Test is_double() custom model method."""
         obj = ECounter.objects.get(id=1)
         self.assertEquals(obj.is_double(), False)
         obj.model_type = "double"
@@ -190,16 +190,47 @@ class ECounterModelTest(TestCase):
 
     def test_single_type_fields_ok(self):
         """Test single_type_fields_ok() model method."""
-        pass
+        obj = ECounter.objects.get(id=1)
+        self.assertEquals(obj.single_type_fields_ok(), True)
+        obj.s = None
+        obj.t1 = 5
+        obj.t2 = 5
+        with self.assertRaises(ValidationError):
+            obj.single_type_fields_ok()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.single_type_fields_ok()
 
     def test_double_type_fields_ok(self):
         """Test double_type_fields_ok() model method."""
-        pass
+        obj = ECounter.objects.get(id=1)
+        with self.assertRaises(ValidationError):
+            obj.double_type_fields_ok()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.double_type_fields_ok()
+        obj.s = None
+        obj.t1 = 5
+        obj.t2 = 5
+        self.assertEquals(obj.double_type_fields_ok(), True)
 
     def test_save_single_type(self):
         """Test save() model method to save single type model."""
-        pass
+        obj = ECounter.objects.get(id=1)
+        self.assertEquals(obj.save(), None)
+        obj.model_type = "double"
+        with self.assertRaises(ValidationError):
+            obj.save()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.save()
 
     def test_save_double_type(self):
         """Test save() model method to save double type model."""
-        pass
+        obj = ECounter.objects.get(id=1)
+        obj.model_type = "double"
+        with self.assertRaises(ValidationError):
+            obj.save()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.save()
+        obj.s = None
+        obj.t1 = 5
+        obj.t2 = 5
+        self.assertEquals(obj.save(), None)
