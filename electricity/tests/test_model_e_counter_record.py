@@ -161,3 +161,11 @@ class ECounterRecordModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = ECounterRecord.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+
+    def test_records_exist(self):
+        """Test records_exist() model custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEquals(obj.records_exist(), True)
+        ECounterRecord.objects.all().delete()
+        self.assertEquals(obj.records_exist(), False)
+
