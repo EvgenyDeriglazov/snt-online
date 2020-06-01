@@ -136,17 +136,17 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.e_counter, e_counter_obj)
 
     def test_meta_options(self):
-        self.assertEquals(ECounterRecord._meta.verbose_name, "показания э/счетчика")
-        self.assertEquals(
+        self.assertEqual(ECounterRecord._meta.verbose_name, "показания э/счетчика")
+        self.assertEqual(
             ECounterRecord._meta.verbose_name_plural,
             "показания э/счетчиков"
             )
-        self.assertEquals(len(ECounterRecord._meta.constraints), 1)
-        self.assertEquals(
+        self.assertEqual(len(ECounterRecord._meta.constraints), 1)
+        self.assertEqual(
             ECounterRecord._meta.constraints[0].fields,
             ('rec_date', 'land_plot', 'e_counter')
             )
-        self.assertEquals(
+        self.assertEqual(
             ECounterRecord._meta.constraints[0].name,
             'electricity_ecounterrecord_rec_date_land_plot_e_counter'
                 + '_unique_constraint'
@@ -155,31 +155,54 @@ class ECounterRecordModelTest(TestCase):
     def test_str_method(self):
         obj = ECounterRecord.objects.get(id=1)
         object_name = f"{obj.rec_date} уч-{obj.land_plot.plot_number}"
-        self.assertEquals(object_name, obj.__str__())
-        # or self.assertEquals(object_name, str(obj))
+        self.assertEqual(object_name, obj.__str__())
+        # or self.assertEqual(object_name, str(obj))
  
     def test_get_absolute_url(self):
         obj = ECounterRecord.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+        self.assertEqual(obj.get_absolute_url(), "/data/land-plot-detail/1")
 
     def test_records_exist(self):
         """Test records_exist() model custom method."""
         obj = ECounterRecord.objects.get(id=1)
-        self.assertEquals(obj.records_exist(), True)
+        self.assertEqual(obj.records_exist(), True)
         ECounterRecord.objects.all().delete()
-        self.assertEquals(obj.records_exist(), False)
+        self.assertEqual(obj.records_exist(), False)
 
     def test_e_counter_is_single(self):
         """Tests e_counter_is_single() model custom method."""
         obj = ECounterRecord.objects.get(id=1)
-        self.assertEquals(obj.e_counter_is_single(), True)
+        self.assertEqual(obj.e_counter_is_single(), True)
         obj.e_counter.model_type = "double"
-        self.assertEquals(obj.e_counter_is_single(), False)
+        self.assertEqual(obj.e_counter_is_single(), False)
 
     def test_e_counter_is_double(self):
         """Tests e_counter_is_double() model custom method."""
         obj = ECounterRecord.objects.get(id=1)
-        self.assertEquals(obj.e_counter_is_double(), False)
+        self.assertEqual(obj.e_counter_is_double(), False)
         obj.e_counter.model_type = "double"
-        self.assertEquals(obj.e_counter_is_double(), True)
+        self.assertEqual(obj.e_counter_is_double(), True)
 
+    def test_e_counter_single_type_fields_ok(self):
+        """Tests e_counter_single_type_fields_ok() model custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.e_counter_single_type_fields_ok(), True)
+        obj.s = None
+        obj.t1 = 5
+        obj.t2 = 5
+        with self.assertRaises(ValidationError):
+            obj.e_counter_single_type_fields_ok()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.e_counter_single_type_fields_ok()
+
+    def test_e_counter_double_type_fields_ok(self):
+        """Tests e_counter_double_type_fields_ok() model custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        with self.assertRaises(ValidationError):
+            obj.e_counter_double_type_fields_ok()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.e_counter_double_type_fields_ok()
+        obj.s = None
+        obj.t1 = 5
+        obj.t2 = 5
+        self.assertEqual(obj.e_counter_double_type_fields_ok(), True)

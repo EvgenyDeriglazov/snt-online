@@ -111,14 +111,15 @@ class ECounter(models.Model):
         """Validates data in s, t1 and t2 fields for double type model."""
         error = "" 
         if self.t1 == None:
-            error += "Необходимо показания э/счетчика тариф Т1 (день)"\
+            error += "Необходимо указать показания э/счетчика тариф Т1 (день)"\
                 + " на момент установки/приемки к учету в веб приложении"
         if self.t2 == None:
-            error += "Необходимо показания э/счетчика тариф Т2 (ночь)"\
+            error += "Необходимо указать показания э/счетчика тариф Т2 (ночь)"\
                 + " на момент установки/приемки к учету в веб приложении"
         if len(error) > 0:
             raise ValidationError(_(error))
         else:
+            self.s = None
             return True
 
     def save(self, *args, **kwargs):
@@ -219,6 +220,33 @@ class ECounterRecord(models.Model):
             return True
         else:
             return False
+
+    def e_counter_single_type_fields_ok(self):
+        """Validates data in s, t1 and t2 fields to conform with
+        field object property e_counter.model_type="single"."""
+        error = ""
+        if self.s == None:
+            error = "Необходимо указать показания э/счетчика (один тариф)"
+        if len(error) > 0:
+            raise ValidationError(_(error))
+        else:
+            self.t1 == None
+            self.t2 == None
+            return True
+
+    def e_counter_double_type_fields_ok(self):
+        """Validates data in s, t1 and t2 fields to conform with
+        field object property e_counter.model_type="double"."""
+        error = "" 
+        if self.t1 == None:
+            error += "Необходимо указать показания э/счетчика тариф Т1 (день)"
+        if self.t2 == None:
+            error += "Необходимо указать показания э/счетчика тариф Т2 (ночь)"
+        if len(error) > 0:
+            raise ValidationError(_(error))
+        else:
+            self.s = None
+            return True
 
 
 class ERate(models.Model):
