@@ -209,14 +209,9 @@ class ECounterRecordModelTest(TestCase):
 
     def test_get_latest_record(self):
         """Tests get_latest_record() custom method."""
-        obj = ECounterRecord.objects.get(id=1)
-        #self.assertEqual(obj.rec_date, '')
         ECounterRecord.objects.filter(id=1).update(
             rec_date=datetime.date.today() - datetime.timedelta(days=5)
             )
-        obj = ECounterRecord.objects.get(id=1)
-        obj.save()
-        #self.assertEqual(obj.rec_date, '')
         ECounterRecord.objects.create(
             rec_date=datetime.date.today(),
             s=400,
@@ -226,3 +221,7 @@ class ECounterRecordModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         obj = ECounterRecord.objects.get(id=1)
+        obj_latest = ECounterRecord.objects.get(id=2)
+        self.assertEqual(obj.get_latest_record(), obj_latest)
+        ECounterRecord.objects.all().delete()
+        self.assertEqual(obj.get_latest_record(), None)

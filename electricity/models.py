@@ -251,9 +251,12 @@ class ECounterRecord(models.Model):
     def get_latest_record(self):
         """Returns latest electrical counter record from database
         filtered by latest date, land plot and electrical counter."""
-
-        pass
-
+        if self.records_exist():
+            latest_record = ECounterRecord.objects.filter(
+                land_plot__exact=self.land_plot,
+                e_counter__exact=self.e_counter,
+                ).latest('rec_date')
+            return latest_record
 
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make
