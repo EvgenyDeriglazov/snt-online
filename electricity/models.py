@@ -176,13 +176,13 @@ class ECounterRecord(models.Model):
     class Meta:
          verbose_name = "показания э/счетчика"
          verbose_name_plural = "показания э/счетчиков"
-        # constraints = [
-           # models.UniqueConstraint(
-           #     fields=['rec_date', 'land_plot', 'e_counter'],
-           #     name='%(app_label)s_%(class)s_rec_date_land_plot_e_counter'
-           #         + '_unique_constraint'
-           #     )
-           # ]
+         constraints = [
+            models.UniqueConstraint(
+                fields=['rec_date', 'land_plot', 'e_counter'],
+                name='%(app_label)s_%(class)s_rec_date_land_plot_e_counter'
+                    + '_unique_constraint'
+                )
+            ]
 
     def __str__(self):
          """String to represent the Model(class) object."""
@@ -257,6 +257,48 @@ class ECounterRecord(models.Model):
                 e_counter__exact=self.e_counter,
                 ).latest('rec_date')
             return latest_record
+
+    def check_vs_latest_record(self, latest_record, model_type):
+        """Checks that new record fields data bigger than latest record."""
+        if latest_record == None:
+            # Make function to check vs electrical counter fields
+            if model_type == "single":
+                if self.s > self.e_counter.s:
+                    return True
+                else:
+                    raise ValidationError(_("test text"))
+            elif model_type == "double":
+                if self.t1 > self.e_counter.t1 and self.t2 > self.e_counter.t2:
+                    return True
+                else:
+                    raise ValidationError(_("test text"))
+        if model_type == "single":
+            if self.s > latest_record.s:
+                return True
+            else:
+                raise ValidationError(_("test text"))
+        elif model_type == "double":
+            if self.t1 > latest_record.t1 and self.t2 > latest_record.t2:
+                return True
+            else:
+                raise ValidationError(_("test text"))
+
+    def save(self, *args, **kwargs):
+        """Custom save method checks fields data before saving."""
+        model_type = ""
+        if self.e_counter_is_single():
+            if self.e_counter_single_type_fields_ok() == True:
+                model_type = "single"
+                latest_record = self.get_latest_record()
+                if self.check_vs_latest_record(latest_record, model_type):
+                    super().save(*args, **kwargs)
+        elif self.e_counter_is_double():
+            if self.e_counter_double_type_fields_ok() == True:
+                model_type = "double"
+                latest_record = self.get_latest_record()
+                if self.check_vs_latest_record(latest_record, model_type):
+                    super().save(*args, **kwargs)
+
 
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make

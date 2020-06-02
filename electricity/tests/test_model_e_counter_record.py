@@ -135,22 +135,22 @@ class ECounterRecordModelTest(TestCase):
         #self.assertEqual(on_delete, models.SET_NULL)
         self.assertEqual(obj.e_counter, e_counter_obj)
 
-#    def test_meta_options(self):
-#        self.assertEqual(ECounterRecord._meta.verbose_name, "показания э/счетчика")
-#        self.assertEqual(
-#            ECounterRecord._meta.verbose_name_plural,
-#            "показания э/счетчиков"
-#            )
-#        self.assertEqual(len(ECounterRecord._meta.constraints), 1)
-#        self.assertEqual(
-#            ECounterRecord._meta.constraints[0].fields,
-#            ('rec_date', 'land_plot','e_counter',)
-#            )
-#        self.assertEqual(
-#            ECounterRecord._meta.constraints[0].name,
-#            'electricity_ecounterrecord_rec_date_land_plot_e_counter'
-#                + '_unique_constraint'
-#            )
+    def test_meta_options(self):
+        self.assertEqual(ECounterRecord._meta.verbose_name, "показания э/счетчика")
+        self.assertEqual(
+            ECounterRecord._meta.verbose_name_plural,
+            "показания э/счетчиков"
+            )
+        self.assertEqual(len(ECounterRecord._meta.constraints), 1)
+        self.assertEqual(
+            ECounterRecord._meta.constraints[0].fields,
+            ('rec_date', 'land_plot','e_counter',)
+            )
+        self.assertEqual(
+            ECounterRecord._meta.constraints[0].name,
+            'electricity_ecounterrecord_rec_date_land_plot_e_counter'
+                + '_unique_constraint'
+            )
    
     def test_str_method(self):
         obj = ECounterRecord.objects.get(id=1)
@@ -213,7 +213,6 @@ class ECounterRecordModelTest(TestCase):
             rec_date=datetime.date.today() - datetime.timedelta(days=5)
             )
         ECounterRecord.objects.create(
-            rec_date=datetime.date.today(),
             s=400,
             t1=None,
             t2=None,
@@ -225,3 +224,44 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.get_latest_record(), obj_latest)
         ECounterRecord.objects.all().delete()
         self.assertEqual(obj.get_latest_record(), None)
+
+    def test_check_vs_latest_record(self):
+        """Test for check_vs_latest_record() custom method."""
+        # Prepare objects in db (single type)
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=5)
+            )
+        ECounterRecord.objects.create(
+            s=400,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        obj = ECounterRecord.objects.get(id=2)
+        obj_latest = ECounterRecord.objects.get(id=1)
+        # Check vs latest object in db (single type)
+        self.assertEqual(obj.check_vs_latest_record(obj_latest, "single"), True)
+        self.assertEqual(obj.check_vs_latest_record(None, "single"), True)
+        # Prepare objects in db (double type)
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            s=None,
+            t1=0,
+            t2=0,
+            )
+        ECounterRecord.objects.filter(id=1).update(
+            s=None,
+            t1=100,
+            t2=100,
+            )
+        ECounterRecord.objects.filter(id=2).update(
+            s=None,
+            t1=200,
+            t2=200,
+            )
+        obj = ECounterRecord.objects.get(id=2)
+        obj_latest = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.check_vs_latest_record(obj_latest, "double"), True)
+        self.assertEqual(obj.check_vs_latest_record(None, "double"), True)
+
