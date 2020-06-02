@@ -158,14 +158,14 @@ class ECounterRecord(models.Model):
         blank=True,
         null=True,
         )
-    land_plot = models.OneToOneField(
+    land_plot = models.ForeignKey(
         LandPlot,
         verbose_name="Участок",
         help_text="Выберите участок",
         on_delete=models.SET_NULL,
         null=True,
         )
-    e_counter = models.OneToOneField(
+    e_counter = models.ForeignKey(
         ECounter,
         verbose_name="Счетчик",
         help_text="Выберите счетчик",
@@ -176,13 +176,13 @@ class ECounterRecord(models.Model):
     class Meta:
          verbose_name = "показания э/счетчика"
          verbose_name_plural = "показания э/счетчиков"
-         constraints = [
-            models.UniqueConstraint(
-                fields=['rec_date', 'land_plot', 'e_counter'],
-                name='%(app_label)s_%(class)s_rec_date_land_plot_e_counter'
-                    + '_unique_constraint'
-                )
-            ]
+        # constraints = [
+           # models.UniqueConstraint(
+           #     fields=['rec_date', 'land_plot', 'e_counter'],
+           #     name='%(app_label)s_%(class)s_rec_date_land_plot_e_counter'
+           #         + '_unique_constraint'
+           #     )
+           # ]
 
     def __str__(self):
          """String to represent the Model(class) object."""
@@ -247,6 +247,12 @@ class ECounterRecord(models.Model):
         else:
             self.s = None
             return True
+
+    def get_latest_record(self):
+        """Returns latest electrical counter record from database
+        filtered by latest date, land plot and electrical counter."""
+
+        pass
 
 
 class ERate(models.Model):
