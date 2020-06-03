@@ -194,7 +194,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.e_counter_double_type_fields_ok(), True)
 
     def test_get_latest_record(self):
-        """Tests get_latest_record() custom method."""
+        """get_latest_record() with/without record."""
         ECounterRecord.objects.filter(id=1).update(
             rec_date=datetime.date.today() - datetime.timedelta(days=5)
             )
@@ -211,9 +211,9 @@ class ECounterRecordModelTest(TestCase):
         ECounterRecord.objects.all().delete()
         self.assertEqual(obj.get_latest_record(), None)
 
-    def test_check_vs_latest_record(self):
-        """Test for check_vs_latest_record() custom method."""
-        # Prepare objects in db (single type)
+    def test_check_vs_latest_record_no_record_single_type(self):
+        """check_vs_latest_record() for single type with/without record."""
+        # Prepare objects in db
         ECounterRecord.objects.filter(id=1).update(
             rec_date=datetime.date.today() - datetime.timedelta(days=5)
             )
@@ -224,12 +224,85 @@ class ECounterRecordModelTest(TestCase):
             land_plot=LandPlot.objects.get(id=1),
             e_counter=ECounter.objects.get(id=1),
             )
+        # Check
         obj = ECounterRecord.objects.get(id=2)
         obj_latest = ECounterRecord.objects.get(id=1)
-        # Check vs latest object in db (single type)
         self.assertEqual(obj.check_vs_latest_record(obj_latest, "single"), True)
         self.assertEqual(obj.check_vs_latest_record(None, "single"), True)
-        # Prepare objects in db (double type)
+    
+    def test_check_vs_latest_record_no_record_double_type(self):
+        """check_vs_latest_record() for double type with/without record."""
+        # Prepare objects in db
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            s=None,
+            t1=0,
+            t2=0,
+            )
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=5),
+            s=None,
+            t1=100,
+            t2=100,
+            )
+        ECounterRecord.objects.create(
+            s=None,
+            t1=200,
+            t2=200,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        # Check vs latest object in db (double type)
+        obj = ECounterRecord.objects.get(id=2)
+        obj_latest = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.check_vs_latest_record(obj_latest, "double"), True)
+        self.assertEqual(obj.check_vs_latest_record(None, "double"), True)
+
+    def test_check_vs_latest_record_no_record_single_type_error(self):
+        """check_vs_latest_record() for single type, no record, ValidationError."""
+        obj = ECounterRecord.objects.get(id=1)
+        obj.s = 0
+        with self.assertRaises(ValidationError):
+            obj.check_vs_latest_record(None, "single")
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.check_vs_latest_record(None, "single")
+ 
+    def test_check_vs_latest_record_no_record_double_type_error(self):
+        """check_vs_latest_record() for double type, no record, ValidationError."""
+        obj = ECounterRecord.objects.get(id=1)
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            s=None,
+            t1=0,
+            t2=0,
+            )
+        obj.s = None
+        obj.t1 = 0
+        obj.t2 = 0
+        with self.assertRaises(ValidationError):
+            obj.check_vs_latest_record(None, "double")
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.check_vs_latest_record(None, "double")
+ 
+    def test_check_vs_latest_record_single_type_error(self):
+        """check_vs_latest_record() for single type, ValidationError."""
+        obj = ECounterRecord.objects.get(id=1)
+        ECounterRecord.objects.create(
+            s=300,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        obj_2 = ECounterRecord.objects.get(id=2)
+        obj_2.s = 0
+        with self.assertRaises(ValidationError):
+            obj_2.check_vs_latest_record(obj, "single")
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj_2.check_vs_latest_record(obj, "single")
+
+    def test_check_vs_latest_record_double_type_error(self):
+        """check_vs_latest_record() for double type, ValidationError."""
         ECounter.objects.filter(id=1).update(
             model_type="double",
             s=None,
@@ -238,21 +311,125 @@ class ECounterRecordModelTest(TestCase):
             )
         ECounterRecord.objects.filter(id=1).update(
             s=None,
+            t1=10,
+            t2=10,
+            )
+        ECounterRecord.objects.create(
+            s=None,
+            t1=20,
+            t2=20,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        obj = ECounterRecord.objects.get(id=1)
+        obj_2 = ECounterRecord.objects.get(id=2)
+        obj_2.t1 = 0
+        obj_2.t2 = 0
+        with self.assertRaises(ValidationError):
+            obj_2.check_vs_latest_record(obj, "double")
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj_2.check_vs_latest_record(obj, "double")
+        
+    def test_save_no_records_single_type_validation_error(self):
+        """Test for save() with single type model, incorrect fields 
+        and no records."""
+        ECounterRecord.objects.all().delete()
+        with self.assertRaises(ValidationError):
+            ECounterRecord.objects.create(
+                s = 0,
+                t1 = None,
+                t2 = None,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+        with self.assertRaisesRegex(ValidationError, ''):
+            ECounterRecord.objects.create(
+                s = 0,
+                t1 = None,
+                t2 = None,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+
+    def test_save_no_records_double_type_validation_error(self):
+        """Test for save() with single type model, incorrect fields 
+        and no records."""
+        ECounterRecord.objects.all().delete()
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            s=None,
             t1=100,
             t2=100,
             )
-        ECounterRecord.objects.filter(id=2).update(
-            s=None,
-            t1=200,
-            t2=200,
-            )
-        obj = ECounterRecord.objects.get(id=2)
-        obj_latest = ECounterRecord.objects.get(id=1)
-        self.assertEqual(obj.check_vs_latest_record(obj_latest, "double"), True)
-        self.assertEqual(obj.check_vs_latest_record(None, "double"), True)
+        with self.assertRaises(ValidationError):
+            ECounterRecord.objects.create(
+                s = None,
+                t1 = 0,
+                t2 = 0,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+        with self.assertRaisesRegex(ValidationError, ''):
+            ECounterRecord.objects.create(
+                s = None,
+                t1 = 0,
+                t2 = 0,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+ 
+    def test_save_single_type_validation_error(self):
+        """Test for save() with single type model and incorrect fields."""
+        with self.assertRaises(ValidationError):
+            ECounterRecord.objects.create(
+                s = 0,
+                t1 = None,
+                t2 = None,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+        with self.assertRaisesRegex(ValidationError, ''):
+            ECounterRecord.objects.create(
+                s = 0,
+                t1 = None,
+                t2 = None,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
 
-    def test_save_for_single_model_type_with_error_fixing(self):
-        """Test for save() custom method."""
+    def test_save_double_type_validation_error(self):
+        """Test for save() with double type model and incorrect fields."""
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            s=None,
+            t1=100,
+            t2=100,
+            )
+        ECounterRecord.objects.filter(id=1).update(
+            #rec_date=datetime.date.today() - datetime.timedelta(days=5),
+            s=None,
+            t1=100,
+            t2=100,
+            )
+        with self.assertRaises(ValidationError):
+            ECounterRecord.objects.create(
+                s = None,
+                t1 = 0,
+                t2 = 0,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+        with self.assertRaisesRegex(ValidationError, ''):
+            ECounterRecord.objects.create(
+                s = None,
+                t1 = 0,
+                t2 = 0,
+                land_plot = LandPlot.objects.get(id=1),
+                e_counter = ECounter.objects.get(id=1),
+                )
+
+    def test_save_single_model_type_with_error_fixing(self):
+        """Test for save() with single model and fields error fixing."""
         ECounterRecord.objects.create(
             s=400,
             t1=100,
@@ -267,7 +444,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_obj[1].t2, None)
 
     def test_save_for_double_model_type_with_error_fixing(self):
-        """Test for save() custom method."""
+        """Test for save() with double model and fields error fixing."""
         ECounter.objects.filter(id=1).update(
             model_type="double",
             s=None,
@@ -292,5 +469,3 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_obj[1].t1, 200)
         self.assertEqual(all_obj[1].t2, 200)
  
-        
-

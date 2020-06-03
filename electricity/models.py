@@ -241,29 +241,46 @@ class ECounterRecord(models.Model):
 
     def check_vs_latest_record(self, latest_record, model_type):
         """Checks that new record fields data bigger than latest record."""
-        error_message = "Новое показание не должно быть меньше предыдущего"
+        new = ""
+        old = ""
+        new_t = ""
+        old_t = ""
+        single_message = f"Новое показание {new} должно быть больше предыдущего {old}"
+        double_message = f"Проверьте показания. Новое должно быть больше старого."
+        double_message += f"День:{new}>{old} Ночь:{new_t}>{old_t}"
         if latest_record == None:
-            # Make function to check vs electrical counter fields
             if model_type == "single":
-                if self.s > self.latest_record.s:
+                if self.s > self.e_counter.s:
                     return True
                 else:
-                    raise ValidationError(_(error_message))
+                    new = self.s
+                    old = self.e_counter.s
+                    raise ValidationError(_(single_message))
             elif model_type == "double":
-                if self.t1 > self.latest_record.t1 and self.t2 > self.latest_record.t2:
+                if self.t1 > self.e_counter.t1 and self.t2 > self.e_counter.t2:
                     return True
                 else:
-                    raise ValidationError(_(error_message))
-        if model_type == "single":
+                    new = self.t1
+                    old = self.e_counter.t1
+                    new_t = self.t2
+                    old_t = self.e_counter.t2
+                    raise ValidationError(_(double_message))
+        elif model_type == "single":
             if self.s > latest_record.s:
                 return True
             else:
-                raise ValidationError(_(error_message))
+                new = self.s
+                old = latest_record.s
+                raise ValidationError(_(single_message))
         elif model_type == "double":
             if self.t1 > latest_record.t1 and self.t2 > latest_record.t2:
                 return True
             else:
-                raise ValidationError(_(error_message))
+                new = self.t1
+                old = latest_record.t1
+                new_t = self.t2
+                old_t = latest_record.t2
+                raise ValidationError(_(double_message))
 
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
