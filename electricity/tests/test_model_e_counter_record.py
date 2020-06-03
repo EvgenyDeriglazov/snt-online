@@ -1,4 +1,4 @@
-# --- Collectstatic (ValueError: Missing staticfiles manifest entry...) ---
+﻿# --- Collectstatic (ValueError: Missing staticfiles manifest entry...) ---
 # python3 manage.py collectstatic
 # --- Verbosity ---
 # python3 manage.py test --verbosity (1-default, 0, 1, 2, 3)
@@ -168,20 +168,6 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.records_exist(), True)
         ECounterRecord.objects.all().delete()
         self.assertEqual(obj.records_exist(), False)
-
-    def test_e_counter_is_single(self):
-        """Tests e_counter_is_single() model custom method."""
-        obj = ECounterRecord.objects.get(id=1)
-        self.assertEqual(obj.e_counter_is_single(), True)
-        obj.e_counter.model_type = "double"
-        self.assertEqual(obj.e_counter_is_single(), False)
-
-    def test_e_counter_is_double(self):
-        """Tests e_counter_is_double() model custom method."""
-        obj = ECounterRecord.objects.get(id=1)
-        self.assertEqual(obj.e_counter_is_double(), False)
-        obj.e_counter.model_type = "double"
-        self.assertEqual(obj.e_counter_is_double(), True)
 
     def test_e_counter_single_type_fields_ok(self):
         """Tests e_counter_single_type_fields_ok() model custom method."""

@@ -1,4 +1,4 @@
-from django.db import models
+﻿from django.db import models
 from index.models import Snt, LandPlot
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -205,22 +205,6 @@ class ECounterRecord(models.Model):
         else:
             return False
 
-    def e_counter_is_single(self):
-        """Checks if field's object property (e_counter.model_type)
-        is "single"."""
-        if self.e_counter.model_type == "single":
-            return True
-        else:
-            return False
-
-    def e_counter_is_double(self):
-        """Checks if field's object property (e_counter.model_type)
-        is "double"."""
-        if self.e_counter.model_type == "double":
-            return True
-        else:
-            return False
-
     def e_counter_single_type_fields_ok(self):
         """Validates data in s, t1 and t2 fields to conform with
         field object property e_counter.model_type="single"."""
@@ -286,13 +270,13 @@ class ECounterRecord(models.Model):
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
         model_type = ""
-        if self.e_counter_is_single():
+        if self.e_counter.model_type == "single":
             if self.e_counter_single_type_fields_ok() == True:
                 model_type = "single"
                 latest_record = self.get_latest_record()
                 if self.check_vs_latest_record(latest_record, model_type):
                     super().save(*args, **kwargs)
-        elif self.e_counter_is_double():
+        elif self.e_counter.model_type == "double":
             if self.e_counter_double_type_fields_ok() == True:
                 model_type = "double"
                 latest_record = self.get_latest_record()
