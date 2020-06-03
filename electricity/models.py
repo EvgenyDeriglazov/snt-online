@@ -244,12 +244,12 @@ class ECounterRecord(models.Model):
         if latest_record == None:
             # Make function to check vs electrical counter fields
             if model_type == "single":
-                if self.s > self.e_counter.s:
+                if self.s > self.latest_record.s:
                     return True
                 else:
                     raise ValidationError(_("test text"))
             elif model_type == "double":
-                if self.t1 > self.e_counter.t1 and self.t2 > self.e_counter.t2:
+                if self.t1 > self.latest_record.t1 and self.t2 > self.latest_record.t2:
                     return True
                 else:
                     raise ValidationError(_("test text"))
