@@ -272,15 +272,13 @@ class ECounterRecord(models.Model):
                 model_type = "single"
                 self.t1 = None
                 self.t2 = None
-                latest_record = self.get_latest_record()
-                if self.check_vs_latest_record(latest_record, model_type):
+                if self.check_vs_latest_record(self.get_latest_record(), model_type):
                     super().save(*args, **kwargs)
         elif self.e_counter.model_type == "double":
             if self.e_counter_double_type_fields_ok() == True:
                 model_type = "double"
                 self.s = None
-                latest_record = self.get_latest_record()
-                if self.check_vs_latest_record(latest_record, model_type):
+                if self.check_vs_latest_record(self.get_latest_record(), model_type):
                     super().save(*args, **kwargs)
 
 
