@@ -251,18 +251,22 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.check_vs_latest_record(obj_latest, "double"), True)
         self.assertEqual(obj.check_vs_latest_record(None, "double"), True)
 
-    def test_save_correct_data_for_single_model_type(self):
+    def test_save_for_single_model_type_with_error_fixing(self):
         """Test for save() custom method."""
         ECounterRecord.objects.create(
             s=400,
-            t1=None,
-            t2=None,
+            t1=100,
+            t2=100,
             land_plot=LandPlot.objects.get(id=1),
             e_counter=ECounter.objects.get(id=1),
             )
-        self.assertEqual(len(ECounterRecord.objects.all()), 2)
+        all_obj = ECounterRecord.objects.all()
+        self.assertEqual(len(all_obj), 2)
+        self.assertEqual(all_obj[1].s, 400)
+        self.assertEqual(all_obj[1].t1, None)
+        self.assertEqual(all_obj[1].t2, None)
 
-    def test_save_correct_data_for_double_model_type(self):
+    def test_save_for_double_model_type_with_error_fixing(self):
         """Test for save() custom method."""
         ECounter.objects.filter(id=1).update(
             model_type="double",
@@ -276,13 +280,17 @@ class ECounterRecordModelTest(TestCase):
             t2=100,
             )
         ECounterRecord.objects.create(
-            s=None,
+            s=100,
             t1=200,
             t2=200,
             land_plot=LandPlot.objects.get(id=1),
             e_counter=ECounter.objects.get(id=1),
             )
-        self.assertEqual(len(ECounterRecord.objects.all()), 2)
+        all_obj = ECounterRecord.objects.all()
+        self.assertEqual(len(all_obj), 2)
+        self.assertEqual(all_obj[1].s, None)
+        self.assertEqual(all_obj[1].t1, 200)
+        self.assertEqual(all_obj[1].t2, 200)
  
         
 

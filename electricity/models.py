@@ -214,8 +214,6 @@ class ECounterRecord(models.Model):
         if len(error) > 0:
             raise ValidationError(_(error))
         else:
-            self.t1 == None
-            self.t2 == None
             return True
 
     def e_counter_double_type_fields_ok(self):
@@ -229,7 +227,6 @@ class ECounterRecord(models.Model):
         if len(error) > 0:
             raise ValidationError(_(error))
         else:
-            self.s = None
             return True
 
     def get_latest_record(self):
@@ -273,12 +270,15 @@ class ECounterRecord(models.Model):
         if self.e_counter.model_type == "single":
             if self.e_counter_single_type_fields_ok() == True:
                 model_type = "single"
+                self.t1 = None
+                self.t2 = None
                 latest_record = self.get_latest_record()
                 if self.check_vs_latest_record(latest_record, model_type):
                     super().save(*args, **kwargs)
         elif self.e_counter.model_type == "double":
             if self.e_counter_double_type_fields_ok() == True:
                 model_type = "double"
+                self.s = None
                 latest_record = self.get_latest_record()
                 if self.check_vs_latest_record(latest_record, model_type):
                     super().save(*args, **kwargs)
