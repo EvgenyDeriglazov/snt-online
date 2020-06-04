@@ -246,8 +246,8 @@ class ECounterRecord(models.Model):
      
     def double_error_message(self, new_t1, old_t1, new_t2, old_t2):
         """Create error message for different model types wrong data."""
-        message = f"Проверьте показания. Новое должно быть больше старого."
-        message += f"День:{new_t1}>{old_t1} Ночь:{new_t2}>{old_t2}"
+        message = f"Новые показания должны быть больше старых. "
+        message += f"День: {new_t1} > {old_t1}. Ночь: {new_t2} > {old_t2}."
         return message
 
     def check_vs_latest_record(self, latest_record, model_type):

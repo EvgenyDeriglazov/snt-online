@@ -212,13 +212,21 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.get_latest_record(), None)
     
     def test_sinlge_error_message(self):
-        """"""
-        pass
+        """single_error_message() custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(
+            obj.single_error_message(10, 12),
+            "Новое показание 10 должно быть больше предыдущего 12"
+            )
         
     def test_double_error_message(self):
-        """"""
-        pass
-
+        """double_error_message() custom method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(
+            obj.double_error_message(1, 2, 5, 8),
+            "Новые показания должны быть больше старых. День: 1 > 2. Ночь: 5 > 8."
+            )
+ 
     def test_check_vs_latest_record_no_record_single_type(self):
         """check_vs_latest_record() for single type with/without record."""
         # Prepare objects in db
