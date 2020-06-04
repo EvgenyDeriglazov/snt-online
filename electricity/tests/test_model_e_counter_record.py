@@ -210,6 +210,14 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.get_latest_record(), obj_latest)
         ECounterRecord.objects.all().delete()
         self.assertEqual(obj.get_latest_record(), None)
+    
+    def test_sinlge_error_message(self):
+        """"""
+        pass
+        
+    def test_double_error_message(self):
+        """"""
+        pass
 
     def test_check_vs_latest_record_no_record_single_type(self):
         """check_vs_latest_record() for single type with/without record."""

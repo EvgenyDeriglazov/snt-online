@@ -238,49 +238,51 @@ class ECounterRecord(models.Model):
                 e_counter__exact=self.e_counter,
                 ).latest('rec_date')
             return latest_record
+    
+    def single_error_message(self, new_s, old_s):
+        """Create error message for different model types wrong data."""
+        message = f"Новое показание {new_s} должно быть больше предыдущего {old_s}"
+        return message
+     
+    def double_error_message(self, new_t1, old_t1, new_t2, old_t2):
+        """Create error message for different model types wrong data."""
+        message = f"Проверьте показания. Новое должно быть больше старого."
+        message += f"День:{new_t1}>{old_t1} Ночь:{new_t2}>{old_t2}"
+        return message
 
     def check_vs_latest_record(self, latest_record, model_type):
         """Checks that new record fields data bigger than latest record."""
-        new = ""
-        old = ""
-        new_t = ""
-        old_t = ""
-        single_message = f"Новое показание {new} должно быть больше предыдущего {old}"
-        double_message = f"Проверьте показания. Новое должно быть больше старого."
-        double_message += f"День:{new}>{old} Ночь:{new_t}>{old_t}"
         if latest_record == None:
             if model_type == "single":
                 if self.s > self.e_counter.s:
                     return True
                 else:
-                    new = self.s
-                    old = self.e_counter.s
-                    raise ValidationError(_(single_message))
+                    error = self.single_error_message(self.s, self.e_counter.s)
+                    raise ValidationError(_(error))
             elif model_type == "double":
                 if self.t1 > self.e_counter.t1 and self.t2 > self.e_counter.t2:
                     return True
                 else:
-                    new = self.t1
-                    old = self.e_counter.t1
-                    new_t = self.t2
-                    old_t = self.e_counter.t2
-                    raise ValidationError(_(double_message))
+                    error = self.double_error_message(
+                        self.t1, self.e_counter.t1,
+                        self.t2, self.e_counter.t2
+                        )
+                    raise ValidationError(_(error))
         elif model_type == "single":
             if self.s > latest_record.s:
                 return True
             else:
-                new = self.s
-                old = latest_record.s
-                raise ValidationError(_(single_message))
+                error = self.single_error_message(self.s, latest_record.s)
+                raise ValidationError(_(error))
         elif model_type == "double":
             if self.t1 > latest_record.t1 and self.t2 > latest_record.t2:
                 return True
             else:
-                new = self.t1
-                old = latest_record.t1
-                new_t = self.t2
-                old_t = latest_record.t2
-                raise ValidationError(_(double_message))
+                error = self.double_error_message(
+                        self.t1, latest_record.t1,
+                        self.t2, latest_record.t2
+                        )
+                raise ValidationError(_(error))
 
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
