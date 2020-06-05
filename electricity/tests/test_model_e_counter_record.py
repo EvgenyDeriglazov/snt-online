@@ -459,7 +459,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_obj[1].t1, None)
         self.assertEqual(all_obj[1].t2, None)
 
-    def test_save_for_double_model_type_with_error_fixing(self):
+    def test_save_double_model_type_with_error_fixing(self):
         """Test for save() with double model and fields error fixing."""
         ECounter.objects.filter(id=1).update(
             model_type="double",
@@ -484,4 +484,35 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_obj[1].s, None)
         self.assertEqual(all_obj[1].t1, 200)
         self.assertEqual(all_obj[1].t2, 200)
- 
+    
+    def test_save_no_records_exist_single_type_model(self):
+        """Test for save() with no records in db and single type model."""
+        ECounterRecord.objects.all().delete()
+        self.assertEqual(len(ECounterRecord.objects.all()), 0)
+        ECounterRecord.objects.create(
+            s=200,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        self.assertEqual(len(ECounterRecord.objects.all()), 1)
+    
+    def test_save_no_records_exist_double_type_model(self):
+        """Test for save() with no records in db and double type model."""
+        ECounterRecord.objects.all().delete()
+        self.assertEqual(len(ECounterRecord.objects.all()), 0)
+        ECounter.objects.update(
+            model_type="double",
+            s=None,
+            t1=0,
+            t2=0,
+            )
+        ECounterRecord.objects.create(
+            s=None,
+            t1=100,
+            t2=10,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        self.assertEqual(len(ECounterRecord.objects.all()), 1)
