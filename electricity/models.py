@@ -472,9 +472,18 @@ class EPayment(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         )
+    e_counter_record = models.OneToOneField(
+        ECounterRecord,
+        verbose_name="Запись показаний э/счетчика",
+        help_text="Выберите запись показаний э/счетчика",
+        on_delete=models.SET_NULL,
+        null=True,
+        )
+        
     class Meta:
          verbose_name = "взнос за э/энергию"
          verbose_name_plural = "взонсы за э/энергию"
+         
 
     def __str__(self):
          """String to represent the Model(class) object."""
@@ -483,4 +492,7 @@ class EPayment(models.Model):
     def get_absolute_url(self):
          """Returns url to access an instance of the model."""
          pass
+    
+    # Custom methods
+    
 

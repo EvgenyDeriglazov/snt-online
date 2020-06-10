@@ -79,7 +79,8 @@ class EPaymentModelTest(TestCase):
             s_amount=300.55,
             sum_total=300.55,
             status='not_paid',
-            land_plot=LandPlot.objects.get(id=1)
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter_record=ECounterRecord.objects.get(id=1),
             )
 
     # Test functions
@@ -259,7 +260,18 @@ class EPaymentModelTest(TestCase):
         self.assertEqual(field.help_text, "Выберите участок")
         self.assertEqual(field.null, True)
         #self.assertEqual(on_delete, models.SET_NULL)
-        self.assertEqual(obj.land_plot, plot_obj) 
+        self.assertEqual(obj.land_plot, plot_obj)
+
+    def test_e_counter_record_field(self):
+        obj = EPayment.objects.get(id=1)
+        record_obj = ECounterRecord.objects.get(id=1)
+        field = obj._meta.get_field('e_counter_record')
+        #on_delete = obj._meta.get_field('owner').on_delete
+        self.assertEqual(field.verbose_name, "Запись показаний э/счетчика")
+        self.assertEqual(field.help_text, "Выберите запись показаний э/счетчика")
+        self.assertEqual(field.null, True)
+        #self.assertEqual(on_delete, models.SET_NULL)
+        self.assertEqual(obj.e_counter_record, record_obj)
    
     def test_meta_options(self):
         self.assertEquals(EPayment._meta.verbose_name, "взнос за э/энергию")
