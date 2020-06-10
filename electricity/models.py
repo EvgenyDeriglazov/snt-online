@@ -284,6 +284,10 @@ class ECounterRecord(models.Model):
                         )
                 raise ValidationError(_(error))
 
+    def create_e_payment(self):
+        """Creates EPayment record in db for ECounterRecord object."""
+        pass
+
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
         model_type = ""
