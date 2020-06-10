@@ -308,9 +308,16 @@ class ECounterRecord(models.Model):
         """Creates EPayment record in db."""
         pass
     
-    def find_latest_e_payment(self):
+    def latest_payment_confirmed(self):
         """Returns latest EPayment entry from db or False."""
-        pass
+        try:
+            latest_paid = EPayment.objects.filter(
+                land_plot__exact=self.land_plot,
+                status__exact="payment_confirmed",
+                ).latest('payment_date')
+        except EPayment.DoesNotExist:
+            return False
+        return latest_paid
     
     def check_vs_latest_e_payment(self, e_payment):
         """Checks that current ECounterRecord is not older than

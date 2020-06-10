@@ -524,3 +524,29 @@ class ECounterRecordModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         self.assertEqual(len(ECounterRecord.objects.all()), 1)
+
+    def test_latest_payment_confimed(self):
+        """Test for latest_payment_confirmed() method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.latest_payment_confirmed(), False)
+        EPayment.objects.create(
+            s_new=200,
+            sum_total=500,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter_record=ECounterRecord.objects.get(id=1),
+            )
+        self.assertEqual(obj.latest_payment_confirmed(), False)
+        EPayment.objects.update(
+            payment_date=datetime.date.today(),
+            status="paid",
+            )
+        self.assertEqual(obj.latest_payment_confirmed(), False)
+        EPayment.objects.update(
+            status="payment_confirmed",
+            )
+        self.assertEqual(
+            obj.latest_payment_confirmed(),
+            EPayment.objects.get(id=1)
+            )
+
+
