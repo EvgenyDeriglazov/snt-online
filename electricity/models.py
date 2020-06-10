@@ -193,6 +193,25 @@ class ECounterRecord(models.Model):
          pass
 
     # Model custom methods
+    # Custom save() method and help methods for data evaluation
+    
+    def save(self, *args, **kwargs):
+        """Custom save method checks fields data before saving."""
+        model_type = ""
+        if self.e_counter.model_type == "single":
+            if self.e_counter_single_type_fields_ok() == True:
+                model_type = "single"
+                self.t1 = None
+                self.t2 = None
+                if self.check_vs_latest_record(self.get_latest_record(), model_type):
+                    super().save(*args, **kwargs)
+        elif self.e_counter.model_type == "double":
+            if self.e_counter_double_type_fields_ok() == True:
+                model_type = "double"
+                self.s = None
+                if self.check_vs_latest_record(self.get_latest_record(), model_type):
+                    super().save(*args, **kwargs)
+    
     def records_exist(self):
         """Checks if any records already exist in database for
         LandPlot and ECounter."""
@@ -283,24 +302,20 @@ class ECounterRecord(models.Model):
                         self.t2, latest_record.t2
                         )
                 raise ValidationError(_(error))
-
-    def save(self, *args, **kwargs):
-        """Custom save method checks fields data before saving."""
-        model_type = ""
-        if self.e_counter.model_type == "single":
-            if self.e_counter_single_type_fields_ok() == True:
-                model_type = "single"
-                self.t1 = None
-                self.t2 = None
-                if self.check_vs_latest_record(self.get_latest_record(), model_type):
-                    super().save(*args, **kwargs)
-        elif self.e_counter.model_type == "double":
-            if self.e_counter_double_type_fields_ok() == True:
-                model_type = "double"
-                self.s = None
-                if self.check_vs_latest_record(self.get_latest_record(), model_type):
-                    super().save(*args, **kwargs)
-
+    
+    # create_e_payment() method
+    def create_e_payment(self):
+        """Creates EPayment record in db."""
+        pass
+    
+    def find_latest_e_payment(self):
+        """Returns latest EPayment entry from db or False."""
+        pass
+    
+    def check_vs_latest_e_payment(self, e_payment):
+        """Checks that current ECounterRecord is not older than
+        those linked to existing EPayment record."""
+        pass
 
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make

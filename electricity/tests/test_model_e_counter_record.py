@@ -302,6 +302,9 @@ class ECounterRecordModelTest(TestCase):
  
     def test_check_vs_latest_record_single_type_error(self):
         """check_vs_latest_record() for single type, ValidationError."""
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=5),
+            )
         obj = ECounterRecord.objects.get(id=1)
         ECounterRecord.objects.create(
             s=300,
@@ -326,6 +329,7 @@ class ECounterRecordModelTest(TestCase):
             t2=0,
             )
         ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=5),
             s=None,
             t1=10,
             t2=10,
@@ -446,6 +450,9 @@ class ECounterRecordModelTest(TestCase):
 
     def test_save_single_model_type_with_error_fixing(self):
         """Test for save() with single model and fields error fixing."""
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=5),
+            )
         ECounterRecord.objects.create(
             s=400,
             t1=100,
@@ -468,6 +475,7 @@ class ECounterRecordModelTest(TestCase):
             t2=0,
             )
         ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=5),
             s=None,
             t1=100,
             t2=100,
