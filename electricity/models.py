@@ -215,11 +215,11 @@ class ECounterRecord(models.Model):
     def records_exist(self):
         """Checks if any records already exist in database for
         LandPlot and ECounter."""
-        quiry_set = ECounterRecord.objects.filter(
+        query_set = ECounterRecord.objects.filter(
             land_plot__exact=self.land_plot,
             e_counter__exact=self.e_counter,
             ).all()
-        if len(quiry_set) > 0:
+        if len(query_set) > 0:
             return True
         else:
             return False
