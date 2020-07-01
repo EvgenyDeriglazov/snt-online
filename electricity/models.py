@@ -103,8 +103,6 @@ class ECounter(models.Model):
         if len(error) > 0:
             raise ValidationError(_(error))
         else:
-            self.t1 == None
-            self.t2 == None
             return True
 
     def double_type_fields_ok(self):
@@ -119,16 +117,18 @@ class ECounter(models.Model):
         if len(error) > 0:
             raise ValidationError(_(error))
         else:
-            self.s = None
             return True
 
     def save(self, *args, **kwargs):
         """Custom save method to prevent error in s, t1, t2, model_type fields."""
         if self.is_single():
             if self.single_type_fields_ok() == True:
+                self.t1 == None
+                self.t2 == None
                 super().save(*args, **kwargs)
         if self.is_double():
             if self.double_type_fields_ok() == True:
+                self.s = None
                 super().save(*args, **kwargs)
 
 class ECounterRecord(models.Model):
