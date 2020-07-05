@@ -201,7 +201,7 @@ class EPaymentModelTest(TestCase):
         self.assertEqual(field.decimal_places, 2)
         self.assertEqual(field.blank, True)
         self.assertEqual(field.null, True)
-        self.assertEqual(obj.s_amount, Decimal('300.55'))
+        self.assertEqual(obj.s_amount, Decimal('225.00'))
 
     def test_t1_amount_field(self):
         obj = EPayment.objects.get(id=1)
@@ -232,7 +232,7 @@ class EPaymentModelTest(TestCase):
         self.assertEqual(field.help_text, "Итого")
         self.assertEqual(field.max_digits, 8)
         self.assertEqual(field.decimal_places, 2)
-        self.assertEqual(obj.sum_total, Decimal('300.55'))
+        self.assertEqual(obj.sum_total, Decimal('225.00'))
 
     def test_status_field(self):
         obj = EPayment.objects.get(id=1)
@@ -287,3 +287,66 @@ class EPaymentModelTest(TestCase):
         obj = EPayment.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
         
+    def test_calculate(self):
+        """Test for calculate() custom method."""
+        obj = EPayment.objects.get(id=1)
+        # Check for all fields are None
+        obj.s_new = None
+        obj.s_prev = None
+        obj.calculate()
+        self.assertEqual(obj.s_cons, None)
+        self.assertEqual(obj.t1_cons, None)
+        self.assertEqual(obj.t2_cons, None)
+        self.assertEqual(obj.s_amount, None)
+        self.assertEqual(obj.t1_amount, None)
+        self.assertEqual(obj.t2_amount, None)
+        self.assertEqual(obj.sum_total, Decimal('0'))
+        # Check for single type e_counter
+        obj.s_new = 500
+        obj.s_prev = 0
+        obj.calculate()
+        self.assertEqual(obj.s_cons, 500)
+        self.assertEqual(obj.s_amount, Decimal('750.00'))
+        self.assertEqual(obj.sum_total, Decimal('750.00'))
+        # Check for double type e_counter
+        obj.s_new = None
+        obj.s_prev = None
+        obj.t1_new = 100
+        obj.t2_new = 100
+        obj.t1_prev = 0
+        obj.t2_prev = 0
+        obj.calculate()
+        self.assertEqual(obj.t1_cons, 100)
+        self.assertEqual(obj.t2_cons, 100)
+        self.assertEqual(obj.t1_amount, Decimal('350.00'))
+        self.assertEqual(obj.t2_amount, Decimal('250.00'))
+        self.assertEqual(obj.sum_total, Decimal('600.00'))
+
+    def test_save(self):
+        """Test for save() custom method."""
+        ECounterRecord.objects.filter(id=1).update(rec_date=datetime.date(2019, 1, 1))
+        ECounterRecord.objects.create(
+            s=500,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+ 
+        EPayment.objects.create(
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter_record=ECounterRecord.objects.get(id=2),
+            s_new=500,
+            s_prev=200,
+            )
+        obj = EPayment.objects.get(id=2)
+        self.assertEqual(obj.s_cons, 300)
+        self.assertEqual(obj.t1_cons, None)
+        self.assertEqual(obj.t2_cons, None)
+        self.assertEqual(obj.s_amount, Decimal('450.00'))
+        self.assertEqual(obj.t1_amount, None)
+        self.assertEqual(obj.t2_amount, None)
+        self.assertEqual(obj.sum_total, Decimal('450.00'))
+        
+
+

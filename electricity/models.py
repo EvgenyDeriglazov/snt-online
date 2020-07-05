@@ -1,4 +1,5 @@
 ﻿from django.db import models
+from django.db.models import Q
 from index.models import Snt, LandPlot
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -194,7 +195,6 @@ class ECounterRecord(models.Model):
 
     # Model custom methods
     # Custom save() method and help methods for data evaluation
-    
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
         model_type = ""
@@ -271,6 +271,7 @@ class ECounterRecord(models.Model):
 
     def check_vs_latest_record(self, latest_record, model_type):
         """Checks that new record fields data bigger than latest record."""
+        # If now records exist in db, checks new record vs e_counter
         if latest_record == None:
             if model_type == "single":
                 if self.s > self.e_counter.s:
@@ -287,6 +288,7 @@ class ECounterRecord(models.Model):
                         self.t2, self.e_counter.t2
                         )
                     raise ValidationError(_(error))
+        # If records exist in db
         elif model_type == "single":
             if self.s > latest_record.s:
                 return True
@@ -304,26 +306,86 @@ class ECounterRecord(models.Model):
                 raise ValidationError(_(error))
     
     # create_e_payment() method
+    def no_e_payment(self):
+        """Checks that e_counter_record has no e_payment record."""
+        if EPayment.objects.filter(
+            e_counter_record__exact=self,
+            ).exists():
+            return False
+        else:
+            return True
+
+    def e_payments_exist(self):
+        """Check if any e_payment exist in db for self.land_plot and
+        self.e_counter."""
+        if EPayment.objects.filter(
+            land_plot__exact=self.land_plot,
+            e_counter_record__e_counter__exact=self.e_counter,
+            ).exists():
+            return True
+        else:
+            return False
+
+    def all_e_payments_status_is_payment_confirmed(self):
+        """Check that last e_payment status is payment_confirmed."""
+        if EPayment.objects.filter(
+            Q(status='not_paid') | Q(status='paid'),
+            land_plot__exact=self.land_plot,
+            e_counter_record__e_counter__exact=self.e_counter,
+            ).exists():
+            return False
+        else:
+            return True
+
+    def last_e_counter_record(self):
+        """Returns last e_counter_record where e_payment exists and
+        e_payment status is payment_confirmed."""
+        latest_e_payment = EPayment.objects.filter(
+            land_plot__exact=self.land_plot,
+            e_counter_record__e_counter__exact=self.e_counter,
+            ).latest('payment_date')
+        return latest_e_payment.e_counter_record
+
+
     def create_e_payment(self):
         """Creates EPayment record in db."""
-        pass
+        if self.no_e_payment():
+            if self.e_payments_exist():
+                if self.all_e_payments_status_is_payment_confirmed():
+                    last_record = self.last_e_counter_record()
+                    EPayment.objects.create(
+                        s_new=self.s,
+                        t1_new=self.t1,
+                        t2_new=self.t2,
+                        s_prev=last_record.s,
+                        t1_prev=last_record.t1,
+                        t2_prev=last_record.t2,
+                        land_plot=self.land_plot,
+                        e_counter_record=self,
+                        )
+                    EPaymentRecords.objects.filter(
+                        land_plot__exact=self.land_plot,
+                        e_counter__exact=self.e_counter,
+                        rec_date__lt=self.rec_date,
+                        rec_date__gt=last_record.rec_date,
+                        ).delete
+                else:
+                    raise ValidationError(_("not all payment confirmed"))
+            else:
+                EPayment.objects.create(
+                    s_new=self.s,
+                    t1_new=self.t1,
+                    t2_new=self.t2,
+                    s_prev=self.e_counter.s,
+                    t1_prev=self.e_counter.t1,
+                    t2_prev=self.e_counter.t2,
+                    land_plot=self.land_plot,
+                    e_counter_record=self,
+                    )
+        else:
+            raise ValidationError(_("e_payment_already_exist"))
+ 
     
-    def latest_payment_confirmed(self):
-        """Returns latest EPayment entry from db or False."""
-        try:
-            latest_paid = EPayment.objects.filter(
-                land_plot__exact=self.land_plot,
-                status__exact="payment_confirmed",
-                ).latest('payment_date')
-        except EPayment.DoesNotExist:
-            return False
-        return latest_paid
-    
-    def check_vs_latest_e_payment(self, e_payment):
-        """Checks that current ECounterRecord is not older than
-        those linked to existing EPayment record."""
-        pass
-
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make
     payment calculation for consumed electricity."""
@@ -487,7 +549,7 @@ class EPayment(models.Model):
         default='not_paid',
         help_text="Статус оплаты",
         )  
-    land_plot = models.OneToOneField(
+    land_plot = models.ForeignKey(
         LandPlot,
         verbose_name="Участок",
         help_text="Выберите участок",
@@ -516,5 +578,32 @@ class EPayment(models.Model):
          pass
     
     # Custom methods
+    def calculate(self):
+        """Calculates e_payment."""
+        rate = ERate.objects.latest('date')
+        if self.s_new != None and self.s_prev != None:
+            self.s_cons = self.s_new - self.s_prev
+            self.s_amount = self.s_cons * rate.s
+            self.sum_total = self.s_amount
+        elif self.t1_new != None and self.t1_prev != None\
+            and self.t2_new != None and self.t2_prev != None:
+            self.t1_cons = self.t1_new - self.t1_prev
+            self.t2_cons = self.t2_new - self.t2_prev
+            self.t1_amount = self.t1_cons * rate.t1
+            self.t2_amount = self.t2_cons * rate.t2
+            self.sum_total = self.t1_amount + self.t2_amount
+        else:
+            self.s_cons = None
+            self.t1_cons = None
+            self.t2_cons = None
+            self.s_amount = None
+            self.t1_amount = None
+            self.t2_amount = None
+            self.sum_total = 0
+
+    def save(self, *args, **kwargs):
+        """Custom save method."""
+        self.calculate()
+        super().save(*args, **kwargs)
     
 
