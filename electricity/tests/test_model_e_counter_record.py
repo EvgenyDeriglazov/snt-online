@@ -47,6 +47,13 @@ class ECounterRecordModelTest(TestCase):
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
             )
+        ERate.objects.create(
+            date=datetime.date.today(),
+            s=1.5,
+            t1=3.5,
+            t2=2.5,
+            snt=Snt.objects.get(id=1),
+            )
         ECounter.objects.create(
             reg_date=datetime.date.today(),
             model_name="test",
@@ -532,8 +539,35 @@ class ECounterRecordModelTest(TestCase):
         EPayment.objects.create(
             land_plot=obj.land_plot,
             e_counter_record=obj,
-            sum_total=0,
+            s_new = 100,
+            s_prev = 0,
             )
         self.assertEqual(obj.no_e_payment(), False)
+    
+    def test_e_payments_exist(self):
+        """Test for e_payments_exist() method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.e_payments_exist(), False)
+        EPayment.objects.create(
+            land_plot=obj.land_plot,
+            e_counter_record=ECounterRecord.objects.get(id=1),
+            s_new = 100,
+            s_prev = 0,
+            )
+        self.assertEqual(obj.e_payments_exist(), True)
+ 
+    def test_no_unpaid_and_paid_payments(self):
+        """Test for no_unpaid_and_paid_payments() method."""
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.no_unpaid_and_paid_payments(), True)
+        EPayment.objects.create(
+            land_plot=obj.land_plot,
+            e_counter_record=ECounterRecord.objects.get(id=1),
+            s_new = 100,
+            s_prev = 0,
+            )
+        self.assertEqual(obj.no_unpaid_and_paid_payments(), False)
+        EPayment.objects.filter(id=1).update(status='payment_confirmed')
+        self.assertEqual(obj.no_unpaid_and_paid_payments(), True)
 
 

@@ -326,8 +326,10 @@ class ECounterRecord(models.Model):
         else:
             return False
 
-    def all_e_payments_status_is_payment_confirmed(self):
-        """Check that last e_payment status is payment_confirmed."""
+    def no_unpaid_and_paid_payments(self):
+        """Checks that there is no e_payment records in db
+        for self.land_plot and self.e_counter with 'unpaid' and
+        'paid' status."""
         if EPayment.objects.filter(
             Q(status='not_paid') | Q(status='paid'),
             land_plot__exact=self.land_plot,
@@ -351,7 +353,7 @@ class ECounterRecord(models.Model):
         """Creates EPayment record in db."""
         if self.no_e_payment():
             if self.e_payments_exist():
-                if self.all_e_payments_status_is_payment_confirmed():
+                if self.no_unpaid_and_paid_payments():
                     last_record = self.last_e_counter_record()
                     EPayment.objects.create(
                         s_new=self.s,
