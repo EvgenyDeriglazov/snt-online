@@ -599,6 +599,14 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.last_payment_confirmed_e_counter_record(), last_obj)
         EPayment.objects.filter(id=2).update(status="unpaid")
         self.assertEqual(obj.last_payment_confirmed_e_counter_record(), obj)
-        
+    
+    def test_create_first_e_payment_record_in_db(self):
+        """Test for create_e_payment() - first e_payment record."""
+        obj = ECounterRecord.objects.get(id=1)
+        obj.create_e_payment()
+        with self.assertRaises(ValidationError):
+            obj.create_e_payment()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.create_e_payment()
 
 
