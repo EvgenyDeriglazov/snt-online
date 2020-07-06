@@ -15,6 +15,7 @@ from index.models import *
 from electricity.models import *
 from django.contrib.auth.models import User
 import datetime
+from decimal import *
 
 class ECounterRecordModelTest(TestCase):
     @classmethod
@@ -545,7 +546,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.no_e_payment(), False)
     
     def test_e_payments_exist(self):
-        """Test for e_payments_exist() method."""
+        """Test e_payments_exist() method."""
         obj = ECounterRecord.objects.get(id=1)
         self.assertEqual(obj.e_payments_exist(), False)
         EPayment.objects.create(
@@ -600,13 +601,169 @@ class ECounterRecordModelTest(TestCase):
         EPayment.objects.filter(id=2).update(status="unpaid")
         self.assertEqual(obj.last_payment_confirmed_e_counter_record(), obj)
     
-    def test_create_first_e_payment_record_in_db(self):
-        """Test for create_e_payment() - first e_payment record."""
+    def test_create_e_payment_single_type(self):
+        """Test create_e_payment() - full logic single type."""
+        # Test first if/else results and second else result
         obj = ECounterRecord.objects.get(id=1)
         obj.create_e_payment()
         with self.assertRaises(ValidationError):
             obj.create_e_payment()
         with self.assertRaisesRegex(ValidationError, ''):
             obj.create_e_payment()
-
-
+        all_payments = EPayment.objects.all()
+        self.assertEqual(len(all_payments), 1)
+        self.assertEqual(all_payments[0].s_new, 200)
+        self.assertEqual(all_payments[0].s_prev, 100)
+        self.assertEqual(all_payments[0].t1_new, None)
+        self.assertEqual(all_payments[0].t2_new, None)
+        self.assertEqual(all_payments[0].t1_prev, None)
+        self.assertEqual(all_payments[0].t2_prev, None)
+        self.assertEqual(all_payments[0].s_cons, 100)
+        self.assertEqual(all_payments[0].t1_cons, None)
+        self.assertEqual(all_payments[0].t2_cons, None)
+        self.assertEqual(all_payments[0].s_amount, Decimal('150.00'))
+        self.assertEqual(all_payments[0].t1_amount, None)
+        self.assertEqual(all_payments[0].t2_amount, None)
+        self.assertEqual(all_payments[0].sum_total, Decimal('150.00'))
+        self.assertEqual(all_payments[0].land_plot, obj.land_plot)
+        self.assertEqual(all_payments[0].e_counter_record, obj)
+        # Test second if and third else results
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date(2019, 1, 1),
+            )
+        ECounterRecord.objects.create(
+            s=300,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        second_obj = ECounterRecord.objects.get(id=2)
+        with self.assertRaises(ValidationError):
+            second_obj.create_e_payment()
+        with self.assertRaisesRegex(ValidationError, ''):
+            second_obj.create_e_payment()
+        # Test third if result
+        EPayment.objects.filter(id=1).update(
+            status="payment_confirmed",
+            )
+        ECounterRecord.objects.filter(id=2).update(
+            rec_date=datetime.date(2019, 2, 1),
+            )
+        ECounterRecord.objects.create(
+            s=400,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        third_obj = ECounterRecord.objects.get(id=3)
+        third_obj.create_e_payment()
+        all_payments = EPayment.objects.all()
+        all_obj = ECounterRecord.objects.all()
+        self.assertEqual(len(all_payments), 2)
+        self.assertEqual(len(all_obj), 2)
+        self.assertEqual(all_payments[1].e_counter_record, all_obj[1])
+        self.assertEqual(all_payments[1].s_new, 400)
+        self.assertEqual(all_payments[1].s_prev, 200)
+        self.assertEqual(all_payments[1].t1_new, None)
+        self.assertEqual(all_payments[1].t2_new, None)
+        self.assertEqual(all_payments[1].t1_prev, None)
+        self.assertEqual(all_payments[1].t2_prev, None)
+        self.assertEqual(all_payments[1].s_cons, 200)
+        self.assertEqual(all_payments[1].t1_cons, None)
+        self.assertEqual(all_payments[1].t2_cons, None)
+        self.assertEqual(all_payments[1].s_amount, Decimal('300.00'))
+        self.assertEqual(all_payments[1].t1_amount, None)
+        self.assertEqual(all_payments[1].t2_amount, None)
+        self.assertEqual(all_payments[1].sum_total, Decimal('300.00'))
+ 
+    def test_create_e_payment_double_type(self):
+        """Test create_e_payment() - full logic double type."""
+        # Test first if/else results and second else result
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            s=None,
+            t1=100,
+            t2=100,
+            )
+        ECounterRecord.objects.filter(id=1).update(
+            s=None,
+            t1=200,
+            t2=200,
+            )
+        obj = ECounterRecord.objects.get(id=1)
+        obj.create_e_payment()
+        with self.assertRaises(ValidationError):
+            obj.create_e_payment()
+        with self.assertRaisesRegex(ValidationError, ''):
+            obj.create_e_payment()
+        all_payments = EPayment.objects.all()
+        self.assertEqual(len(all_payments), 1)
+        self.assertEqual(all_payments[0].s_new, None)
+        self.assertEqual(all_payments[0].s_prev, None)
+        self.assertEqual(all_payments[0].t1_new, 200)
+        self.assertEqual(all_payments[0].t2_new, 200)
+        self.assertEqual(all_payments[0].t1_prev, 100)
+        self.assertEqual(all_payments[0].t2_prev, 100)
+        self.assertEqual(all_payments[0].s_cons, None)
+        self.assertEqual(all_payments[0].t1_cons, 100)
+        self.assertEqual(all_payments[0].t2_cons, 100)
+        self.assertEqual(all_payments[0].s_amount, None)
+        self.assertEqual(all_payments[0].t1_amount, Decimal('350.00'))
+        self.assertEqual(all_payments[0].t2_amount, Decimal('250.00'))
+        self.assertEqual(all_payments[0].sum_total, Decimal('600.00'))
+        self.assertEqual(all_payments[0].land_plot, obj.land_plot)
+        self.assertEqual(all_payments[0].e_counter_record, obj)
+        # Test second if and third else results
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date(2019, 1, 1),
+            )
+        ECounterRecord.objects.create(
+            s=None,
+            t1=300,
+            t2=300,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        second_obj = ECounterRecord.objects.get(id=2)
+        with self.assertRaises(ValidationError):
+            second_obj.create_e_payment()
+        with self.assertRaisesRegex(ValidationError, ''):
+            second_obj.create_e_payment()
+        # Test third if result
+        EPayment.objects.filter(id=1).update(
+            status="payment_confirmed",
+            )
+        ECounterRecord.objects.filter(id=2).update(
+            rec_date=datetime.date(2019, 2, 1),
+            )
+        ECounterRecord.objects.create(
+            s=None,
+            t1=400,
+            t2=400,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        third_obj = ECounterRecord.objects.get(id=3)
+        third_obj.create_e_payment()
+        all_payments = EPayment.objects.all()
+        all_obj = ECounterRecord.objects.all()
+        self.assertEqual(len(all_payments), 2)
+        self.assertEqual(len(all_obj), 2)
+        self.assertEqual(all_payments[1].land_plot, all_obj[1].land_plot)
+        self.assertEqual(all_payments[1].e_counter_record, all_obj[1])
+        self.assertEqual(all_payments[1].s_new, None)
+        self.assertEqual(all_payments[1].s_prev, None)
+        self.assertEqual(all_payments[1].t1_new, 400)
+        self.assertEqual(all_payments[1].t2_new, 400)
+        self.assertEqual(all_payments[1].t1_prev, 200)
+        self.assertEqual(all_payments[1].t2_prev, 200)
+        self.assertEqual(all_payments[1].s_cons, None)
+        self.assertEqual(all_payments[1].t1_cons, 200)
+        self.assertEqual(all_payments[1].t2_cons, 200)
+        self.assertEqual(all_payments[1].s_amount, None)
+        self.assertEqual(all_payments[1].t1_amount, Decimal('700.00'))
+        self.assertEqual(all_payments[1].t2_amount, Decimal('500.00'))
+        self.assertEqual(all_payments[1].sum_total, Decimal('1200.00'))
+ 

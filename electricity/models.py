@@ -366,7 +366,7 @@ class ECounterRecord(models.Model):
                         land_plot=self.land_plot,
                         e_counter_record=self,
                         )
-                    EPaymentRecords.objects.filter(
+                    ECounterRecord.objects.filter(
                         land_plot__exact=self.land_plot,
                         e_counter__exact=self.e_counter,
                         rec_date__lt=self.rec_date,
