@@ -339,14 +339,15 @@ class ECounterRecord(models.Model):
         else:
             return True
 
-    def last_e_counter_record(self):
+    def last_payment_confirmed_e_counter_record(self):
         """Returns last e_counter_record where e_payment exists and
         e_payment status is payment_confirmed."""
-        latest_e_payment = EPayment.objects.filter(
+        last_e_payment = EPayment.objects.filter(
             land_plot__exact=self.land_plot,
             e_counter_record__e_counter__exact=self.e_counter,
+            status="payment_confirmed",
             ).latest('payment_date')
-        return latest_e_payment.e_counter_record
+        return last_e_payment.e_counter_record
 
 
     def create_e_payment(self):
@@ -354,14 +355,14 @@ class ECounterRecord(models.Model):
         if self.no_e_payment():
             if self.e_payments_exist():
                 if self.no_unpaid_and_paid_payments():
-                    last_record = self.last_e_counter_record()
+                    last_rec = self.last_payment_confirmed_e_counter_record()
                     EPayment.objects.create(
                         s_new=self.s,
                         t1_new=self.t1,
                         t2_new=self.t2,
-                        s_prev=last_record.s,
-                        t1_prev=last_record.t1,
-                        t2_prev=last_record.t2,
+                        s_prev=last_rec.s,
+                        t1_prev=last_rec.t1,
+                        t2_prev=last_rec.t2,
                         land_plot=self.land_plot,
                         e_counter_record=self,
                         )
@@ -369,8 +370,8 @@ class ECounterRecord(models.Model):
                         land_plot__exact=self.land_plot,
                         e_counter__exact=self.e_counter,
                         rec_date__lt=self.rec_date,
-                        rec_date__gt=last_record.rec_date,
-                        ).delete
+                        rec_date__gt=last_rec.rec_date,
+                        ).delete()
                 else:
                     raise ValidationError(_("not all payment confirmed"))
             else:

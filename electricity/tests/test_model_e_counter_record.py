@@ -569,5 +569,36 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.no_unpaid_and_paid_payments(), False)
         EPayment.objects.filter(id=1).update(status='payment_confirmed')
         self.assertEqual(obj.no_unpaid_and_paid_payments(), True)
+        
+    def test_last_payment_confirmed_e_counter_record(self):
+        """Test for last_payment_confirmed_e_counter_record() method."""
+        ECounterRecord.objects.filter(id=1).update(rec_date=datetime.date(2019, 1, 1))
+        obj = ECounterRecord.objects.get(id=1)
+        EPayment.objects.create(
+            payment_date=datetime.date(2019, 1, 1),
+            s_new=obj.s,
+            s_prev=100,
+            land_plot=obj.land_plot,
+            e_counter_record=obj,
+            status="payment_confirmed",
+            )
+        ECounterRecord.objects.create(
+            s=300,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        last_obj = ECounterRecord.objects.get(id=2)
+        EPayment.objects.create(
+            payment_date=datetime.date.today(),
+            s_new=last_obj.s,
+            s_prev=obj.s,
+            land_plot=obj.land_plot,
+            e_counter_record=last_obj,
+            status="payment_confirmed",
+            )
+        self.assertEqual(obj.last_payment_confirmed_e_counter_record(), last_obj)
+        EPayment.objects.filter(id=2).update(status="unpaid")
+        self.assertEqual(obj.last_payment_confirmed_e_counter_record(), obj)
+        
 
 
