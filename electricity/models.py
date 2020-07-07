@@ -373,7 +373,9 @@ class ECounterRecord(models.Model):
                         rec_date__gt=last_rec.rec_date,
                         ).delete()
                 else:
-                    raise ValidationError(_("not all payment confirmed"))
+                    raise ValidationError(_(
+                        "У вас есть квитанции с неподтвержденной оплатой"
+                        ))
             else:
                 EPayment.objects.create(
                     s_new=self.s,
@@ -386,7 +388,9 @@ class ECounterRecord(models.Model):
                     e_counter_record=self,
                     )
         else:
-            raise ValidationError(_("e_payment_already_exist"))
+            raise ValidationError(_(
+                "У вас уже есть квитанция для этого показания"
+                ))
  
     
 class ERate(models.Model):
