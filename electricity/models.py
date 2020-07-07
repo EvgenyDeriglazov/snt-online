@@ -610,4 +610,40 @@ class EPayment(models.Model):
             self.calculate()
         super().save(*args, **kwargs)
     
+    def create_qr_text(self):
+    """Function to prepare qr code and return result to view
+    for rendering web page (context{}, correct(bolean))."""
+    qr_text = "ST00012|Name=Садоводческое некоммерческое товаричество \"{}\"|\
+        PersonalAcc={}|BankName={}|BIC={}|CorrespAcc={}|INN={}|LastName={}|\
+        FirstName={}|MiddleName={}|Purpose={}|PayerAddress={}|Sum={}"
+    snt_name = el_payment_obj.land_plot.snt
+    name = el_payment_obj.land_plot.snt
+    p_acc = el_payment_obj.land_plot.snt.personal_acc
+    b_name = el_payment_obj.land_plot.snt.bank_name
+    bic = el_payment_obj.land_plot.snt.bic
+    cor_acc = el_payment_obj.land_plot.snt.corresp_acc
+    inn = el_payment_obj.land_plot.snt.inn
+    last_name = el_payment_obj.land_plot.owner.last_name
+    first_name = el_payment_obj.land_plot.owner.first_name
+    middle_name = el_payment_obj.land_plot.owner.middle_name
+    e_counter_type = el_payment_obj.land_plot.electrical_counter.model_type
+    purpose = get_payment_purpose(el_payment_obj)
+    payer_address = "участок №{}, СНТ {}".format(plot_num, name)   
+    sum_tot = el_payment_obj.sum_tot * 100
+    qr_text = qr_text.format(
+        name, p_acc, b_name, bic, cor_acc,inn, last_name, first_name,
+        middle_name, purpose, payer_address, sum_tot,
+        )
+    context = {
+        'snt_name': snt_name,
+        'el_payment_obj': el_payment_obj,
+        'qr_text': qr_text,
+        'payer_address': payer_address,
+        'purpose': purpose,
+        'last_name': last_name,
+        'first_name': first_name,
+        'middle_name': middle_name,
+        }
+    return qr_text
+    
 
