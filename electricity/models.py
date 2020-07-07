@@ -606,7 +606,8 @@ class EPayment(models.Model):
 
     def save(self, *args, **kwargs):
         """Custom save method."""
-        self.calculate()
+        if self.status != 'payment_confirmed' or self.status != 'paid':
+            self.calculate()
         super().save(*args, **kwargs)
     
 

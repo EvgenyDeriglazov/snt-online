@@ -347,6 +347,33 @@ class EPaymentModelTest(TestCase):
         self.assertEqual(obj.t1_amount, None)
         self.assertEqual(obj.t2_amount, None)
         self.assertEqual(obj.sum_total, Decimal('450.00'))
+        # Test protection from calculation and saving for
+        # records with status='paid'
+        EPayment.objects.filter(id=1).update(
+            status='paid',
+            )
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.s_cons, 150)
+        self.assertEqual(obj.status, "paid")
+        EPayment.objects.filter(id=1).update(
+            s_new=1000,
+            )
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.s_cons, 150)
+        # Test protection from calculation and saving for
+        # records with status='payment_confirmed'
+        EPayment.objects.filter(id=1).update(
+            status='payment_confirmed',
+            )
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.s_cons, 150)
+        self.assertEqual(obj.status, "payment_confirmed")
+        EPayment.objects.filter(id=1).update(
+            s_new=1000,
+            )
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.s_cons, 150)
+        
         
 
 
