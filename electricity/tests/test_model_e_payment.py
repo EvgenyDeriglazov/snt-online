@@ -332,7 +332,6 @@ class EPaymentModelTest(TestCase):
             land_plot=LandPlot.objects.get(id=1),
             e_counter=ECounter.objects.get(id=1),
             )
- 
         EPayment.objects.create(
             land_plot=LandPlot.objects.get(id=1),
             e_counter_record=ECounterRecord.objects.get(id=2),
@@ -374,6 +373,11 @@ class EPaymentModelTest(TestCase):
         obj = EPayment.objects.get(id=1)
         self.assertEqual(obj.s_cons, 150)
         
+    def test_create_qr_text(self):
+        """Test for create_qr_text() custom method."""
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.create_qr_text(), "")
+
         
 
 
