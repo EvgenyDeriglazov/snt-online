@@ -328,7 +328,7 @@ class ECounterRecord(models.Model):
 
     def no_unpaid_and_paid_payments(self):
         """Checks that there is no e_payment records in db
-        for self.land_plot and self.e_counter with 'unpaid' and
+        for self.land_plot and self.e_counter with 'not_paid' and
         'paid' status."""
         if EPayment.objects.filter(
             Q(status='not_paid') | Q(status='paid'),
@@ -610,7 +610,7 @@ class EPayment(models.Model):
 
     def save(self, *args, **kwargs):
         """Custom save method."""
-        if self.status != 'payment_confirmed' or self.status != 'paid':
+        if self.status == 'not_paid':
             self.calculate()
         super().save(*args, **kwargs)
     
@@ -649,5 +649,19 @@ class EPayment(models.Model):
         qr_text += f"PayerAddress={payer_address}|"
         qr_text += f"Sum={int(self.sum_total * 100)}"
         return qr_text
+    
+    def paid(self):
+        """Set EPayment status to 'paid'."""
+        if self.status == 'not_paid':
+            self.status = 'paid'
+            self.payment_date = datetime.date.today()
+            self.save()
+    
+    def payment_confirmed(self):
+        """Set EPayment status to 'payment_confirmed'."""
+        if self.status == 'paid':
+            self.status = 'payment_confirmed'
+            self.save()
+            
     
 

@@ -385,7 +385,36 @@ class EPaymentModelTest(TestCase):
         qr_text += 'однотарифный/200-50/150, 150x1.50/225.00. Итого/225.00.|'
         qr_text += 'PayerAddress=участок №10, СНТ "Бобровка"|Sum=22500'
         self.assertEqual(obj.create_qr_text(), qr_text)
-
+    
+    def test_paid(self):
+        """Test for paid() custom method."""
+        EPayment.objects.filter(id=1).update(
+            payment_date=None,
+            )
+        obj = EPayment.objects.get(id=1)
+        obj.paid()
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.status, 'paid')
+        self.assertEqual(obj.payment_date, datetime.date.today())
+    
+    def test_payment_confirmed(self):
+        """Test for payment_confirmed() custom method."""
+        EPayment.objects.filter(id=1).update(
+            payment_date=None,
+            )
+        obj = EPayment.objects.get(id=1)
+        # Check for status='not_paid'
+        obj.payment_confirmed()
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.status, 'not_paid')
+        self.assertEqual(obj.payment_date, None)
+        # Check for status='paid'
+        obj.paid()
+        obj.payment_confirmed()
+        obj = EPayment.objects.get(id=1)
+        self.assertEqual(obj.status, 'payment_confirmed')
+        self.assertEqual(obj.payment_date, datetime.date.today())
+        
         
 
 
