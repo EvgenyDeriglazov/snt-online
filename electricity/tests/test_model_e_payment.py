@@ -376,7 +376,15 @@ class EPaymentModelTest(TestCase):
     def test_create_qr_text(self):
         """Test for create_qr_text() custom method."""
         obj = EPayment.objects.get(id=1)
-        self.assertEqual(obj.create_qr_text(), "")
+        qr_text = 'ST00012|Name=Садоводческое некоммерческое товарищество '
+        qr_text += '"Бобровка"|PersonalAcc=01234567898765432101|'
+        qr_text += 'BankName=Банк|BIC=123456789|'
+        qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
+        qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
+        qr_text += 'Purpose=Членские взносы за э/энергию, '
+        qr_text += 'однотарифный/200-50/150, 150x1.50/225.00. Итого/225.00.|'
+        qr_text += 'PayerAddress=участок №10, СНТ "Бобровка"|Sum=22500'
+        self.assertEqual(obj.create_qr_text(), qr_text)
 
         
 
