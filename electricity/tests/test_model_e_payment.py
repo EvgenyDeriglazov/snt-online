@@ -26,7 +26,7 @@ class EPaymentModelTest(TestCase):
             join_date=datetime.date.today(),
             )
         Snt.objects.create(
-            name='СНТ Бобровка',
+            name='Бобровка',
             personal_acc='01234567898765432101',
             bank_name='Банк',
             bic='123456789',

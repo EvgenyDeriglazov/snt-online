@@ -25,7 +25,7 @@ class SntModelTest(TestCase):
             join_date=datetime.date.today()
             )
         Snt.objects.create(
-            name='СНТ Бобровка',
+            name='Бобровка',
             personal_acc='01234567898765432101',
             bank_name='Банк',
             bic='123456789',
@@ -39,10 +39,13 @@ class SntModelTest(TestCase):
     def test_name_field(self):
         obj = Snt.objects.get(id=1)
         field = obj._meta.get_field('name')
-        self.assertEquals(field.verbose_name, "Название СНТ")   
+        self.assertEquals(field.verbose_name, "Название")   
         self.assertEqual(field.max_length, 200)
-        self.assertEqual(field.help_text, "Полное название СНТ")
-        self.assertEqual(obj.name, "СНТ Бобровка")
+        self.assertEqual(
+            field.help_text,
+            "Укажите только название без правовой организационной формы"
+            )
+        self.assertEqual(obj.name, "Бобровка")
 
     def test_personal_acc_field(self):
         obj = Snt.objects.get(id=1)

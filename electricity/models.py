@@ -632,7 +632,7 @@ class EPayment(models.Model):
             purpose += f"{self.t2_amount}. Итого/{self.sum_total}." 
         # Prepare payer address text
         payer_address = f"участок №{self.land_plot.plot_number}, "
-        payer_address += f"СНТ {self.land_plot.snt.name}"   
+        payer_address += f"СНТ \"{self.land_plot.snt.name}\""   
         # Prepare qr text
         qr_text = f"ST00012|"
         qr_text += f"Name=Садоводческое некоммерческое товарищество "
@@ -647,7 +647,7 @@ class EPayment(models.Model):
         qr_text += f"MiddleName={self.land_plot.owner.middle_name}|"
         qr_text += f"Purpose={purpose}|"
         qr_text += f"PayerAddress={payer_address}|"
-        qr_text += f"Sum={self.sum_total * 100}"
+        qr_text += f"Sum={int(self.sum_total * 100)}"
         return qr_text
     
 

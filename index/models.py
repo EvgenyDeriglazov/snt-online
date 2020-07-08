@@ -73,9 +73,9 @@ class Snt(models.Model):
     """Model represents SNT with basic information such as
     SNT name, chairman, payment details, address."""
     name = models.CharField(
-        "Название СНТ",
+        "Название",
         max_length=200,
-        help_text="Полное название СНТ",
+        help_text="Укажите только название без правовой организационной формы",
         )
     personal_acc = models.CharField(
         "Номер расчетного счета",
