@@ -224,5 +224,43 @@ class MPaymentModelTest(TestCase):
     
     def test_save(self):
         """Test for save() custom methods."""
-        pass
+        # Check for status='not_paid'
+        MRate.objects.create(
+            date=datetime.date.today(),
+            year_period='2020',
+            month_period='Jan',
+            rate=50,
+            snt=Snt.objects.get(id=1),
+            )
+        MPayment.objects.create(
+            year_period='2020',
+            month_period='Jan',
+            land_plot=LandPlot.objects.get(id=1),
+            )
+        obj = MPayment.objects.get(id=2)
+        self.assertEqual(obj.plot_area, 600)
+        self.assertEqual(obj.rate, Decimal(50.00))
+        self.assertEqual(obj.amount, 300)
+        # Check for status='paid'
+        MRate.objects.filter(id=2).update(
+            rate=100,
+            )
+        MPayment.objects.filter(id=2).update(
+            status='paid',
+            )
+        self.assertEqual(obj.plot_area, 600)
+        self.assertEqual(obj.rate, Decimal(50.00))
+        self.assertEqual(obj.amount, 300)
+        # Check for status='payment_confirmed'
+        MRate.objects.filter(id=2).update(
+            rate=150,
+            )
+        MPayment.objects.filter(id=2).update(
+            status='payment_confirmed',
+            )
+        self.assertEqual(obj.plot_area, 600)
+        self.assertEqual(obj.rate, Decimal(50.00))
+        self.assertEqual(obj.amount, 300)
+        
+
         
