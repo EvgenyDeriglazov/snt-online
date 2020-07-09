@@ -262,5 +262,24 @@ class MPaymentModelTest(TestCase):
         self.assertEqual(obj.rate, Decimal(50.00))
         self.assertEqual(obj.amount, 300)
         
+    def test_paid(self):
+        """Test for paid() custom method."""
+        obj = MPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "not_paid")
+        self.assertEqual(obj.payment_date, None)
+        obj.paid()
+        obj = MPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "paid")
+        self.assertEqual(obj.payment_date, datetime.date.today())
 
+    def test_payment_confimed(self):
+        """Test for payment_confirmed() custom method."""
+        obj = MPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "not_paid")
+        self.assertEqual(obj.payment_date, None)
+        obj.paid()
+        obj.payment_confirmed()
+        obj = MPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "payment_confirmed")
+        self.assertEqual(obj.payment_date, datetime.date.today())
         

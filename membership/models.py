@@ -4,6 +4,7 @@ from django.urls import reverse
 from index.models import LandPlot, Snt
 from membership.validators import *
 from decimal import *
+import datetime
 
 # Create your models here.
 class MPayment(models.Model):
@@ -99,7 +100,6 @@ class MPayment(models.Model):
         """Returns url to access an instance of the model."""
         pass
 
-
      # Custom methods
     def calculate(self):
         """Calculates e_payment."""
@@ -154,14 +154,14 @@ class MPayment(models.Model):
         return qr_text
     
     def paid(self):
-        """Set EPayment status to 'paid'."""
+        """Set MPayment status to 'paid'."""
         if self.status == 'not_paid':
             self.status = 'paid'
             self.payment_date = datetime.date.today()
             self.save()
     
     def payment_confirmed(self):
-        """Set EPayment status to 'payment_confirmed'."""
+        """Set MPayment status to 'payment_confirmed'."""
         if self.status == 'paid':
             self.status = 'payment_confirmed'
             self.save()
