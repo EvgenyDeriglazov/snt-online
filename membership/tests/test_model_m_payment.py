@@ -283,3 +283,37 @@ class MPaymentModelTest(TestCase):
         self.assertEqual(obj.status, "payment_confirmed")
         self.assertEqual(obj.payment_date, datetime.date.today())
         
+    def test_create_qr_text(self):
+        """Test for create_qr_text() custom method."""
+        # Test year_period payment only
+        obj = MPayment.objects.get(id=1)
+        obj.calculate()
+        qr_text = 'ST00012|Name=Садоводческое некоммерческое товарищество '
+        qr_text += '"Бобровка"|PersonalAcc=01234567898765432101|'
+        qr_text += 'BankName=Банк|BIC=123456789|'
+        qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
+        qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
+        qr_text += 'Purpose=Членские взносы. Год 2020. Сумма 3000.00. '
+        qr_text += 'Всего к оплате 3000.00.'
+        qr_text += '|PayerAddress=участок №10, СНТ "Бобровка"|Sum=300000'
+        self.assertEqual(obj.create_qr_text(), qr_text)
+        # Test year_period and month_period
+        MPayment.objects.filter(id=1).update(
+            month_period='Jan',
+            )
+        MRate.objects.filter(id=1).update(
+            month_period='Jan',
+            rate=10,
+            )
+        obj = MPayment.objects.get(id=1)
+        obj.calculate()
+        qr_text = 'ST00012|Name=Садоводческое некоммерческое товарищество '
+        qr_text += '"Бобровка"|PersonalAcc=01234567898765432101|'
+        qr_text += 'BankName=Банк|BIC=123456789|'
+        qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
+        qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
+        qr_text += 'Purpose=Членские взносы. Год 2020. Месяц январь. '
+        qr_text += 'Сумма 60.00. Всего к оплате 60.00.'
+        qr_text += '|PayerAddress=участок №10, СНТ "Бобровка"|Sum=6000'
+        self.assertEqual(obj.create_qr_text(), qr_text)
+

@@ -120,19 +120,13 @@ class MPayment(models.Model):
     def create_qr_text(self):
         """Create qr_text to generate payment QR code."""
         # Prepare purpose text
-        if self.s_new != None:
-            purpose = f"Членские взносы за э/энергию, однотарифный"
-            purpose += f"/{self.s_new}-{self.s_prev}/{self.s_cons}, "
-            purpose += f"{self.s_cons}x{self.s_amount/self.s_cons}/"
-            purpose += f"{self.s_amount}. Итого/{self.sum_total}."
-        elif self.t1_new != None and self.t2_new != None:
-            purpose = f"Членские взносы за э/энергию, "
-            purpose += f"T1/{self.t1_new}-{self.t1_prev}/{self.t1_cons}, " 
-            purpose += f"T2/{self.t2_new}-{self.t2_prev}/{self.t2_cons}, " 
-            purpose += f"T1/{self.t1_cons}x{self.t1_amount/self.t1_cons}/"
-            purpose += f"{self.t1_amount}, " 
-            purpose += f"T2/{self.t2_cons}x{self.t2_amount/self.t2_cons}/"
-            purpose += f"{self.t2_amount}. Итого/{self.sum_total}." 
+        if self.year_period != '' and self.month_period == '':
+            purpose = f"Членские взносы. Год {self.year_period}. "
+            purpose += f"Сумма {self.amount}. Всего к оплате {self.amount}."
+        elif self.year_period != '' and self.month_period != '':
+            purpose = f"Членские взносы. Год {self.year_period}. "
+            purpose += f"Месяц {self.get_month_period_display().lower()}. "
+            purpose += f"Сумма {self.amount}. Всего к оплате {self.amount}."
         # Prepare payer address text
         payer_address = f"участок №{self.land_plot.plot_number}, "
         payer_address += f"СНТ \"{self.land_plot.snt.name}\""   
@@ -150,7 +144,7 @@ class MPayment(models.Model):
         qr_text += f"MiddleName={self.land_plot.owner.middle_name}|"
         qr_text += f"Purpose={purpose}|"
         qr_text += f"PayerAddress={payer_address}|"
-        qr_text += f"Sum={int(self.sum_total * 100)}"
+        qr_text += f"Sum={int(self.amount * 100)}"
         return qr_text
     
     def paid(self):
