@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from index.models import LandPlot, Snt
 from membership.validators import *
+from decimal import *
 
 # Create your models here.
 class MPayment(models.Model):
@@ -40,7 +41,7 @@ class MPayment(models.Model):
         help_text="Выберите месяц, если начисления" 
         + " членских взносов расчитываются помесячно",
         max_length=3,
-        blank=True,
+        #blank=True,
         choices=MONTH_PERIOD_CHOICES,
         default='',
         )
@@ -98,6 +99,73 @@ class MPayment(models.Model):
         """Returns url to access an instance of the model."""
         pass
 
+
+     # Custom methods
+    def calculate(self):
+        """Calculates e_payment."""
+        rate = MRate.objects.filter(
+            year_period__exact=self.year_period,
+            month_period__exact=self.month_period,
+            ).get()
+        self.plot_area = self.land_plot.plot_area
+        self.rate = rate.rate
+        self.amount = Decimal(self.plot_area / 100) * self.rate
+
+    def save(self, *args, **kwargs):
+        """Custom save method."""
+        if self.status == 'not_paid':
+            self.calculate()
+        super().save(*args, **kwargs)
+    
+    def create_qr_text(self):
+        """Create qr_text to generate payment QR code."""
+        # Prepare purpose text
+        if self.s_new != None:
+            purpose = f"Членские взносы за э/энергию, однотарифный"
+            purpose += f"/{self.s_new}-{self.s_prev}/{self.s_cons}, "
+            purpose += f"{self.s_cons}x{self.s_amount/self.s_cons}/"
+            purpose += f"{self.s_amount}. Итого/{self.sum_total}."
+        elif self.t1_new != None and self.t2_new != None:
+            purpose = f"Членские взносы за э/энергию, "
+            purpose += f"T1/{self.t1_new}-{self.t1_prev}/{self.t1_cons}, " 
+            purpose += f"T2/{self.t2_new}-{self.t2_prev}/{self.t2_cons}, " 
+            purpose += f"T1/{self.t1_cons}x{self.t1_amount/self.t1_cons}/"
+            purpose += f"{self.t1_amount}, " 
+            purpose += f"T2/{self.t2_cons}x{self.t2_amount/self.t2_cons}/"
+            purpose += f"{self.t2_amount}. Итого/{self.sum_total}." 
+        # Prepare payer address text
+        payer_address = f"участок №{self.land_plot.plot_number}, "
+        payer_address += f"СНТ \"{self.land_plot.snt.name}\""   
+        # Prepare qr text
+        qr_text = f"ST00012|"
+        qr_text += f"Name=Садоводческое некоммерческое товарищество "
+        qr_text += f"\"{self.land_plot.snt.name}\"|"
+        qr_text += f"PersonalAcc={self.land_plot.snt.personal_acc}|"
+        qr_text += f"BankName={self.land_plot.snt.bank_name}|"
+        qr_text += f"BIC={self.land_plot.snt.bic}|"
+        qr_text += f"CorrespAcc={self.land_plot.snt.corresp_acc}|"
+        qr_text += f"INN={self.land_plot.snt.inn}|"
+        qr_text += f"LastName={self.land_plot.owner.last_name}|"
+        qr_text += f"FirstName={self.land_plot.owner.first_name}|"
+        qr_text += f"MiddleName={self.land_plot.owner.middle_name}|"
+        qr_text += f"Purpose={purpose}|"
+        qr_text += f"PayerAddress={payer_address}|"
+        qr_text += f"Sum={int(self.sum_total * 100)}"
+        return qr_text
+    
+    def paid(self):
+        """Set EPayment status to 'paid'."""
+        if self.status == 'not_paid':
+            self.status = 'paid'
+            self.payment_date = datetime.date.today()
+            self.save()
+    
+    def payment_confirmed(self):
+        """Set EPayment status to 'payment_confirmed'."""
+        if self.status == 'paid':
+            self.status = 'payment_confirmed'
+            self.save()
+
 class MRate(models.Model):
     """Represents membership payment rate for specific period of time."""
     date = models.DateField(
@@ -131,7 +199,7 @@ class MRate(models.Model):
         help_text="Выберите месяц, если начисления" 
         + " членских взносов расчитываются помесячно",
         max_length=3,
-        blank=True,
+        #blank=True,
         choices=MONTH_PERIOD_CHOICES,
         default='',
         )
