@@ -189,9 +189,9 @@ class MPaymentModelTest(TestCase):
         obj = MPayment.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
     
-    def test_calculate(self):
-        """Test for calculate() custom methods."""
-        #Test rate chage
+    def test_calculate_year_period(self):
+        """Test for calculate() custom method with year period."""
+        #Test rate change
         obj = MPayment.objects.get(id=1)
         MRate.objects.filter(id=1).update(rate=1000)
         self.assertEqual(obj.amount, Decimal(3000.00))
@@ -204,4 +204,25 @@ class MPaymentModelTest(TestCase):
         obj.calculate()
         self.assertEqual(obj.plot_area, 1200)
         self.assertEqual(obj.amount, Decimal(12000.00))
+    
+    def test_calculate_year_month_period(self):
+        """Test for calculate() custom method with year-month period."""
+        #Test rate and month period change
+        MRate.objects.filter(id=1).update(rate=100, month_period='Jan')
+        MPayment.objects.filter(id=1).update(month_period='Jan')
+        obj = MPayment.objects.get(id=1)
+        self.assertEqual(obj.amount, Decimal(3000.00))
+        obj.calculate()
+        self.assertEqual(obj.amount, Decimal(600.00))
+        self.assertEqual(obj.rate, Decimal(100.00))
+        # Test plot area change
+        LandPlot.objects.filter(id=1).update(plot_area=1200)
+        obj = MPayment.objects.get(id=1)
+        obj.calculate()
+        self.assertEqual(obj.plot_area, 1200)
+        self.assertEqual(obj.amount, Decimal(1200.00))
+    
+    def test_save(self):
+        """Test for save() custom methods."""
+        pass
         
