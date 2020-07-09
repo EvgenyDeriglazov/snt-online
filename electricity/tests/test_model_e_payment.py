@@ -375,17 +375,42 @@ class EPaymentModelTest(TestCase):
         
     def test_create_qr_text(self):
         """Test for create_qr_text() custom method."""
+        # Test for single type electrical counter
         obj = EPayment.objects.get(id=1)
         qr_text = 'ST00012|Name=Садоводческое некоммерческое товарищество '
         qr_text += '"Бобровка"|PersonalAcc=01234567898765432101|'
         qr_text += 'BankName=Банк|BIC=123456789|'
         qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
         qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
-        qr_text += 'Purpose=Членские взносы за э/энергию, '
+        qr_text += 'Purpose=Взносы за э/энергию, '
         qr_text += 'однотарифный/200-50/150, 150x1.50/225.00. Итого/225.00.|'
         qr_text += 'PayerAddress=участок №10, СНТ "Бобровка"|Sum=22500'
         self.assertEqual(obj.create_qr_text(), qr_text)
-    
+        # Test for double type electrical counter
+        obj = EPayment.objects.get(id=1)
+        obj.s_new = None
+        obj.s_prev = None
+        obj.t1_new = 100
+        obj.t2_new = 100
+        obj.t1_prev = 0
+        obj.t2_prev = 0
+        obj.calculate()
+        self.assertEqual(obj.t1_cons, 100)
+        self.assertEqual(obj.t2_cons, 100)
+        self.assertEqual(obj.t1_amount, Decimal('350.00'))
+        self.assertEqual(obj.t2_amount, Decimal('250.00'))
+        self.assertEqual(obj.sum_total, Decimal('600.00'))
+        qr_text = 'ST00012|Name=Садоводческое некоммерческое товарищество '
+        qr_text += '"Бобровка"|PersonalAcc=01234567898765432101|'
+        qr_text += 'BankName=Банк|BIC=123456789|'
+        qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
+        qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
+        qr_text += 'Purpose=Взносы за э/энергию, '
+        qr_text += 'T1/100-0/100, T2/100-0/100, '
+        qr_text += 'T1/100x3.50/350.00, T2/100x2.50/250.00. Итого/600.00.|'
+        qr_text += 'PayerAddress=участок №10, СНТ "Бобровка"|Sum=60000'
+        self.assertEqual(obj.create_qr_text(), qr_text)
+
     def test_paid(self):
         """Test for paid() custom method."""
         EPayment.objects.filter(id=1).update(
