@@ -27,7 +27,7 @@ class TPaymentModelTest(TestCase):
             join_date=datetime.date.today(),
             )
         Snt.objects.create(
-            name='СНТ Бобровка',
+            name='Бобровка',
             personal_acc='01234567898765432101',
             bank_name='Банк',
             bic='123456789',
@@ -152,3 +152,16 @@ class TPaymentModelTest(TestCase):
         obj = TPayment.objects.get(id=1)
         self.assertEqual(obj.status, "payment_confirmed")
         self.assertEqual(obj.payment_date, datetime.date.today())
+
+    def test_create_qr_text(self):
+        """Test for create_qr_text() custom method."""
+        obj = TPayment.objects.get(id=1)
+        qr_text = 'ST00012|Name=Садоводческое некоммерческое товарищество '
+        qr_text += '"Бобровка"|PersonalAcc=01234567898765432101|'
+        qr_text += 'BankName=Банк|BIC=123456789|'
+        qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
+        qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
+        qr_text += 'Purpose=Целевые взносы. Test target. Сумма 6000.00. '
+        qr_text += 'Всего к оплате 6000.00.'
+        qr_text += '|PayerAddress=участок №10, СНТ "Бобровка"|Sum=600000'
+        self.assertEqual(obj.create_qr_text(), qr_text)

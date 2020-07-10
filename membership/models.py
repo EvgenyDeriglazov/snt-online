@@ -300,3 +300,28 @@ class TPayment(models.Model):
         if self.status == 'paid':
             self.status = 'payment_confirmed'
             self.save()
+
+    def create_qr_text(self):
+        """Create qr_text to generate payment QR code."""
+        # Prepare purpose text
+        purpose = f"Целевые взносы. {self.target}. "
+        purpose += f"Сумма {self.amount}. Всего к оплате {self.amount}."
+        # Prepare payer address text
+        payer_address = f"участок №{self.land_plot.plot_number}, "
+        payer_address += f"СНТ \"{self.land_plot.snt.name}\""   
+        # Prepare qr text
+        qr_text = f"ST00012|"
+        qr_text += f"Name=Садоводческое некоммерческое товарищество "
+        qr_text += f"\"{self.land_plot.snt.name}\"|"
+        qr_text += f"PersonalAcc={self.land_plot.snt.personal_acc}|"
+        qr_text += f"BankName={self.land_plot.snt.bank_name}|"
+        qr_text += f"BIC={self.land_plot.snt.bic}|"
+        qr_text += f"CorrespAcc={self.land_plot.snt.corresp_acc}|"
+        qr_text += f"INN={self.land_plot.snt.inn}|"
+        qr_text += f"LastName={self.land_plot.owner.last_name}|"
+        qr_text += f"FirstName={self.land_plot.owner.first_name}|"
+        qr_text += f"MiddleName={self.land_plot.owner.middle_name}|"
+        qr_text += f"Purpose={purpose}|"
+        qr_text += f"PayerAddress={payer_address}|"
+        qr_text += f"Sum={int(self.amount * 100)}"
+        return qr_text
