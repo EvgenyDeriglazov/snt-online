@@ -42,7 +42,7 @@ class LandPlotModelTest(TestCase):
         )
         LandPlot.objects.create(
             plot_number="10",
-            plot_area=6000,
+            plot_area=600,
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
         )
@@ -61,7 +61,7 @@ class LandPlotModelTest(TestCase):
         field = obj._meta.get_field('plot_area')
         self.assertEqual(field.verbose_name, "Размер участка")
         self.assertEqual(field.help_text, "Единица измерения кв.м")
-        self.assertEqual(obj.plot_area, 6000)
+        self.assertEqual(obj.plot_area, 600)
 
     def test_snt_field(self):
         obj = LandPlot.objects.get(id=1)

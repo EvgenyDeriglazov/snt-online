@@ -288,4 +288,15 @@ class TPayment(models.Model):
         """Returns url to access an instance of the model."""
         pass
 
-
+    def paid(self):
+        """Set TPayment status to 'paid'."""
+        if self.status == 'not_paid':
+            self.status = 'paid'
+            self.payment_date = datetime.date.today()
+            self.save()
+    
+    def payment_confirmed(self):
+        """Set TPayment status to 'payment_confirmed'."""
+        if self.status == 'paid':
+            self.status = 'payment_confirmed'
+            self.save()

@@ -44,7 +44,7 @@ class MRateModelTest(TestCase):
             )
         LandPlot.objects.create(
             plot_number="10",
-            plot_area=6000,
+            plot_area=600,
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
             )

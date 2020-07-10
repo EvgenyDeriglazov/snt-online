@@ -44,7 +44,7 @@ class TPaymentModelTest(TestCase):
             )
         LandPlot.objects.create(
             plot_number="10",
-            plot_area=6000,
+            plot_area=600,
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
             )
@@ -131,3 +131,24 @@ class TPaymentModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = TPayment.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+    
+    def test_paid(self):
+        """Test for paid() custom method."""
+        obj = TPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "not_paid")
+        self.assertEqual(obj.payment_date, None)
+        obj.paid()
+        obj = TPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "paid")
+        self.assertEqual(obj.payment_date, datetime.date.today())
+
+    def test_payment_confimed(self):
+        """Test for payment_confirmed() custom method."""
+        obj = TPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "not_paid")
+        self.assertEqual(obj.payment_date, None)
+        obj.paid()
+        obj.payment_confirmed()
+        obj = TPayment.objects.get(id=1)
+        self.assertEqual(obj.status, "payment_confirmed")
+        self.assertEqual(obj.payment_date, datetime.date.today())
