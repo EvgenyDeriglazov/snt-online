@@ -1,0 +1,19 @@
+<!DOCTYPE html> 
+<html lang="ru">
+	<head>
+		{% block title %}<title>снт-онлайн</title>{% endblock %}
+		<meta charset="utf-8">
+		<!-- Add additional CSS in static file -->
+  		{% load static %}
+  		<link rel="stylesheet" href="{% static 'css/index_styles.css' %}">
+	</head>
+	<body>
+		{% block sidebar %}
+			<ul class="sidebar-nav">
+          		<li><a href="{% url 'homepage' %}">Главная</a></li>
+          		<li><a href="">All books</a></li>
+          		<li><a href="">All authors</a></li>
+        	</ul>
+        {% endblock %}
+	</body>
+</html>
