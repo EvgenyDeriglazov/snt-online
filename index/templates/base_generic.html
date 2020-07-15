@@ -1,13 +1,15 @@
 <!DOCTYPE html> 
 <html lang="ru">
 	<head>
-		{% block title %}<title>снт-онлайн</title>{% endblock %}
+		{% block title %}<title>СНТ-Онлайн</title>{% endblock %}
 		<meta charset="utf-8">
 		<!-- Add additional CSS in static file -->
   		{% load static %}
-  		<link rel="stylesheet" href="{% static 'css/index_styles.css' %}">
+  		<link rel="stylesheet" href="{% static '../static/css/index_styles.css' %}" type="text/css" media="screen">
 	</head>
 	<body>
+		<div id="header">Header</div>
+		<div id="top-menu">Top menu</div>
 		{% block sidebar %}
 			<ul class="sidebar-nav">
           		<li><a href="{% url 'homepage' %}">Главная</a></li>
