@@ -16,6 +16,33 @@ body {
 	border: 1px solid black;
 }
 
+#main-container {
+	
+	width: 870px;
+	horisontal-align: center;
+	
+}
+
+#left-column {
+	
+}
+
+#center-column {
+	min-height: 450px;
+}
+
+#right-column {
+	
+}
+
+#footer {
+	padding: 0;
+	width: 100%;
+	height: 50px;
+	background-color: #97b8f7;
+	font-weight: bold;
+}
+
 .sidebar-nav {
     margin-top: 20px;
     padding: 0;
