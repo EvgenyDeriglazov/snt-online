@@ -8,20 +8,30 @@
   		<link rel="stylesheet" href="{% static '../static/index/index_styles.css' %}" type="text/css" media="screen">
 	</head>
 	<body>
-		<div id="header">Header</div>
-		<div id="top-menu">Top menu</div>
-		<div id="main-container">Main container
-			<div id="left-column">Left column</div>
-			<div id="center-column">Center column</div>
-			<div id="right-column">Right column</div>
-			<div id="footer">Footer</div>
+		<div id="top-bar">
+			<div class="fixed-container">СНТ "Балтика"</div>
 		</div>
-		{% block sidebar %}
-			<ul class="sidebar-nav">
-          		<li><a href="{% url 'homepage' %}">Главная</a></li>
-          		<li><a href="">All books</a></li>
-          		<li><a href="">All authors</a></li>
-        	</ul>
-        {% endblock %}
+		<div id="menu-container">
+			<div class="fixed-container">
+				<a href="#">Главная</a>
+				<a href="#">Информация</a>
+				<a href="#">Документы</a>
+				<a href="#">Реквизиты</a>
+				<a href="#">Контакты</a>
+			</div>
+		</div>
+		<div id="central-container">
+			<div class="fixed-container" id="flex-container">
+				<div id="left-column"><h4>Личный кабинет</h4></div>
+				<div id="center-column">
+				<h2>Информация</h2>теку фдалофывдфдалофывдфдалофывдфдалофывд
+				фдалофывдфдалофывдфдалофывдфдалофывдфдалофывд фдалофывдфдалi
+				офывддфдалофывдффдалофывдлжоадвыло адфвы адлфовыдалофывдлаофывдла 
+				одлфывоадлфывоадлфыовдлаоы
+				</div>
+				<div id="right-column">Right container aldfj aljdf aldjf aldsjf;alsdjfasdjf llka jlfjasdl fjals</div>
+			</div>
+			
+		</div>
 	</body>
 </html>
