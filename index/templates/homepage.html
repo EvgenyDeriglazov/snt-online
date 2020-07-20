@@ -1,11 +1,9 @@
 {% extends "base_generic.html" %}
 
-{% block content %}
-  <h1>Local Library Home</h1>
-  <p>Welcome to LocalLibrary, a website developed by <em>Mozilla Developer Network</em>!</p>
-  <h2>Dynamic content</h2>
-  <p>The library has the following record counts:</p>
-  <ul>
-    <li><strong>X:</strong> {{ x }}</li>
-  </ul>
+{% block title %}{{ snt_name }}{% endblock %}
+{% block top-bar %}{{ snt_name }}{% endblock %}
+{% block left-column %}
+<div id="left-column">
+	<h4>Личный кабинет</h4>
+</div>
 {% endblock %}

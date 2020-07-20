@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html lang="ru">
 	<head>
-		{% block title %}<title>СНТ-Онлайн</title>{% endblock %}
+		<title>{% block title %}{% endblock %}</title>
 		<meta charset="utf-8">
 		<!-- Add additional CSS in static file -->
   		{% load static %}
@@ -9,8 +9,9 @@
 	</head>
 	<body>
 		<div id="top-bar">
-			<div class="fixed-container">СНТ "Балтика"</div>
+			<div class="fixed-container">{% block top-bar %}{% endblock %}</div>
 		</div>
+
 		<div id="menu-container">
 			<div class="fixed-container">
 				<a href="#">Главная</a>
@@ -20,17 +21,17 @@
 				<a href="#">Контакты</a>
 			</div>
 		</div>
-		<div id="top-banner">
 		
-		</div>
 		<div id="central-container">
 			<div class="fixed-container" id="flex-container">
+				{% block left-column %}
 				<div id="left-column"><h4>Личный кабинет</h4></div>
+				{% endblock %}
 				<div id="center-column">
-				<h2>Информация</h2>теку фдалофывдфдалофывдфдалофывдфдалофывд
-				фдалофывдфдалофывдфдалофывдфдалофывдфдалофывд фдалофывдфдалi
-				офывддфдалофывдффдалофывдлжоадвыло адфвы адлфовыдалофывдлаофывдла 
-				одлфывоадлфывоадлфыовдлаоы
+				<h2>Информация</h2>теку фдалофывдфдал офывдфдалофывдфдалофывд
+				фдалофыв дфдалофыв дфдалофывдфдалофы вдфдалофывд фдалофывдфдалi
+				офывддф далоф ывдффдалофыв длжоадвыло адфвы адлфовыдалоф ывдлаофывдла 
+				одлфывоа длфывоадл фыовдлаоы
 				</div>
 				<div id="right-column">
 					<h4>Данные садоводства</h4>
