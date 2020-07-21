@@ -57,8 +57,12 @@ body {
 	background-color: #FFFFFF;
 	margin: 0 20px;
 	padding: 0 18px;
-	max-width: 440px;
+	width: 440px;
 	min-height: 500px;
+}
+
+#center-column h3 {
+	text-align: center;
 }
 
 #right-column {

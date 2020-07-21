@@ -2,17 +2,37 @@
 
 {% block title %}{{ snt_name }}{% endblock %}
 {% block top-bar %}{{ snt_name }}{% endblock %}
+{% block menu %}
+<div id="menu-container">
+	<div class="fixed-container">
+		<a href="{% url 'homepage' %}">Главная</a>
+		<a href="#">Информация</a>
+		<a href="#">Документы</a>
+		<a href="#">Реквизиты</a>
+		<a href="#">Контакты</a>
+	</div>
+</div>
+{% endblock %}
 {% block left-column %}
 <div id="left-column">
 	<h4>Личный кабинет</h4>
 </div>
 {% endblock %}
+{% block center-column %}
+<div id="center-column">
+	<h3>Информация</h3>
+	{% for info in info_list %}
+	<h4>{{ info.title }}</h4>
+	{% empty %}
+	<p>Еще пока не опубликовано ни одной записи.</p>
+	{% endfor %}
+</div>
+{% endblock %}
 {% block right-column %}
 <div id="right-column">
 	<h4>Данные садоводства</h4>
-	<p>Название: СНТ "Балтика"<br>
-	Площадь: <br>
-	Число участков: <br>
+	<p>Название: {{ snt_name }}<br>
+	Число участков: {{ land_plots_count }}<br>
 </div>
 {% endblock %}
 

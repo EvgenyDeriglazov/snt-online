@@ -11,7 +11,7 @@
 		<div id="top-bar">
 			<div class="fixed-container">{% block top-bar %}{% endblock %}</div>
 		</div>
-
+		{% block menu %}
 		<div id="menu-container">
 			<div class="fixed-container">
 				<a href="#">Главная</a>
@@ -21,6 +21,7 @@
 				<a href="#">Контакты</a>
 			</div>
 		</div>
+		{% endblock %}
 		
 		<div id="central-container">
 			<div class="fixed-container" id="flex-container">
@@ -29,17 +30,19 @@
 					<h4>Личный кабинет</h4>
 				</div>
 				{% endblock %}
+				{% block center-column %}
 				<div id="center-column">
-				<h2>Информация</h2>теку фдалофывдфдал офывдфдалофывдфдалофывд
-				фдалофыв дфдалофыв дфдалофывдфдалофы вдфдалофывд фдалофывдфдалi
-				офывддф далоф ывдффдалофыв длжоадвыло адфвы адлфовыдалоф ывдлаофывдла 
-				одлфывоа длфывоадл фыовдлаоы
+				<h2>Информация</h2>Информация
+				Информация Информация Информация Информация
+				Информация Информация Информация Информация
+				Информация Информация Информация Информация
+				Информация Информация Информация Информация
 				</div>
+				{% endblock %}
 				{% block right-column %}
 				<div id="right-column">
 					<h4>Данные садоводства</h4>
-					<p>Название: СНТ Онлайн<br>
-					Площадь: <br>
+					<p>Название: <br>
 					Число участков: <br>
 				</div>
 				{% endblock %}
