@@ -48,22 +48,24 @@ body {
 
 #left-column {
 	background-color: #FFFFFF;
-	min-width: 200px;
-	max-width: 260px;
+	width: 260px;
 	padding: 0 18px;
+	max-height: 280px;
 }
 
 #center-column {
 	background-color: #FFFFFF;
 	margin: 0 20px;
 	padding: 0 18px;
+	max-width: 440px;
+	min-height: 500px;
 }
 
 #right-column {
 	background-color: #FFFFFF;
-	min-width: 200px;
-	max-width: 260px;
+	width: 260px;
 	padding: 0 18px;	
+	max-height: 280px;
 }
 
 #right-column p {

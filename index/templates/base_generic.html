@@ -25,7 +25,9 @@
 		<div id="central-container">
 			<div class="fixed-container" id="flex-container">
 				{% block left-column %}
-				<div id="left-column"><h4>Личный кабинет</h4></div>
+				<div id="left-column">
+					<h4>Личный кабинет</h4>
+				</div>
 				{% endblock %}
 				<div id="center-column">
 				<h2>Информация</h2>теку фдалофывдфдал офывдфдалофывдфдалофывд
@@ -33,16 +35,20 @@
 				офывддф далоф ывдффдалофыв длжоадвыло адфвы адлфовыдалоф ывдлаофывдла 
 				одлфывоа длфывоадл фыовдлаоы
 				</div>
+				{% block right-column %}
 				<div id="right-column">
 					<h4>Данные садоводства</h4>
-					<p>Название: СНТ "Балтика"<br>
+					<p>Название: СНТ Онлайн<br>
 					Площадь: <br>
 					Число участков: <br>
 				</div>
+				{% endblock %}
 			</div>
 		</div>
+		{% block bottom-bar %}
 		<div id="bottom-bar">
-			<div class="fixed-container">СНТ "Балтика"</div>
+			<div class="fixed-container">СНТ Онлайн</div>
 		</div>
+		{% endblock %}
 	</body>
 </html>
