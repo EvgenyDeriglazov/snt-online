@@ -48,14 +48,15 @@ body {
 
 #left-column {
 	background-color: #FFFFFF;
-	min-width: 200px;
+	width: 200px;
 	padding: 0 18px;
 	max-height: 280px;
+    margin-right: 10px;
 }
 
 #center-column {
 	background-color: #FFFFFF;
-	margin: 0 20px;
+	/*margin: 0 20px;*/
 	padding: 0 18px;
 	min-width: 440px;
 	min-height: 500px;
@@ -68,9 +69,10 @@ body {
 
 #right-column {
 	background-color: #FFFFFF;
-	width: 260px;
+	width: 200px;
 	padding: 0 18px;	
 	max-height: 280px;
+    margin-left: 10px;
 }
 
 #right-column p {
@@ -82,7 +84,6 @@ body {
 	color: white;
 	padding: 8px 0;
 	font-size: 12px;
-	margin: 20px 0;
 }
 
 /*

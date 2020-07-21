@@ -10,6 +10,7 @@
 	<h3>Информация</h3>
 	{% for info in info_list %}
 	<h4>{{ info.title }}</h4>
+    <h6>{{ info.pub_date }}</h6>
 	<p>{{ info.body|truncatewords:20 }}</p>
 	{% empty %}
 	<p>Пока еще не опубликовано ни одной записи.</p>

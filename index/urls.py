@@ -1,7 +1,7 @@
 from django.urls import path
-from index.views import *
+from index.views import InfoPage
 
 urlpatterns = [
-	path('', info, name='info'),
+	path('', InfoPage.as_view(), name='info'),
 
 ]

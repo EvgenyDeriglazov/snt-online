@@ -1,7 +1,13 @@
 <!DOCTYPE html> 
 <html lang="ru">
 	<head>
-		<title>{% block title %}{% endblock %}</title>
+		<title>
+            {% if snt_list %}
+            СНТ {{ snt_list.0.name}}
+            {% else %}
+            СНТ Онлайн
+            {% endif %}
+        </title>
 		<meta charset="utf-8">
 		<!-- Add additional CSS in static file -->
   		{% load static %}
@@ -9,14 +15,18 @@
 	</head>
 	<body>
 		<div id="top-bar">
-			<div class="fixed-container">
-			{% block top-bar %}{% endblock %}
-			</div>
+		    <div class="fixed-container">
+                {% if snt_list %}
+                СНТ "{{ snt_list.0.name}}"
+                {% else %}
+                СНТ Онлайн
+                {% endif %}
+            </div>
 		</div>
 		{% block menu %}
 		<div id="menu-container">
 			<div class="fixed-container">
-				<a href="{% url 'homepage' %}">Главная</a>
+				<a href="{% url 'home' %}">Главная</a>
 				<a href="{% url 'info' %}">Информация</a>
 				<a href="#">Документы</a>
 				<a href="#">Реквизиты</a>
@@ -31,26 +41,25 @@
 				<div id="left-column">
 					<h4>Личный кабинет</h4>
 				</div>
-				{% endblock %}
+				{% endblock left-column %}
+
 				{% block center-column %}
-				<div id="center-column">
-				<h2>Информация</h2>
-				{% lorem %}
-				</div>
-				{% endblock %}
+				{% endblock center-column %}
+
 				{% block right-column %}
-				<!--<div id="right-column">
-					<h4>Данные садоводства</h4>
-					<p>Название: <br>
-					Число участков: <br>
-				</div> -->
-				{% endblock %}
+				{% endblock right-column %}
 			</div>
 		</div>
 		{% block bottom-bar %}
 		<div id="bottom-bar">
-			<div class="fixed-container">СНТ Онлайн</div>
+			<div class="fixed-container">
+                {% if snt_list %}
+                {{ snt_list.0.address}}, СНТ "{{ snt_list.0.name }}"
+                {% else %}
+                СНТ Онлайн
+                {% endif %}
+            </div>
 		</div>
-		{% endblock %}
+		{% endblock bottom-bar %}
 	</body>
 </html>

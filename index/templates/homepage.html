@@ -1,13 +1,11 @@
 {% extends "base_generic.html" %}
 
-{% block title %}{{ snt_name }}{% endblock %}
-{% block top-bar %}{{ snt_name }}{% endblock %}
-
 {% block left-column %}
 <div id="left-column">
 	<h4>Личный кабинет</h4>
 </div>
 {% endblock %}
+
 {% block center-column %}
 <div id="center-column">
 	<h3>Информация</h3>
@@ -29,8 +27,3 @@
 </div>
 {% endblock %}
 
-{% block bottom-bar %}
-<div id="bottom-bar">
-	<div class="fixed-container">{{ snt_address }}</div>
-</div>
-{% endblock %}
