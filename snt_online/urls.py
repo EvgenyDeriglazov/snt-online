@@ -22,6 +22,7 @@ from index.views import homepage
 urlpatterns = [
     path('', homepage, name='homepage'),
     path('admin/', admin.site.urls),
+    path('info/', include('index.urls'))
 ]
 
 urlpatterns += static(

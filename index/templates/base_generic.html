@@ -9,13 +9,15 @@
 	</head>
 	<body>
 		<div id="top-bar">
-			<div class="fixed-container">{% block top-bar %}{% endblock %}</div>
+			<div class="fixed-container">
+			{% block top-bar %}{% endblock %}
+			</div>
 		</div>
 		{% block menu %}
 		<div id="menu-container">
 			<div class="fixed-container">
-				<a href="#">Главная</a>
-				<a href="#">Информация</a>
+				<a href="{% url 'homepage' %}">Главная</a>
+				<a href="{% url 'info' %}">Информация</a>
 				<a href="#">Документы</a>
 				<a href="#">Реквизиты</a>
 				<a href="#">Контакты</a>
@@ -32,19 +34,16 @@
 				{% endblock %}
 				{% block center-column %}
 				<div id="center-column">
-				<h2>Информация</h2>Информация
-				Информация Информация Информация Информация
-				Информация Информация Информация Информация
-				Информация Информация Информация Информация
-				Информация Информация Информация Информация
+				<h2>Информация</h2>
+				{% lorem %}
 				</div>
 				{% endblock %}
 				{% block right-column %}
-				<div id="right-column">
+				<!--<div id="right-column">
 					<h4>Данные садоводства</h4>
 					<p>Название: <br>
 					Число участков: <br>
-				</div>
+				</div> -->
 				{% endblock %}
 			</div>
 		</div>

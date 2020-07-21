@@ -48,7 +48,7 @@ body {
 
 #left-column {
 	background-color: #FFFFFF;
-	width: 260px;
+	min-width: 200px;
 	padding: 0 18px;
 	max-height: 280px;
 }
@@ -57,8 +57,9 @@ body {
 	background-color: #FFFFFF;
 	margin: 0 20px;
 	padding: 0 18px;
-	width: 440px;
+	min-width: 440px;
 	min-height: 500px;
+	flex-grow: 2;
 }
 
 #center-column h3 {
@@ -84,7 +85,7 @@ body {
 	margin: 20px 0;
 }
 
-
+/*
 @media (max-width: 830px) {
 	#flex-container {
 		flex-wrap: wrap;
@@ -131,4 +132,4 @@ body {
 	#top-bar {
 		font-size: 12px;
 	}
-}
+} */
