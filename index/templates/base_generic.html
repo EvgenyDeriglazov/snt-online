@@ -29,8 +29,8 @@
 				<a href="{% url 'home' %}">Главная</a>
 				<a href="{% url 'info' %}">Информация</a>
 				<a href="#">Документы</a>
-				<a href="#">Реквизиты</a>
-				<a href="#">Контакты</a>
+				<a href="{% url 'snt-bank-details' %}">Реквизиты</a>
+				<a href="{% url 'snt-contacts' %}">Контакты</a>
 			</div>
 		</div>
 		{% endblock %}

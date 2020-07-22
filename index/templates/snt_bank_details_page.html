@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block left-column %}
+<div id="left-column">
+	<h4>Личный кабинет</h4>
+</div>
+{% endblock %}
+{% block center-column %}
+<div id="center-column">
+    <h3>Банковские реквизиты</h3>
+	{% if snt_list %}
+	<h4>СНТ "{{ snt_list.0.name }}"</h4>
+	<h4>{{ snt_list.0.bank_name }}</h4>
+	<h4>Расчетный счет {{ snt_list.0.personal_acc }}</h4>
+	<h4>БИК {{ snt_list.0.bic }}</h4>
+	<h4>Корр. счет {{ snt_list.0.corresp_acc }}</h4>
+	<h4>ИНН {{ snt_list.0.inn }}</h4>
+	<h4>КПП {{ snt_list.0.kpp }}</h4>
+	{% endif %}
+</div>
+{% endblock %}
+

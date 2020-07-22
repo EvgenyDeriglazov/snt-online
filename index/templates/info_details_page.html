@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block left-column %}
+<div id="left-column">
+	<h4>Личный кабинет</h4>
+</div>
+{% endblock %}
+{% block center-column %}
+<div id="center-column">
+	{% if info_details %}
+	<h4 align="center">{{ info_details.title }}</h4>
+    <p>{{ info_details.body }}</p>
+	{% endif %}
+     <h6 align="right">Дата: {{ info_details.pub_date|date:"j E Y" }}</br>
+    Автор: {{ info_details.author }}</h6>
+	<a href="{% url 'info' %}">Назад</a>
+</div>
+{% endblock %}
+

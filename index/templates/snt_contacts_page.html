@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block left-column %}
+<div id="left-column">
+	<h4>Личный кабинет</h4>
+</div>
+{% endblock %}
+{% block center-column %}
+<div id="center-column">
+    <h3>Контакты</h3>
+	{% if snt_list %}
+	<h4>Адрес: {{ snt_list.0.address }}"</h4>
+	{% endif %}
+    {% if chair_man %}
+    <h4>{{chair_man.0.meta.verbose_name }}  {{ chair_man.0.str }}</h4>
+    <h4>Телефон: {{ chair_man.phone }}</h4>
+    <h4>Электронная почта: {{ chair_man.email }}</h4>
+    {% endif %}
+</div>
+{% endblock %}
+

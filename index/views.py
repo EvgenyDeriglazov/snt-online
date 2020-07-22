@@ -28,7 +28,25 @@ class InfoPage(ListView):
         return context
 
 class InfoDetailsPage(DetailView):
-    """Class based view to display info details page."""
+    """Class based view to display Info model details page."""
     model = Info
-    template_name = "info_detail_page.html"
-    context_object_name = "info_detail"
+    template_name = "info_details_page.html"
+    context_object_name = "info_details"
+
+class SntBankDetailsPage(ListView):
+    """Class based view to display Snt bank details page."""
+    model = Snt
+    template_name = "snt_bank_details_page.html"
+    context_object_name = "snt_list"
+
+class SntContactsPage(ListView):
+    """Class based view to display Snt contacts."""
+    model = Snt
+    template_name = "snt_contacts_page.html"
+    context_object_name = "snt_list"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['chair_man'] = ChairMan.objects.filter(
+            leave_date__isnull=True)
+        return context

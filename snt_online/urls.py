@@ -17,13 +17,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from index.views import HomePage
+from index.views import *
 
 urlpatterns = [
     path('', HomePage.as_view(), name='home'),
-    #path('', homepage, name='homepage'),
     path('admin/', admin.site.urls),
-    path('info/', include('index.urls'))
+    path('info/', InfoPage.as_view(), name='info'),
+    path('info/<int:pk>', InfoDetailsPage.as_view(), name='info-details'),
+    path(
+        'snt-bank-details/',
+        SntBankDetailsPage.as_view(),
+        name='snt-bank-details'
+        ),
+    path('contacts/', SntContactsPage.as_view(), name='snt-contacts')
 ]
 
 urlpatterns += static(
