@@ -27,3 +27,8 @@ class InfoPage(ListView):
             ).order_by('-pub_date')
         return context
 
+class InfoDetailsPage(DetailView):
+    """Class based view to display info details page."""
+    model = Info
+    template_name = "info_detail_page.html"
+    context_object_name = "info_detail"

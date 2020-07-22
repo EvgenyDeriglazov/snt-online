@@ -29,14 +29,6 @@ body {
 	color: #202020;
 }
 
-.fixed-container {
-	max-width: 1000px;
-	min-width: 300px;
-	padding: 0 20px;
-	margin: 0 auto;
-	position: relative;
-}
-
 #central-container {
 	background-color: #f9f9f9;
 	padding-top: 20px;
@@ -44,6 +36,14 @@ body {
 
 #flex-container {
 	display: flex;
+}
+
+.fixed-container {
+	max-width: 1000px;
+	min-width: 300px;
+	padding: 0 20px;
+	margin: 0 auto;
+	position: relative;
 }
 
 #left-column {
@@ -63,6 +63,9 @@ body {
 	flex-grow: 2;
 }
 
+.info-container {
+	
+}
 #center-column h3 {
 	text-align: center;
 }

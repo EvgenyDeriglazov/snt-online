@@ -21,7 +21,12 @@
 {% block right-column %}
 <div id="right-column">
 	<h4>Данные садоводства</h4>
-	<p>Название: СНТ "{{ snt_list.0.name }}"<br>
+	<p>Название: 
+		{% if snt_list %} 
+		СНТ "{{ snt_list.0.name }}"
+		{% else %} 
+		СНТ Онлайн<br>
+		{% endif %}
 	Число участков: {{ land_plots_count }}<br>
 	</p>
 </div>
