@@ -1,4 +1,8 @@
 {% extends "base_generic.html" %}
+{% load index_extratags %}
+<!-- |verbose_name - returns Model._meta.verbose_name -->
+<!-- |verbose_name_plural - returns Model._meta.verbose_name_plural -->
+<!-- |str - returns Model.__str__() -->
 
 {% block left-column %}
 <div id="left-column">
@@ -11,10 +15,17 @@
 	{% if snt_list %}
 	<h4>Адрес: {{ snt_list.0.address }}"</h4>
 	{% endif %}
+
     {% if chair_man %}
-    <h4>{{chair_man.0.meta.verbose_name }}  {{ chair_man.0.str }}</h4>
+    <h4>{{chair_man|verbose_name }}:  {{ chair_man|str }}</h4>
     <h4>Телефон: {{ chair_man.phone }}</h4>
     <h4>Электронная почта: {{ chair_man.email }}</h4>
+    {% endif %}
+
+    {% if accountant %}
+    <h4>{{accountant|verbose_name }}:  {{ accountant|str }}</h4>
+    <h4>Телефон: {{ accountant.phone }}</h4>
+    <h4>Электронная почта: {{ accountant.email }}</h4>
     {% endif %}
 </div>
 {% endblock %}

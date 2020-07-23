@@ -47,6 +47,10 @@ class SntContactsPage(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['chair_man'] = ChairMan.objects.filter(
-            leave_date__isnull=True)
+        if ChairMan.objects.filter(leave_date__isnull=True).exists():
+            context['chair_man'] = ChairMan.objects.filter(
+                leave_date__isnull=True).get()
+        if Accountant.objects.filter(leave_date__isnull=True).exists():
+            context['accountant'] = Accountant.objects.filter(
+                leave_date__isnull=True).get()
         return context
