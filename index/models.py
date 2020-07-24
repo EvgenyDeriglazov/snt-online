@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
@@ -6,6 +7,7 @@ from datetime import date
 from django.db.models import Q
 from django.urls import reverse
 
+fs = FileSystemStorage(location='/media/docs/')
 # Data validators
 def validate_number(value):
     """Makes number validation (only numeric symbols)."""
@@ -474,7 +476,7 @@ class Docs(models.Model):
         )
     
     upload = models.FileField(
-        upload_to=upload_directory,
+        upload_to=fs,
         verbose_name="Файл документа",
         help_text="Выберите файл для загрузки",
         )
