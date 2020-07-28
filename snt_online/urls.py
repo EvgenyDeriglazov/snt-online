@@ -29,7 +29,8 @@ urlpatterns = [
         SntBankDetailsPage.as_view(),
         name='snt-bank-details'
         ),
-    path('contacts/', SntContactsPage.as_view(), name='snt-contacts')
+    path('contacts/', SntContactsPage.as_view(), name='snt-contacts'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 urlpatterns += static(
