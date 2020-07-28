@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from index.models import *
+from django.contrib.auth.forms import AuthenticationForm
 
 # Create your views here.
 class HomePage(ListView):
@@ -12,6 +13,7 @@ class HomePage(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['land_plots_count'] = LandPlot.objects.count()
+        context['auth_form'] = AuthenticationForm
         return context
 
 class InfoPage(ListView):
@@ -25,6 +27,7 @@ class InfoPage(ListView):
         context['info_list'] = Info.objects.filter(
             status__exact='published',
             ).order_by('-pub_date')
+        context['auth_form'] = AuthenticationForm
         return context
 
 class InfoDetailsPage(DetailView):
@@ -36,6 +39,7 @@ class InfoDetailsPage(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
+        context['auth_form'] = AuthenticationForm
         return context
 
 
@@ -44,6 +48,11 @@ class SntBankDetailsPage(ListView):
     model = Snt
     template_name = "snt_bank_details_page.html"
     context_object_name = "snt_list"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['auth_form'] = AuthenticationForm
+        return context
 
 class SntContactsPage(ListView):
     """Class based view to display Snt contacts."""
@@ -59,6 +68,7 @@ class SntContactsPage(ListView):
         if Accountant.objects.filter(leave_date__isnull=True).exists():
             context['accountant'] = Accountant.objects.filter(
                 leave_date__isnull=True).get()
+        context['auth_form'] = AuthenticationForm
         return context
 
 class DocsPage(ListView):
@@ -72,6 +82,7 @@ class DocsPage(ListView):
         if Docs.objects.filter(status__exact='published').exists():
             context['docs_list'] = Docs.objects.filter(
                 status__exact='published').order_by('-upload_date')
+        context['auth_form'] = AuthenticationForm
         return context
 
 class DocsDetailsPage(DetailView):
@@ -83,4 +94,7 @@ class DocsDetailsPage(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
+        context['auth_form'] = AuthenticationForm
         return context
+
+

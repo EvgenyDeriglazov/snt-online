@@ -40,6 +40,32 @@
 				{% block left-column %}
 				<div id="left-column">
 					<h4>Личный кабинет</h4>
+    				{% if auth_form.errors %}
+        			<p>Неверное имя пользователя или пароль.</p>
+    				{% endif %}
+
+    				{% if next %}
+        				{% if user.is_authenticated %}
+        				<p>У вас нет доступа к этой странице.</p>
+        				{% else %}
+        				<p>Для просмотра этой страницы необходимо авторизироваться.</p>
+        				{% endif %}
+    				{% endif %}
+    				
+    				{% if user.is_authenticated %}
+        				<p>Пользователь: {{ user.username }}</br>
+        				<a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
+        				</p>
+        			{% else %}
+    					<form method="post" action="{% url 'login' %}" size=10>
+        				{% csrf_token %}
+        				<p>Логин{{ auth_form.username }}</br>
+        				Пароль{{ auth_form.password }}</br>
+        				</p>
+        				<input type="submit" value="Войти">
+        				<input type="hidden" name="next" value="{{ next }}">
+    					</form>
+    				{% endif %}
 				</div>
 				{% endblock left-column %}
 

@@ -1,17 +1,13 @@
 {% extends "base_generic.html" %}
 
-{% block left-column %}
-<div id="left-column">
-	<h4>Личный кабинет</h4>
-</div>
-{% endblock %}
 {% block center-column %}
 <div id="center-column">
 	{% if docs_details %}
 	<h4 align="center">{{ docs_details.title }}</h4>
-    <a href="{{ docs_details.docfile.url }}">{{ docs_details.title }}</a>
+    <img src="{{ docs_details.docfile.url }}" alt="{{ docs_details.title }}">
+<!--    <a href="{{ docs_details.docfile.url }}">{{ docs_details.title }}</a> -->
 	{% endif %}
-     <h6 align="right">Дата: {{ docs_details.upload_date|date:"j E Y" }}</h6>
+<!--    <h6 align="right">Дата: {{ docs_details.upload_date|date:"j E Y" }}</h6> -->
 	<a href="{% url 'docs' %}">Назад</a>
 </div>
 {% endblock %}

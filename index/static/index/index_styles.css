@@ -54,6 +54,10 @@ body {
     margin-right: 10px;
 }
 
+#left-column input[type=text], input[type=password] {
+    width: 100px;
+}
+
 #center-column {
 	background-color: #FFFFFF;
 	/*margin: 0 20px;*/

@@ -33,10 +33,16 @@ urlpatterns = [
     path('docs/<int:pk>', DocsDetailsPage.as_view(), name='docs-details'),
     path('contacts/', SntContactsPage.as_view(), name='snt-contacts'),
     path('accounts/', include('django.contrib.auth.urls')),
+    #path('accounts/login/', MyLoginView.as_view(), name='my-login'),
 ]
 
 urlpatterns += static(
     settings.STATIC_URL,
     documents_root=settings.STATIC_ROOT,
 )
-
+# To serve uploaded files in Djano development server
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+        )
