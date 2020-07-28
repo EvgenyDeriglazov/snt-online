@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block left-column %}
+<div id="left-column">
+	<h4>Личный кабинет</h4>
+</div>
+{% endblock %}
+{% block center-column %}
+<div id="center-column">
+	<h3>Документы</h3>
+	{% for docs in docs_list %}
+	<h4>{{ docs.title }}</h4>
+    <h6>Дата: {{ docs.upload_date|date:"j E Y" }}</h6>
+	<p>
+	<a href="{% url 'docs-details' docs.id %}">>>></a>
+	</p>
+	{% empty %}
+	<p>Пока еще не опубликовано ни одного документа.</p>
+	{% endfor %}
+</div>
+{% endblock %}
+

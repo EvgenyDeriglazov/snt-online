@@ -29,6 +29,8 @@ urlpatterns = [
         SntBankDetailsPage.as_view(),
         name='snt-bank-details'
         ),
+    path('docs/', DocsPage.as_view(), name='docs'),
+    path('docs/<int:pk>', DocsDetailsPage.as_view(), name='docs-details'),
     path('contacts/', SntContactsPage.as_view(), name='snt-contacts'),
     path('accounts/', include('django.contrib.auth.urls')),
 ]

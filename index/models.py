@@ -475,8 +475,8 @@ class Docs(models.Model):
         help_text="Укажите название документа",
         )
     
-    upload = models.FileField(
-        upload_to=fs,
+    docfile = models.ImageField(
+        upload_to='documents/',
         verbose_name="Файл документа",
         help_text="Выберите файл для загрузки",
         )
