@@ -14,6 +14,10 @@ class HomePage(ListView):
         context = super().get_context_data(**kwargs)
         context['land_plots_count'] = LandPlot.objects.count()
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 class InfoPage(ListView):
@@ -28,6 +32,10 @@ class InfoPage(ListView):
             status__exact='published',
             ).order_by('-pub_date')
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 class InfoDetailsPage(DetailView):
@@ -40,6 +48,10 @@ class InfoDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 
@@ -52,6 +64,10 @@ class SntBankDetailsPage(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 class SntContactsPage(ListView):
@@ -69,6 +85,10 @@ class SntContactsPage(ListView):
             context['accountant'] = Accountant.objects.filter(
                 leave_date__isnull=True).get()
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 class DocsPage(ListView):
@@ -83,6 +103,10 @@ class DocsPage(ListView):
             context['docs_list'] = Docs.objects.filter(
                 status__exact='published').order_by('-upload_date')
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 class DocsDetailsPage(DetailView):
@@ -95,6 +119,10 @@ class DocsDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
+        if self.request.user.is_authenticated:
+            if ChairMan.objects.filter(user__exact=self.request.user).exists():
+                context['human_name'] = ChairMan.objects.filter(
+                    user__exact=self.request.user).get()
         return context
 
 

@@ -13,13 +13,13 @@
 	{% endif %}
 
     {% if chair_man %}
-    <h4>{{chair_man|verbose_name }}:  {{ chair_man|str }}</h4>
+    <h4>{{ chair_man|verbose_name }}:  {{ chair_man }}</h4>
     <h4>Телефон: {{ chair_man.phone }}</h4>
     <h4>Электронная почта: {{ chair_man.email }}</h4>
     {% endif %}
 
     {% if accountant %}
-    <h4>{{accountant|verbose_name }}:  {{ accountant|str }}</h4>
+    <h4>{{accountant|verbose_name }}:  {{ accountant }}</h4>
     <h4>Телефон: {{ accountant.phone }}</h4>
     <h4>Электронная почта: {{ accountant.email }}</h4>
     {% endif %}
