@@ -106,34 +106,39 @@ class AccountantModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(Accountant._meta.verbose_name, "бухгалтер")
         self.assertEquals(Accountant._meta.verbose_name_plural, "бухгалтеры")
-        self.assertEquals(len(Accountant._meta.constraints), 3)
+        self.assertEquals(len(Accountant._meta.constraints), 4)
         self.assertEquals(
             Accountant._meta.constraints[0].fields,
-            ('join_date', 'leave_date')
-            )
-        self.assertEquals(
-            Accountant._meta.constraints[0].name,
-            'index_accountant_join_date_not_null_leave_date_null_unique_constraint'
-            )
-        self.assertEquals(
-            Accountant._meta.constraints[1].fields,
             ('email',)
             )
         self.assertEquals(
-            Accountant._meta.constraints[1].name,
+            Accountant._meta.constraints[0].name,
             'index_accountant_email_unique_constraint'
             )
         self.assertEquals(
-            Accountant._meta.constraints[2].fields,
+            Accountant._meta.constraints[1].fields,
             ('phone',)
             )
         self.assertEquals(
-            Accountant._meta.constraints[2].name,
+            Accountant._meta.constraints[1].name,
             'index_accountant_phone_unique_constraint'
             )
-
-
-
+        self.assertEquals(
+            Accountant._meta.constraints[2].fields,
+            ('join_date',)
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[2].name,
+            'index_accountant_join_date_unique_constraint'
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[3].fields,
+            ('leave_date',)
+            )
+        self.assertEquals(
+            Accountant._meta.constraints[3].name,
+            'index_accountant_leave_date_unique_constraint'
+            )
 
     def test_str_method(self):
         obj = Accountant.objects.get(id=1)
@@ -142,4 +147,37 @@ class AccountantModelTest(TestCase):
 
     def test_get_absolute_url(self):
         obj = Accountant.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/chairman-detail/1")
+        self.assertEquals(obj.get_absolute_url(), None)
+
+    def test_save_method(self):
+       # Check possibility of current accountant modification
+        Accountant.objects.filter(id=1).update(
+            join_date=datetime.date.today() - datetime.timedelta(days=1),
+            leave_date=datetime.date.today(),
+            )
+        accountant = Accountant.objects.get(id=1)
+        self.assertEqual(
+            accountant.join_date,
+            datetime.date.today() - datetime.timedelta(days=1),
+            )
+        self.assertEqual(accountant.leave_date, datetime.date.today())
+        # Check possibility of creating 2nd accountant without error
+        Accountant.objects.create(
+            first_name='Иван',
+            middle_name='Иванович',
+            last_name='Иванов',
+            user=User.objects.get(id=2),
+            join_date=datetime.date.today()
+            )
+        self.assertEqual(len(Accountant.objects.all()), 2)
+        # Check possibility of creating first accoutnant
+        Accountant.objects.all().delete()
+        self.assertEqual(len(Accountant.objects.all()), 0)
+        Accountant.objects.create(
+            first_name='Иван',
+            middle_name='Иванович',
+            last_name='Иванов',
+            user=User.objects.get(id=1),
+            join_date=datetime.date.today()
+            )
+        self.assertEqual(len(Accountant.objects.all()), 1)

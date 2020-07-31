@@ -7,7 +7,6 @@ from datetime import date
 from django.db.models import Q
 from django.urls import reverse
 
-fs = FileSystemStorage(location='/media/docs/')
 # Data validators
 def validate_number(value):
     """Makes number validation (only numeric symbols)."""
@@ -66,9 +65,24 @@ def validate_human_names(value):
                 _('Можно использовать только русские символы')
             )
 
+def validate_accountant_user(value):
+    """Makes User validation."""
+    if ChairMan.objects.filter(user__exact=value).exists() or \
+        Owner.objects.filter(user__exact=value).exists():
+        username = User.objects.get(id=value) # Value is models id
+        error_message = f"Нельзя применять один логин "
+        error_message += f"{username} для разных пользователей"
+        raise ValidationError(_(error_message))
+
 def upload_directory(instance, filename):
     """Callable to create upload_to argument."""
     return 'docs/%Y/{0}/{1}'.format(instance.user.id, filename)
+
+# Re-use helper functions
+#def user_check_ok(user):
+#    """Checks that django.contrib.auth.models.User is not taken for
+#    other models' field."""
+#    if C 
 
 #Create your models here.
 class Snt(models.Model):
@@ -282,7 +296,15 @@ class ChairMan(models.Model):
                 name='%(app_label)s_%(class)s_join_date_not_null'
                     + '_leave_date_null_unique_constraint',
                 ), 
-            ]
+            models.UniqueConstraint(
+                fields=['email'],
+                name='%(app_label)s_%(class)s_email_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['phone'],
+                name='%(app_label)s_%(class)s_phone_unique_constraint',
+                ),
+      ]
 
     def __str__(self):
         """String to represent the Model(class) object."""
@@ -290,7 +312,14 @@ class ChairMan(models.Model):
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
-        return reverse('chairman-detail', args=[str(self.id)])
+        pass
+        #return reverse('chairman-detail', args=[str(self.id)])
+
+#    def save(self, *args, **kwargs):
+#        """Custom save method."""
+#        if check_user(self.user):
+#            super().save(*args, **kwargs)
+
 
 class Owner(models.Model):
     """Model representing an owner of land plot with basic infromation
@@ -428,6 +457,7 @@ class Accountant(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
+        validators=[validate_accountant_user]
         )
     join_date = models.DateField(
         "Дата вступления в должность",
@@ -438,19 +468,14 @@ class Accountant(models.Model):
         help_text="Укажите дату ухода с должности",
         blank=True,
         null=True,
+        default=None,
         )
    
     class Meta:
         verbose_name = "бухгалтер"
         verbose_name_plural = "бухгалтеры"
         constraints = [
-            models.UniqueConstraint(
-                fields=['join_date','leave_date'],
-                condition=Q(join_date__isnull=False, leave_date__isnull=True),
-                name='%(app_label)s_%(class)s_join_date_not_null'
-                    + '_leave_date_null_unique_constraint',
-                ), 
-            models.UniqueConstraint(
+           models.UniqueConstraint(
                 fields=['email'],
                 name='%(app_label)s_%(class)s_email_unique_constraint',
                 ),
@@ -458,7 +483,15 @@ class Accountant(models.Model):
                 fields=['phone'],
                 name='%(app_label)s_%(class)s_phone_unique_constraint',
                 ),
-            ]
+            models.UniqueConstraint(
+                fields=['join_date'],
+                name='%(app_label)s_%(class)s_join_date_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['leave_date'],
+                name='%(app_label)s_%(class)s_leave_date_unique_constraint',
+                ),
+     ]
 
     def __str__(self):
         """String to represent the Model(class) object."""
@@ -466,7 +499,29 @@ class Accountant(models.Model):
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
-        return reverse('owner-detail', args=[str(self.id)])
+        pass
+        #return reverse('owner-detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        """Custom save method."""
+        #if ChairMan.objects.filter(user__exact=self.user).exists() or \
+            #Owner.objects.filter(user__exact=self.user).exists():
+            #username = self.user.username
+            #error_message = f"Нельзя применять один логин "
+            #error_message += f"{username} для разных пользователей"
+            #raise ValidationError(_(error_message))
+        if True :#else:
+            check_list = Accountant.objects.filter(
+                join_date__isnull=False,
+                leave_date__isnull=True,
+                ).all()
+            if len(check_list) == 0 or \
+                (len(check_list) == 1 and check_list[0] == self):
+                super().save(*args, **kwargs)
+            else:
+                raise ValidationError(
+                    _("Разрешено иметь только одного действующего бухгалтера")
+                    )
 
 
 class Docs(models.Model):

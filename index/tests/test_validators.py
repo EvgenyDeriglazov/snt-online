@@ -12,15 +12,22 @@
 
 from django.test import TestCase
 from index.models import *
-from datetime import date
+import datetime
 from decimal import *
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 
 class DateValidatorsTest(TestCase):
     # Set up non-modified objects used by all test methods
     correct_phone = "+79998887766"
     wrong_phone = "+7999888776g"
-
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create(
+            username="username",
+            password="password",
+            )
+    # All test for field validators
     def test_wrong_number(self):
         self.assertRaises(ValidationError, validate_number, '124gf')
         self.assertRaisesRegex(
@@ -120,4 +127,19 @@ class DateValidatorsTest(TestCase):
             "079998887766",
             )
 
- 
+    def test_validate_accountant_user(self):
+        """"""
+        ChairMan.objects.create(
+            first_name='Иван',
+            middle_name='Иванович',
+            last_name='Иванов',
+            user=User.objects.get(id=1),
+            join_date=datetime.date.today(),
+            )
+        obj = User.objects.get(id=1)
+        self.assertRaises(
+            ValidationError,
+            validate_accountant_user,
+            obj.id,
+            )
+            

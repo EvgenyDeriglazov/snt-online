@@ -69,6 +69,7 @@ class SntContactsPage(ListView):
         context['auth_form'] = AuthenticationForm
         context['human_name'] = str(get_model_by_user(self.request.user))
         context['chair_man'] = context['snt_list'][0].chair_man
+        context['accountant'] = context['snt_list'][0].accountant
         return context
 
 class DocsPage(ListView):
@@ -107,16 +108,16 @@ def get_model_by_user(user):
     If user is not authenticated returns None."""
     if user.is_authenticated:
         try:
-            return user.chairman
-        except ChairMan.DoesNotExist:
-            pass
-        try:
             return user.owner
         except Owner.DoesNotExist:
             pass
         try:
             return user.accountant
         except Accountant.DoesNotExist:
+            pass
+        try:
+            return user.chairman
+        except ChairMan.DoesNotExist:
             pass
         return user.username
 
