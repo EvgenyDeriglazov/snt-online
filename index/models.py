@@ -123,8 +123,15 @@ class Snt(models.Model):
         'ChairMan',
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='председатель',
+        verbose_name="председатель",
         help_text="председатель садоводства",
+        )
+    accountant = models.OneToOneField(
+        'Accountant',
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="бухгалтер",
+        help_text="бухгалтер садоводства",
         )
 
     class Meta:
@@ -137,7 +144,8 @@ class Snt(models.Model):
     
     def get_absolute_url(self): 
         """Returns url to access an instance of the model."""
-        return reverse('snt-detail', args=[str(self.id)])
+        pass
+        #return reverse('snt-detail', args=[str(self.id)])
 
     # Custom functions
     def save(self, *args, **kwargs):

@@ -24,6 +24,12 @@ class SntModelTest(TestCase):
             last_name='Иванов',
             join_date=datetime.date.today()
             )
+        Accountant.objects.create(
+            first_name='Инга',
+            middle_name='Ивановна',
+            last_name='Петрова',
+            join_date=datetime.date.today()
+            )
         Snt.objects.create(
             name='Бобровка',
             personal_acc='01234567898765432101',
@@ -33,6 +39,7 @@ class SntModelTest(TestCase):
             inn='0123456789',
             kpp='123456789',
             chair_man=ChairMan.objects.get(id=1),
+            accountant=Accountant.objects.get(id=1),
             address="123СТАР",
             )
     # Test functions
@@ -137,6 +144,14 @@ class SntModelTest(TestCase):
         self.assertEqual(field.help_text, "председатель садоводства")
         self.assertEqual(obj.chair_man, ch_m_obj)
 
+    def test_accountant_field(self):
+        obj = Snt.objects.get(id=1)
+        accountant_obj = Accountant.objects.get(id=1)
+        field = obj._meta.get_field('accountant')
+        self.assertEqual(field.verbose_name, "бухгалтер")
+        self.assertEqual(field.help_text, "бухгалтер садоводства")
+        self.assertEqual(obj.accountant, accountant_obj)
+
     def test_meta_options(self):
         self.assertEquals(Snt._meta.verbose_name, "СНТ")
         self.assertEquals(Snt._meta.verbose_name_plural, "СНТ")   
@@ -148,7 +163,7 @@ class SntModelTest(TestCase):
 
     def test_get_absolute_url(self):
         obj = Snt.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/obj-detail/1")
+        self.assertEquals(obj.get_absolute_url(), None)
 
     # Custom functions tests
     def test_modify_single_entry_instance(self):

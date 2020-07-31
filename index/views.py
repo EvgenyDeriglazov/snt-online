@@ -68,6 +68,7 @@ class SntContactsPage(ListView):
         context = super().get_context_data(**kwargs)
         context['auth_form'] = AuthenticationForm
         context['human_name'] = str(get_model_by_user(self.request.user))
+        context['chair_man'] = context['snt_list'][0].chair_man
         return context
 
 class DocsPage(ListView):
@@ -109,18 +110,14 @@ def get_model_by_user(user):
             return user.chairman
         except ChairMan.DoesNotExist:
             pass
-
         try:
             return user.owner
         except Owner.DoesNotExist:
             pass
-
         try:
             return user.accountant
         except Accountant.DoesNotExist:
             pass
-
         return user.username
-
 
 
