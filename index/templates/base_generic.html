@@ -59,12 +59,8 @@
     				{% endif %}
     				
     				{% if user.is_authenticated %}
-        				<p>Пользователь: {{ user.username }}</br>
-                        {{ human_name }}
-                        </br>
-
-
-        				<a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
+        				<p>{{ human_name }}</br>
+                        <a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
         				</p>
         			{% else %}
     					<form method="post" action="{% url 'login' %}" size=10>

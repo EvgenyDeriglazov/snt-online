@@ -14,10 +14,7 @@ class HomePage(ListView):
         context = super().get_context_data(**kwargs)
         context['land_plots_count'] = LandPlot.objects.count()
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class InfoPage(ListView):
@@ -32,10 +29,7 @@ class InfoPage(ListView):
             status__exact='published',
             ).order_by('-pub_date')
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class InfoDetailsPage(DetailView):
@@ -48,10 +42,7 @@ class InfoDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
 
 
@@ -64,10 +55,7 @@ class SntBankDetailsPage(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class SntContactsPage(ListView):
@@ -78,17 +66,8 @@ class SntContactsPage(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if ChairMan.objects.filter(leave_date__isnull=True).exists():
-            context['chair_man'] = ChairMan.objects.filter(
-                leave_date__isnull=True).get()
-        if Accountant.objects.filter(leave_date__isnull=True).exists():
-            context['accountant'] = Accountant.objects.filter(
-                leave_date__isnull=True).get()
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class DocsPage(ListView):
@@ -103,10 +82,7 @@ class DocsPage(ListView):
             context['docs_list'] = Docs.objects.filter(
                 status__exact='published').order_by('-upload_date')
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class DocsDetailsPage(DetailView):
@@ -119,10 +95,32 @@ class DocsDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        if self.request.user.is_authenticated:
-            if ChairMan.objects.filter(user__exact=self.request.user).exists():
-                context['human_name'] = ChairMan.objects.filter(
-                    user__exact=self.request.user).get()
+        context['human_name'] = str(get_model_by_user(self.request.user))
         return context
+
+
+# Re-use helper functions
+def get_model_by_user(user):
+    """Returns related model in a one-to-one relationship to user.
+    If model does not exist returns user.username.
+    If user is not authenticated returns None."""
+    if user.is_authenticated:
+        try:
+            return user.chairman
+        except ChairMan.DoesNotExist:
+            pass
+
+        try:
+            return user.owner
+        except Owner.DoesNotExist:
+            pass
+
+        try:
+            return user.accountant
+        except Accountant.DoesNotExist:
+            pass
+
+        return user.username
+
 
 
