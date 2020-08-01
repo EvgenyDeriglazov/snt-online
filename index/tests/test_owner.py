@@ -88,6 +88,7 @@ class OwnerModelTest(TestCase):
         field = obj._meta.get_field('user')
         self.assertEquals(field.verbose_name, "Логин")
         self.assertEquals(field.help_text, "Аккаунт пользователя на сайте")
+        self.assertEquals(field.validators[0:1], [validate_owner_user])
         self.assertEquals(field.blank, True)
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)
@@ -111,24 +112,26 @@ class OwnerModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(Owner._meta.verbose_name, "владелец")
         self.assertEquals(Owner._meta.verbose_name_plural, "владельцы")
-        self.assertEquals(len(Owner._meta.constraints), 3)
-        self.assertEquals(
-            Owner._meta.constraints[0].fields,
-            ('last_name', 'first_name', 'middle_name', 'join_date', 'leave_date')
-            )
+        self.assertEquals(len(Owner._meta.constraints), 4)
+        self.assertEquals(Owner._meta.constraints[0].fields, ('email',))
         self.assertEquals(
             Owner._meta.constraints[0].name,
-            'index_owner_active_owner_duplicate_constraint'
-            )
-        self.assertEquals(Owner._meta.constraints[1].fields, ('email',))
-        self.assertEquals(
-            Owner._meta.constraints[1].name,
             'index_owner_email_unique_constraint'
             )
-        self.assertEquals(Owner._meta.constraints[2].fields, ('phone',))
+        self.assertEquals(Owner._meta.constraints[1].fields, ('phone',))
+        self.assertEquals(
+            Owner._meta.constraints[1].name,
+            'index_owner_phone_unique_constraint'
+            )
+        self.assertEquals(Owner._meta.constraints[2].fields, ('join_date',))
         self.assertEquals(
             Owner._meta.constraints[2].name,
-            'index_owner_phone_unique_constraint'
+            'index_owner_join_date_unique_constraint'
+            )
+        self.assertEquals(Owner._meta.constraints[3].fields, ('leave_date',))
+        self.assertEquals(
+            Owner._meta.constraints[3].name,
+            'index_owner_leave_date_unique_constraint'
             )
 
     def test_str_method(self):
@@ -139,4 +142,4 @@ class OwnerModelTest(TestCase):
     
     def test_get_absolute_url(self):
         obj = Owner.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/owner-detail/1")
+        self.assertEquals(obj.get_absolute_url(), None)

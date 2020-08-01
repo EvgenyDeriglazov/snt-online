@@ -86,6 +86,7 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.blank, True)
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)
+        self.assertEquals(field.validators[0:1], [validate_chair_man_user])
  
     def test_join_date_field(self):
         obj = ChairMan.objects.get(id=1)
@@ -106,31 +107,40 @@ class ChairManModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(ChairMan._meta.verbose_name, "председатель")
         self.assertEquals(ChairMan._meta.verbose_name_plural, "председатели")
-        self.assertEquals(len(ChairMan._meta.constraints), 3)
+        self.assertEquals(len(ChairMan._meta.constraints), 4)
         self.assertEquals(
             ChairMan._meta.constraints[0].fields,
             ('join_date',)
-            )
-        self.assertEquals(
-            ChairMan._meta.constraints[1].fields,
-            ('leave_date',)
-            )
-        self.assertEquals(
-            ChairMan._meta.constraints[2].fields,
-            ('join_date', 'leave_date',)
             )
         self.assertEquals(
             ChairMan._meta.constraints[0].name,
             'index_chairman_join_date_unique_constraint'
             )
         self.assertEquals(
+            ChairMan._meta.constraints[1].fields,
+            ('leave_date',)
+            )
+        self.assertEquals(
             ChairMan._meta.constraints[1].name,
             'index_chairman_leave_date_unique_constraint'
             )
         self.assertEquals(
-            ChairMan._meta.constraints[2].name,
-            'index_chairman_join_date_not_null_leave_date_null_unique_constraint'
+            ChairMan._meta.constraints[2].fields,
+            ('email',)
             )
+        self.assertEquals(
+            ChairMan._meta.constraints[2].name,
+            'index_chairman_email_unique_constraint'
+            )
+        self.assertEquals(
+            ChairMan._meta.constraints[3].fields,
+            ('phone',)
+            )
+        self.assertEquals(
+            ChairMan._meta.constraints[3].name,
+            'index_chairman_phone_unique_constraint'
+            )
+ 
 
     def test_str_method(self):
         obj = ChairMan.objects.get(id=1)
@@ -139,6 +149,6 @@ class ChairManModelTest(TestCase):
 
     def test_get_absolute_url(self):
         obj = ChairMan.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/chairman-detail/1")
+        self.assertEquals(obj.get_absolute_url(), None)
 
 

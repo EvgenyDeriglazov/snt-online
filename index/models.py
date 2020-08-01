@@ -66,13 +66,29 @@ def validate_human_names(value):
             )
 
 def validate_accountant_user(value):
-    """Makes User validation."""
+    """Makes User validation for Accountant model."""
     if ChairMan.objects.filter(user__exact=value).exists() or \
         Owner.objects.filter(user__exact=value).exists():
-        username = User.objects.get(id=value) # Value is models id
-        error_message = f"Нельзя применять один логин "
-        error_message += f"{username} для разных пользователей"
+        username = User.objects.get(id=value) # Value is model's id
+        error_message = f"Логин {username} уже занят!"
         raise ValidationError(_(error_message))
+
+def validate_owner_user(value):
+    """Makes User validation for Owner model."""
+    if ChairMan.objects.filter(user__exact=value).exists() or \
+        Accountant.objects.filter(user__exact=value).exists():
+        username = User.objects.get(id=value) # Value is model's id
+        error_message = f"Логин {username} уже занят!"
+        raise ValidationError(_(error_message))
+
+def validate_chair_man_user(value):
+    """Makes User validation for ChairMan model."""
+    if Owner.objects.filter(user__exact=value).exists() or \
+        Accountant.objects.filter(user__exact=value).exists():
+        username = User.objects.get(id=value) # Value is model's id
+        error_message = f"Логин {username} уже занят!"
+        raise ValidationError(_(error_message))
+
 
 def upload_directory(instance, filename):
     """Callable to create upload_to argument."""
@@ -267,6 +283,7 @@ class ChairMan(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
+        validators=[validate_chair_man_user],
         )
     join_date = models.DateField(
         "Дата вступления в должность",
@@ -290,12 +307,6 @@ class ChairMan(models.Model):
                 fields=['leave_date'],
                 name='%(app_label)s_%(class)s_leave_date_unique_constraint',
                 ),
-            models.UniqueConstraint(
-                fields=['join_date', 'leave_date'],
-                condition=Q(join_date__isnull=False, leave_date__isnull=True),
-                name='%(app_label)s_%(class)s_join_date_not_null'
-                    + '_leave_date_null_unique_constraint',
-                ), 
             models.UniqueConstraint(
                 fields=['email'],
                 name='%(app_label)s_%(class)s_email_unique_constraint',
@@ -368,6 +379,7 @@ class Owner(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
+        validators=[validate_owner_user],
         )
     join_date = models.DateField(
         "Дата вступления в СНТ",
@@ -384,21 +396,21 @@ class Owner(models.Model):
         verbose_name = "владелец"
         verbose_name_plural = "владельцы"
         constraints = [
-            models.UniqueConstraint(
-                fields=[
-                    'last_name', 'first_name', 'middle_name',
-                    'join_date','leave_date'
-                    ],
-                condition=Q(join_date__isnull=False, leave_date__isnull=True),
-                name='%(app_label)s_%(class)s_active_owner_duplicate_constraint',
-                ), 
-            models.UniqueConstraint(
+           models.UniqueConstraint(
                 fields=['email'],
                 name='%(app_label)s_%(class)s_email_unique_constraint',
                 ),
             models.UniqueConstraint(
                 fields=['phone'],
                 name='%(app_label)s_%(class)s_phone_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['join_date'],
+                name='%(app_label)s_%(class)s_join_date_unique_constraint',
+                ),
+            models.UniqueConstraint(
+                fields=['leave_date'],
+                name='%(app_label)s_%(class)s_leave_date_unique_constraint',
                 ),
             ]
 
@@ -408,7 +420,8 @@ class Owner(models.Model):
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
-        return reverse('owner-detail', args=[str(self.id)])
+        pass
+        #return reverse('owner-detail', args=[str(self.id)])
 
 class Accountant(models.Model):
     """Model representing snt accountant basic infromation
@@ -504,24 +517,17 @@ class Accountant(models.Model):
 
     def save(self, *args, **kwargs):
         """Custom save method."""
-        #if ChairMan.objects.filter(user__exact=self.user).exists() or \
-            #Owner.objects.filter(user__exact=self.user).exists():
-            #username = self.user.username
-            #error_message = f"Нельзя применять один логин "
-            #error_message += f"{username} для разных пользователей"
-            #raise ValidationError(_(error_message))
-        if True :#else:
-            check_list = Accountant.objects.filter(
-                join_date__isnull=False,
-                leave_date__isnull=True,
-                ).all()
-            if len(check_list) == 0 or \
-                (len(check_list) == 1 and check_list[0] == self):
-                super().save(*args, **kwargs)
-            else:
-                raise ValidationError(
-                    _("Разрешено иметь только одного действующего бухгалтера")
-                    )
+        check_list = Accountant.objects.filter(
+            join_date__isnull=False,
+            leave_date__isnull=True,
+            ).all()
+        if len(check_list) == 0 or \
+            (len(check_list) == 1 and check_list[0] == self):
+            super().save(*args, **kwargs)
+        else:
+            raise ValidationError(
+                _("Разрешено иметь только одного действующего бухгалтера")
+                )
 
 
 class Docs(models.Model):
