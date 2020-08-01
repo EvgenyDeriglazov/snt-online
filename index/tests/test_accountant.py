@@ -86,6 +86,7 @@ class AccountantModelTest(TestCase):
         self.assertEquals(field.blank, True)
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)
+        self.assertEquals(field.validators[0:1], [validate_accountant_user])
    
     def test_join_date_field(self):
         obj = Accountant.objects.get(id=1)
@@ -162,6 +163,10 @@ class AccountantModelTest(TestCase):
             )
         self.assertEqual(accountant.leave_date, datetime.date.today())
         # Check possibility of creating 2nd accountant without error
+        User.objects.create(
+            username="username1",
+            password="password1",
+            )
         Accountant.objects.create(
             first_name='Иван',
             middle_name='Иванович',
