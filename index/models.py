@@ -67,26 +67,20 @@ def validate_human_names(value):
 
 def validate_accountant_user(value):
     """Makes User validation for Accountant model."""
-    if ChairMan.objects.filter(user__exact=value).exists() or \
-        Owner.objects.filter(user__exact=value).exists():
-        username = User.objects.get(id=value) # Value is model's id
-        error_message = f"Логин {username} уже занят!"
+    if Accountant.objects.filter(user__exact=value).exists():
+        error_message = f"Бухгалтер с этим логином уже существует!"
         raise ValidationError(_(error_message))
 
 def validate_owner_user(value):
     """Makes User validation for Owner model."""
-    if ChairMan.objects.filter(user__exact=value).exists() or \
-        Accountant.objects.filter(user__exact=value).exists():
-        username = User.objects.get(id=value) # Value is model's id
-        error_message = f"Логин {username} уже занят!"
+    if Owner.objects.filter(user__exact=value).exists(): 
+        error_message = f"Владелец с этим логином уже существует!"
         raise ValidationError(_(error_message))
 
 def validate_chair_man_user(value):
     """Makes User validation for ChairMan model."""
-    if Owner.objects.filter(user__exact=value).exists() or \
-        Accountant.objects.filter(user__exact=value).exists():
-        username = User.objects.get(id=value) # Value is model's id
-        error_message = f"Логин {username} уже занят!"
+    if ChairMan.objects.filter(user__exact=value).exists(): 
+        error_message = f"Председатель с этим логином уже существует!"
         raise ValidationError(_(error_message))
 
 
@@ -283,7 +277,7 @@ class ChairMan(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
-        validators=[validate_chair_man_user],
+        validators=[validate_owner_user, validate_accountant_user],
         )
     join_date = models.DateField(
         "Дата вступления в должность",
@@ -379,7 +373,7 @@ class Owner(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
-        validators=[validate_owner_user],
+        validators=[validate_accountant_user, validate_chair_man_user],
         )
     join_date = models.DateField(
         "Дата вступления в СНТ",
@@ -470,7 +464,7 @@ class Accountant(models.Model):
         blank=True,
         verbose_name="Логин",
         help_text="Аккаунт пользователя на сайте",
-        validators=[validate_accountant_user]
+        validators=[validate_owner_user, validate_chair_man_user]
         )
     join_date = models.DateField(
         "Дата вступления в должность",

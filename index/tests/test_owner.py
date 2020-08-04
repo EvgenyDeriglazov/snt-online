@@ -88,7 +88,10 @@ class OwnerModelTest(TestCase):
         field = obj._meta.get_field('user')
         self.assertEquals(field.verbose_name, "Логин")
         self.assertEquals(field.help_text, "Аккаунт пользователя на сайте")
-        self.assertEquals(field.validators[0:1], [validate_owner_user])
+        self.assertEquals(
+            field.validators[0:2],
+            [validate_accountant_user, validate_chair_man_user]
+            )
         self.assertEquals(field.blank, True)
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)

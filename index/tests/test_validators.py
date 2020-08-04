@@ -127,10 +127,9 @@ class DateValidatorsTest(TestCase):
             "079998887766",
             )
 
-    def test_validate_accountant_user(self):
+    def test_validate_chair_man_user(self):
         """"""
         obj = User.objects.get(id=1)
-        # Check vs ChairMan model
         ChairMan.objects.create(
             first_name='Иван',
             middle_name='Иванович',
@@ -140,12 +139,14 @@ class DateValidatorsTest(TestCase):
             )
         self.assertRaises(
             ValidationError,
-            validate_accountant_user,
+            validate_chair_man_user,
             obj.id,
             )
-        # Check vs Owner model
-        ChairMan.objects.all().delete()
-        Owner.objects.create(
+
+    def test_validate_accountant_user(self):
+        """"""
+        obj = User.objects.get(id=1)
+        Accountant.objects.create(
             first_name='Иван',
             middle_name='Иванович',
             last_name='Иванов',
@@ -161,38 +162,6 @@ class DateValidatorsTest(TestCase):
     def test_validate_owner_user(self):
         """"""
         obj = User.objects.get(id=1)
-        # Check vs ChairMan model
-        ChairMan.objects.create(
-            first_name='Иван',
-            middle_name='Иванович',
-            last_name='Иванов',
-            user=User.objects.get(id=1),
-            join_date=datetime.date.today(),
-            )
-        self.assertRaises(
-            ValidationError,
-            validate_owner_user,
-            obj.id,
-            )
-        # Check vs Accountant model
-        ChairMan.objects.all().delete()
-        Accountant.objects.create(
-            first_name='Иван',
-            middle_name='Иванович',
-            last_name='Иванов',
-            user=User.objects.get(id=1),
-            join_date=datetime.date.today(),
-            )
-        self.assertRaises(
-            ValidationError,
-            validate_owner_user,
-            obj.id,
-            )
-
-    def test_validate_chair_man_user(self):
-        """"""
-        obj = User.objects.get(id=1)
-        # Check vs Owner model
         Owner.objects.create(
             first_name='Иван',
             middle_name='Иванович',
@@ -202,22 +171,8 @@ class DateValidatorsTest(TestCase):
             )
         self.assertRaises(
             ValidationError,
-            validate_chair_man_user,
+            validate_owner_user,
             obj.id,
             )
-        # Check vs Accountant model
-        Owner.objects.all().delete()
-        Accountant.objects.create(
-            first_name='Иван',
-            middle_name='Иванович',
-            last_name='Иванов',
-            user=User.objects.get(id=1),
-            join_date=datetime.date.today(),
-            )
-        self.assertRaises(
-            ValidationError,
-            validate_chair_man_user,
-            obj.id,
-            )
-        
+       
             

@@ -86,7 +86,10 @@ class ChairManModelTest(TestCase):
         self.assertEquals(field.blank, True)
         self.assertEquals(field.null, True)
         self.assertEquals(obj.user, user_obj)
-        self.assertEquals(field.validators[0:1], [validate_chair_man_user])
+        self.assertEquals(
+            field.validators[0:2],
+            [validate_owner_user, validate_accountant_user]
+            )
  
     def test_join_date_field(self):
         obj = ChairMan.objects.get(id=1)
