@@ -46,9 +46,6 @@ class TestInfoPage(TestCase):
 class TestInfoDetailsPage(TestCase):
     fixtures = ['all_db.json']
 
-   # def setUp(self):
-   #     pass
-
     # Test functions
     def test_info_details_page_response(self):
         """"""
@@ -59,4 +56,64 @@ class TestInfoDetailsPage(TestCase):
         """"""
         response = self.client.get('/info/1')
         self.assertTemplateUsed(response, 'info_details_page.html')
+
+class TestBankDetailsPage(TestCase):
+    """"""
+    #fixtures = ['all_db.json']
+
+    # Test functions
+    def test_bank_details_page_response(self):
+        """"""
+        response = self.client.get('/snt-bank-details/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_bank_details_page_template(self):
+        """"""
+        response = self.client.get('/snt-bank-details/')
+        self.assertTemplateUsed(response, 'snt_bank_details_page.html')
+
+class TestSntContactsPage(TestCase):
+    """"""
+    fixtures = ['all_db.json']
+
+    # Test functions
+    def test_snt_contacts_page_response(self):
+        """"""
+        response = self.client.get('/contacts/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_snt_contacts_page_template(self):
+        """"""
+        response = self.client.get('/contacts/')
+        self.assertTemplateUsed(response, 'snt_contacts_page.html')
+
+class TestDocsPage(TestCase):
+    """"""
+    #fixtures = ['all_db.json']
+
+    # Test functions
+    def test_docs_page_response(self):
+        """"""
+        response = self.client.get('/docs/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_docs_page_template(self):
+        """"""
+        response = self.client.get('/docs/')
+        self.assertTemplateUsed(response, 'docs_page.html')
+
+class TestDocsDetailsPage(TestCase):
+    """"""
+    fixtures = ['all_db.json']
+
+    # Test functions
+    def test_docs_page_response(self):
+        """"""
+        response = self.client.get('/docs/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_docs_page_template(self):
+        """"""
+        response = self.client.get('/docs/1')
+        self.assertTemplateUsed(response, 'docs_details_page.html')
 
