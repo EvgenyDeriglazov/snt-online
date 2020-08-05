@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from datetime import date
 from django.db.models import Q
 from django.urls import reverse
+from django.http import Http404
 
 # Data validators
 def validate_number(value):
@@ -82,7 +83,6 @@ def validate_chair_man_user(value):
     if ChairMan.objects.filter(user__exact=value).exists(): 
         error_message = f"Председатель с этим логином уже существует!"
         raise ValidationError(_(error_message))
-
 
 def upload_directory(instance, filename):
     """Callable to create upload_to argument."""
@@ -172,6 +172,23 @@ class Snt(models.Model):
         #return reverse('snt-detail', args=[str(self.id)])
 
     # Custom functions
+    def clean_fields(self, exclude=None):
+        """"""
+        all_snt = Snt.objects.all()
+        if len(all_snt) == 0:
+            super().clean_fields(exclude=exclude)
+        elif len(all_snt) == 1:
+            if all_snt[0] == self:
+                super().clean_fields(exclude=exclude)
+            else:
+                super().clean_fields(exclude=exclude)
+                raise ValidationError({
+                    'name': _(
+                        'Разрешено создать только одно СНТ в базе данных'
+                        ),
+                    })
+
+
     def save(self, *args, **kwargs):
         """Before saving entry to db checks against 'only one entry allowed'."""
         all_snt = Snt.objects.all()
@@ -181,8 +198,8 @@ class Snt(models.Model):
             if all_snt[0] == self:
                 super().save(*args, **kwargs)
             else:
-                raise ValidationError(
-                    _("Разрешено создать только одно СНТ в базе данных")
+                raise Http404(
+                     _("Разрешено создать только одно СНТ в базе данных")
                     )
 
 class LandPlot(models.Model):

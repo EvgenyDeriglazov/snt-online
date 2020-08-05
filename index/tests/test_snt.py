@@ -184,8 +184,15 @@ class SntModelTest(TestCase):
     def test_create_more_than_one_snt(self):
         """Test that it is not possible to create more than 1 entry in db
         enabled by custom save() model method which should raise
-        validation error."""
-        with self.assertRaises(ValidationError):
+        Http404."""
+        ChairMan.objects.create(
+            first_name='Иван1',
+            middle_name='Иванович1',
+            last_name='Иванов1',
+            join_date=datetime.date.today() - datetime.timedelta(days=1),
+            leave_date=datetime.date.today(),
+            )
+        with self.assertRaises(Http404):
             Snt.objects.create(
                 name='тест',
                 personal_acc='01234567898765432100',
@@ -194,7 +201,7 @@ class SntModelTest(TestCase):
                 corresp_acc='01234567898765432100',
                 inn='0123456780',
                 kpp='123456780',
-                chair_man=ChairMan.objects.get(id=1),
+                chair_man=ChairMan.objects.get(id=2),
                 address="123СТА0",
                     )
         self.assertEquals(len(Snt.objects.all()), 1)
