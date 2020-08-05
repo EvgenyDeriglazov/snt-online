@@ -59,7 +59,7 @@
     				{% endif %}
     				
     				{% if user.is_authenticated %}
-        				<p>{{ human_name }}</br>
+        				<p>{{ user_name }}</br>
                         <a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
         				</p>
         			{% else %}

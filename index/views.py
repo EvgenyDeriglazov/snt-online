@@ -14,7 +14,7 @@ class HomePage(ListView):
         context = super().get_context_data(**kwargs)
         context['land_plots_count'] = LandPlot.objects.count()
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class InfoPage(ListView):
@@ -29,7 +29,7 @@ class InfoPage(ListView):
             status__exact='published',
             ).order_by('-pub_date')
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class InfoDetailsPage(DetailView):
@@ -42,7 +42,7 @@ class InfoDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         return context
 
 
@@ -55,7 +55,7 @@ class SntBankDetailsPage(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class SntContactsPage(ListView):
@@ -67,7 +67,7 @@ class SntContactsPage(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         context['chair_man'] = context['snt_list'][0].chair_man
         context['accountant'] = context['snt_list'][0].accountant
         return context
@@ -84,7 +84,7 @@ class DocsPage(ListView):
             context['docs_list'] = Docs.objects.filter(
                 status__exact='published').order_by('-upload_date')
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         return context
 
 class DocsDetailsPage(DetailView):
@@ -97,7 +97,7 @@ class DocsDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        context['human_name'] = str(get_model_by_user(self.request.user))
+        context['user_name'] = str(get_model_by_user(self.request.user))
         return context
 
 
