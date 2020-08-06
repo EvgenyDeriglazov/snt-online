@@ -89,10 +89,23 @@ def upload_directory(instance, filename):
     return 'docs/%Y/{0}/{1}'.format(instance.user.id, filename)
 
 # Re-use helper functions
-#def user_check_ok(user):
-#    """Checks that django.contrib.auth.models.User is not taken for
-#    other models' field."""
-#    if C 
+def chair_man_user_exists(user):
+    """Checks that django.contrib.auth.models.User is not taken for
+    ChairMan model's user field."""
+    if ChairMan.objects.filter(user__exact=user).exists():
+        return True 
+
+def accountant_user_exists(user):
+    """Checks that django.contrib.auth.models.User is not taken for
+    Accountant model's user field."""
+    if Accountant.objects.filter(user__exact=user).exists():
+        return True 
+
+def owner_user_exists(user):
+    """Checks that django.contrib.auth.models.User is not taken for
+    Owner model's user field."""
+    if Owner.objects.filter(user__exact=user).exists():
+        return True 
 
 #Create your models here.
 class Snt(models.Model):
