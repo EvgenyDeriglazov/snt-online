@@ -154,4 +154,14 @@ class ChairManModelTest(TestCase):
         obj = ChairMan.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), None)
 
-
+    def test_chair_man_user_exists(self):
+        """Test index app helper function chair_man_user_exists().""" 
+        obj = User.objects.get(id=1)
+        self.assertEqual(chair_man_user_exists(obj), True)
+        obj2 = User.objects.create(
+            username="username1",
+            password="password1",
+            )
+        self.assertEqual(chair_man_user_exists(obj2), None)
+            
+ 

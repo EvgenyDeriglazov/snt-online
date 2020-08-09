@@ -146,3 +146,13 @@ class OwnerModelTest(TestCase):
     def test_get_absolute_url(self):
         obj = Owner.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), None)
+
+    def test_owner_user_exists(self):
+        """Test for helper function owner_user_exists()."""
+        obj = User.objects.get(id=1)
+        self.assertEqual(owner_user_exists(obj), True)
+        obj2 = User.objects.create(
+            username="username",
+            password="password",
+            )
+        self.assertEqual(owner_user_exists(obj2), None)

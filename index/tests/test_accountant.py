@@ -189,3 +189,13 @@ class AccountantModelTest(TestCase):
             join_date=datetime.date.today()
             )
         self.assertEqual(len(Accountant.objects.all()), 1)
+
+    def test_accountant_user_exists(self):
+        """Test for helper function accountant_user_exists()."""
+        obj = User.objects.get(id=1)
+        self.assertEqual(accountant_user_exists(obj), True)
+        obj2 = User.objects.create(
+            username="username1",
+            password="password2",
+            )
+        self.assertEqual(accountant_user_exists(obj2), None)
