@@ -350,11 +350,12 @@ class ChairMan(models.Model):
         pass
         #return reverse('chairman-detail', args=[str(self.id)])
 
-#    def save(self, *args, **kwargs):
-#        """Custom save method."""
-#        if check_user(self.user):
-#            super().save(*args, **kwargs)
-
+    def save(self, *args, **kwargs):
+        """Custom save method."""
+        if owner_user_exists(self.user) or accountant_user_exists(self.user):
+            pass
+        else:
+            super().save(*args, **kwargs)
 
 class Owner(models.Model):
     """Model representing an owner of land plot with basic infromation
@@ -446,6 +447,14 @@ class Owner(models.Model):
         """Returns url to access an instance of the model."""
         pass
         #return reverse('owner-detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        """Custom save method."""
+        if chair_man_user_exists(self.user) or \
+            accountant_user_exists(self.user):
+            pass
+        else:
+            super().save(*args, **kwargs)
 
 class Accountant(models.Model):
     """Model representing snt accountant basic infromation
@@ -548,11 +557,13 @@ class Accountant(models.Model):
         if len(check_list) == 0 or \
             (len(check_list) == 1 and check_list[0] == self):
             super().save(*args, **kwargs)
+        elif owner_user_exists(self.user) or \
+            chair_man_user_exists(self.user):
+            pass
         else:
             raise ValidationError(
                 _("Разрешено иметь только одного действующего бухгалтера")
                 )
-
 
 class Docs(models.Model):
     """Represents different kinds of documents to be published on site."""
