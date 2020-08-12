@@ -154,6 +154,72 @@ class ChairManModelTest(TestCase):
         obj = ChairMan.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), None)
 
+    def test_create_first_chair_man_in_save_method(self):
+         """Test creating first chair man."""
+         ChairMan.objects.all().delete()
+         self.assertEqual(len(ChairMan.objects.all()), 0)
+         ChairMan.objects.create(
+             first_name='Иван',
+             middle_name='Иванович',
+             last_name='Иванов',
+             user=User.objects.get(id=1),
+             join_date=datetime.date.today()
+             )
+         self.assertEqual(len(ChairMan.objects.all()), 1)
+
+    def test_http404_2_chair_men_in_save_method(self):
+         """Test for creating 2nd chair man with error."""
+         User.objects.create(
+             username="username1",
+             password="password1",
+             )
+         with self.assertRaises(Http404):
+             ChairMan.objects.create(
+                 first_name='Иван',
+                 middle_name='Иванович',
+                 last_name='Иванов',
+                 user=User.objects.get(id=2),
+                 join_date=datetime.date.today()
+                 )
+
+    def test_http404_owner_exists_in_save_method(self):
+         """Test Http404 when user taken by owner"""
+         ChairMan.objects.all().delete()
+         Owner.objects.create(
+             first_name='Иван',
+             middle_name='Иванович',
+             last_name='Иванов',
+             user=User.objects.get(id=1),
+             join_date=datetime.date.today()
+             )
+         with self.assertRaises(Http404):
+             ChairMan.objects.create(
+                 first_name='Иван',
+                 middle_name='Иванович',
+                 last_name='Иванов',
+                 user=User.objects.get(id=1),
+                 join_date=datetime.date.today()
+                 )
+
+    def test_http404_accountant_exists_in_save_method(self):
+         """Test Http404 when user taken by accountant."""
+         ChairMan.objects.all().delete()
+         Accountant.objects.create(
+             first_name='Иван',
+             middle_name='Иванович',
+             last_name='Иванов',
+             user=User.objects.get(id=1),
+             join_date=datetime.date.today()
+             )
+         with self.assertRaises(Http404):
+             ChairMan.objects.create(
+                 first_name='Иван',
+                 middle_name='Иванович',
+                 last_name='Иванов',
+                 user=User.objects.get(id=1),
+                 join_date=datetime.date.today()
+                 )
+ 
     def test_chair_man_user_exists(self):
         """Test index app helper function chair_man_user_exists().""" 
         obj = User.objects.get(id=1)

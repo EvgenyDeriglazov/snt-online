@@ -213,6 +213,7 @@ class AccountantModelTest(TestCase):
                 user=User.objects.get(id=2),
                 join_date=datetime.date.today()
                 )
+
     def test_http404_owner_exists_in_save_method(self):
         """Test Http404 when user taken by owner"""
         Accountant.objects.all().delete()
@@ -250,6 +251,7 @@ class AccountantModelTest(TestCase):
                 user=User.objects.get(id=1),
                 join_date=datetime.date.today()
                 )   
+
     def test_accountant_user_exists(self):
         """Test for helper function accountant_user_exists()."""
         obj = User.objects.get(id=1)

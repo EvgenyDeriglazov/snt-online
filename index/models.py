@@ -352,11 +352,28 @@ class ChairMan(models.Model):
         #return reverse('chairman-detail', args=[str(self.id)])
 
     def save(self, *args, **kwargs):
-        """Custom save method."""
-        if owner_user_exists(self.user) or accountant_user_exists(self.user):
-            pass
+        """Custom save method to restrict to have only one chair man
+        and prevent using same user for different models."""
+        check_list = ChairMan.objects.filter(
+            join_date__isnull=False,
+            leave_date__isnull=True,
+            ).all()
+        if len(check_list) == 0 or \
+            (len(check_list) == 1 and check_list[0] == self):
+            if owner_user_exists(self.user):
+                raise Http404(
+                    _("Владелец с таким логином уже существует")
+                    )
+            elif accountant_user_exists(self.user):
+                raise Http404(
+                    _("Бухгалтер с таким логином уже существует")
+                    )
+            else:
+                super().save(*args, **kwargs)
         else:
-            super().save(*args, **kwargs)
+            raise Http404(
+                _("Разрешено иметь только одного действующего бухгалтера")
+                )
 
 class Owner(models.Model):
     """Model representing an owner of land plot with basic infromation
@@ -450,10 +467,16 @@ class Owner(models.Model):
         #return reverse('owner-detail', args=[str(self.id)])
 
     def save(self, *args, **kwargs):
-        """Custom save method."""
-        if chair_man_user_exists(self.user) or \
-            accountant_user_exists(self.user):
-            pass
+        """Custom save method to restrict using same user for
+        different models."""
+        if chair_man_user_exists(self.user):
+            raise Http404(
+                _("Председатель с таким логином уже существует")
+                )
+        elif accountant_user_exists(self.user):
+            raise Http404(
+                _("Бухгалтер с таким логином уже существует")
+                )
         else:
             super().save(*args, **kwargs)
 
@@ -550,7 +573,8 @@ class Accountant(models.Model):
         #return reverse('owner-detail', args=[str(self.id)])
 
     def save(self, *args, **kwargs):
-        """Custom save method."""
+        """Custom save method to restrict to have only one accountant
+        and prevent using same user for different models."""
         check_list = Accountant.objects.filter(
             join_date__isnull=False,
             leave_date__isnull=True,

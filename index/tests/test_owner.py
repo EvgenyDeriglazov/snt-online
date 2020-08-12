@@ -147,6 +147,44 @@ class OwnerModelTest(TestCase):
         obj = Owner.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), None)
 
+    def test_http404_accountant_exists_in_save_method(self):
+         """Test Http404 when user taken by accountant"""
+         Owner.objects.all().delete()
+         Accountant.objects.create(
+             first_name='Иван',
+             middle_name='Иванович',
+             last_name='Иванов',
+             user=User.objects.get(id=1),
+             join_date=datetime.date.today()
+             )
+         with self.assertRaises(Http404):
+             Owner.objects.create(
+                 first_name='Иван',
+                 middle_name='Иванович',
+                 last_name='Иванов',
+                 user=User.objects.get(id=1),
+                 join_date=datetime.date.today()
+                 )
+
+    def test_http404_chair_man_exists_in_save_method(self):
+         """Test Http404 when user taken by chair man"""
+         Owner.objects.all().delete()
+         ChairMan.objects.create(
+             first_name='Иван',
+             middle_name='Иванович',
+             last_name='Иванов',
+             user=User.objects.get(id=1),
+             join_date=datetime.date.today()
+             )
+         with self.assertRaises(Http404):
+             Owner.objects.create(
+                 first_name='Иван',
+                 middle_name='Иванович',
+                 last_name='Иванов',
+                 user=User.objects.get(id=1),
+                 join_date=datetime.date.today()
+                 )
+
     def test_owner_user_exists(self):
         """Test for helper function owner_user_exists()."""
         obj = User.objects.get(id=1)
