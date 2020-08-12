@@ -50,14 +50,14 @@ class DocsModelTest(TestCase):
         obj = Docs.objects.get(id=1)
         self.assertEqual(obj.title, "Тестовый документ")
 
-    def test_upload_field(self):
+    def test_docfile_field(self):
         # Attributes test
-        field = Docs._meta.get_field('upload')
+        field = Docs._meta.get_field('docfile')
         self.assertEqual(field.verbose_name, "Файл документа")
         self.assertEqual(field.help_text, "Выберите файл для загрузки")
         # Data test
         obj = Docs.objects.get(id=1)
-        self.assertEqual(obj.upload.name, '')
+        self.assertEqual(obj.docfile.name, '')
 
     def test_doc_user_field(self):
         # Attributes test
@@ -102,4 +102,4 @@ class DocsModelTest(TestCase):
     
     def test_get_absolute_url(self):
         obj = Docs.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+        self.assertEquals(obj.get_absolute_url(), "/docs/1")

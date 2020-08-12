@@ -105,4 +105,4 @@ class LandPlotModelTest(TestCase):
     
     def test_get_absolute_url(self):
         obj = LandPlot.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+        self.assertEquals(obj.get_absolute_url(), "")

@@ -261,7 +261,8 @@ class LandPlot(models.Model):
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
-        return reverse('land-plot-detail', args=[str(self.id)])
+        #return reverse('land-plot-detail', args=[str(self.id)])
+        pass
 
 class ChairMan(models.Model):
     """Model representing a chairman of snt with basic information
@@ -642,7 +643,7 @@ class Docs(models.Model):
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
-        pass
+        return reverse('docs-details', kwargs={"pk": str(self.id)})
 
 
 class Info(models.Model):
