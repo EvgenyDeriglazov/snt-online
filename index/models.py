@@ -568,7 +568,7 @@ class Accountant(models.Model):
             else:
                 super().save(*args, **kwargs)
         else:
-            raise ValidationError(
+            raise Http404(
                 _("Разрешено иметь только одного действующего бухгалтера")
                 )
 

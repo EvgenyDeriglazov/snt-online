@@ -199,13 +199,13 @@ class AccountantModelTest(TestCase):
             )
         self.assertEqual(len(Accountant.objects.all()), 1)
 
-    def test_validation_error_in_save_method(self):
+    def test_http404_2_accountants_in_save_method(self):
         """Test for creating 2nd accountant with error."""
         User.objects.create(
             username="username1",
             password="password1",
             )
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             Accountant.objects.create(
                 first_name='Иван',
                 middle_name='Иванович',
@@ -213,7 +213,7 @@ class AccountantModelTest(TestCase):
                 user=User.objects.get(id=2),
                 join_date=datetime.date.today()
                 )
-    def test_http404_owner_in_save_method(self):
+    def test_http404_owner_exists_in_save_method(self):
         """Test Http404 when user taken by owner"""
         Accountant.objects.all().delete()
         Owner.objects.create(
@@ -232,7 +232,7 @@ class AccountantModelTest(TestCase):
                 join_date=datetime.date.today()
                 )   
 
-    def test_http404_chair_man_in_save_method(self):
+    def test_http404_chair_man_exists_in_save_method(self):
         """Test Http404 when user taken by chair man"""
         Accountant.objects.all().delete()
         ChairMan.objects.create(
