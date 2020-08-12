@@ -556,10 +556,16 @@ class Accountant(models.Model):
             ).all()
         if len(check_list) == 0 or \
             (len(check_list) == 1 and check_list[0] == self):
-            super().save(*args, **kwargs)
-        elif owner_user_exists(self.user) or \
-            chair_man_user_exists(self.user):
-            pass
+            if owner_user_exists(self.user):
+                raise Http404(
+                    _("Владелец с таким логином уже существует")
+                    )
+            elif chair_man_user_exists(self.user):
+                raise Http404(
+                    _("Председатель с таким логином уже существует")
+                    )
+            else:
+                super().save(*args, **kwargs)
         else:
             raise ValidationError(
                 _("Разрешено иметь только одного действующего бухгалтера")

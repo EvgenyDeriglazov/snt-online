@@ -13,6 +13,7 @@
 from django.test import TestCase
 from index.models import *
 from django.contrib.auth.models import User
+from django.http import Http404
 import datetime
 
 class AccountantModelTest(TestCase):
@@ -153,7 +154,7 @@ class AccountantModelTest(TestCase):
         obj = Accountant.objects.get(id=1)
         self.assertEquals(obj.get_absolute_url(), None)
 
-    def test_save_method(self):
+    def test_midification_in_save_method(self):
        # Check possibility of current accountant modification
         Accountant.objects.filter(id=1).update(
             join_date=datetime.date.today() - datetime.timedelta(days=1),
@@ -165,7 +166,13 @@ class AccountantModelTest(TestCase):
             datetime.date.today() - datetime.timedelta(days=1),
             )
         self.assertEqual(accountant.leave_date, datetime.date.today())
-        # Check possibility of creating 2nd accountant without error
+
+    def test_create_2_accountants_in_save_method(self):
+        """Test possibility of creating 2nd accountant without error."""
+        Accountant.objects.filter(id=1).update(
+            join_date=datetime.date.today() - datetime.timedelta(days=1),
+            leave_date=datetime.date.today(),
+            )
         User.objects.create(
             username="username1",
             password="password1",
@@ -178,7 +185,9 @@ class AccountantModelTest(TestCase):
             join_date=datetime.date.today()
             )
         self.assertEqual(len(Accountant.objects.all()), 2)
-        # Check possibility of creating first accoutnant
+
+    def test_create_first_accountant_in_save_method(self):
+        """Test creating first accoutnant."""
         Accountant.objects.all().delete()
         self.assertEqual(len(Accountant.objects.all()), 0)
         Accountant.objects.create(
@@ -190,6 +199,57 @@ class AccountantModelTest(TestCase):
             )
         self.assertEqual(len(Accountant.objects.all()), 1)
 
+    def test_validation_error_in_save_method(self):
+        """Test for creating 2nd accountant with error."""
+        User.objects.create(
+            username="username1",
+            password="password1",
+            )
+        with self.assertRaises(ValidationError):
+            Accountant.objects.create(
+                first_name='Иван',
+                middle_name='Иванович',
+                last_name='Иванов',
+                user=User.objects.get(id=2),
+                join_date=datetime.date.today()
+                )
+    def test_http404_owner_in_save_method(self):
+        """Test Http404 when user taken by owner"""
+        Accountant.objects.all().delete()
+        Owner.objects.create(
+            first_name='Иван',
+            middle_name='Иванович',
+            last_name='Иванов',
+            user=User.objects.get(id=1),
+            join_date=datetime.date.today()
+            )
+        with self.assertRaises(Http404):
+            Accountant.objects.create(
+                first_name='Иван',
+                middle_name='Иванович',
+                last_name='Иванов',
+                user=User.objects.get(id=1),
+                join_date=datetime.date.today()
+                )   
+
+    def test_http404_chair_man_in_save_method(self):
+        """Test Http404 when user taken by chair man"""
+        Accountant.objects.all().delete()
+        ChairMan.objects.create(
+            first_name='Иван',
+            middle_name='Иванович',
+            last_name='Иванов',
+            user=User.objects.get(id=1),
+            join_date=datetime.date.today()
+            )
+        with self.assertRaises(Http404):
+            Accountant.objects.create(
+                first_name='Иван',
+                middle_name='Иванович',
+                last_name='Иванов',
+                user=User.objects.get(id=1),
+                join_date=datetime.date.today()
+                )   
     def test_accountant_user_exists(self):
         """Test for helper function accountant_user_exists()."""
         obj = User.objects.get(id=1)
