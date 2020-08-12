@@ -185,12 +185,14 @@ class SntModelTest(TestCase):
         """Test that it is not possible to create more than 1 entry in db
         enabled by custom save() model method which should raise
         Http404."""
+        ChairMan.objects.filter(id=1).update(
+            leave_date=datetime.date.today(),
+            )
         ChairMan.objects.create(
             first_name='Иван1',
             middle_name='Иванович1',
             last_name='Иванов1',
             join_date=datetime.date.today() - datetime.timedelta(days=1),
-            leave_date=datetime.date.today(),
             )
         with self.assertRaises(Http404):
             Snt.objects.create(

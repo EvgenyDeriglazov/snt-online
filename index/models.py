@@ -92,20 +92,23 @@ def upload_directory(instance, filename):
 def chair_man_user_exists(user):
     """Checks that django.contrib.auth.models.User is not taken for
     ChairMan model's user field."""
-    if ChairMan.objects.filter(user__exact=user).exists():
-        return True 
+    if user != None:
+        if ChairMan.objects.filter(user__exact=user).exists():
+            return True 
 
 def accountant_user_exists(user):
     """Checks that django.contrib.auth.models.User is not taken for
     Accountant model's user field."""
-    if Accountant.objects.filter(user__exact=user).exists():
-        return True 
+    if user != None:
+        if Accountant.objects.filter(user__exact=user).exists():
+            return True 
 
 def owner_user_exists(user):
     """Checks that django.contrib.auth.models.User is not taken for
     Owner model's user field."""
-    if Owner.objects.filter(user__exact=user).exists():
-        return True 
+    if user != None:
+        if Owner.objects.filter(user__exact=user).exists():
+            return True 
 
 #Create your models here.
 class Snt(models.Model):
@@ -205,12 +208,10 @@ class Snt(models.Model):
     def save(self, *args, **kwargs):
         """Before saving entry to db checks against 'only one entry allowed'."""
         all_snt = Snt.objects.all()
-        if len(all_snt) == 0:
+        if len(all_snt) == 0 or \
+            (len(all_snt) == 1 and all_snt[0] == self):
             super().save(*args, **kwargs)
-        elif len(all_snt) == 1:
-            if all_snt[0] == self:
-                super().save(*args, **kwargs)
-            else:
+        else:
                 raise Http404(
                      _("Разрешено создать только одно СНТ в базе данных")
                     )
