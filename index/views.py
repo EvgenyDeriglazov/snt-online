@@ -15,6 +15,7 @@ class HomePage(TemplateView):
         context['land_plots_count'] = LandPlot.objects.count()
         context['auth_form'] = AuthenticationForm
         context['user_name'] = str(get_model_by_user(self.request.user))
+        context['land_plots'] = get_land_plots(get_model_by_user(self.request.user))
         return context
 
 class InfoPage(TemplateView):
@@ -99,8 +100,8 @@ class DocsDetailsPage(DetailView):
 
 # Re-use helper functions
 def get_model_by_user(user):
-    """Returns related model via one-to-one relationship to user.
-    If model does not exist returns user.username.
+    """Returns related model instance via one-to-one relationship
+    to user. If model does not exist returns user.username.
     If user is not authenticated returns None."""
     if user.is_authenticated:
         try:
@@ -117,4 +118,8 @@ def get_model_by_user(user):
             pass
         return user.username
 
-
+def get_land_plots(model_instance):
+    """Returns query set of land plots which belongs
+    to model_instance."""
+    if isinstance(model_instance, Owner):
+        return model_instance.landplot_set.all()

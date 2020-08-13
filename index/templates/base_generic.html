@@ -60,10 +60,15 @@
     				
     				{% if user.is_authenticated %}
         				<p>{{ user_name }}</br>
+                        {% for land_plot in land_plots %}}
+                        {{ land_plot }}</br>
+                        {% empty %}
+                        за вами не числится ни одного участка</br>
+                        {% endfor %}
                         <a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
         				</p>
         			{% else %}
-    					<form method="post" action="{% url 'login' %}" size=10>
+    					<form method="post" action="{% url 'login' %}">
         				{% csrf_token %}
         				<p>Логин{{ auth_form.username }}</br>
         				Пароль{{ auth_form.password }}</br>
