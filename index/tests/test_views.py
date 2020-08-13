@@ -38,15 +38,16 @@ class TestHomePage(TestCase):
         self.assertTemplateUsed(response, 'home_page.html')
 
     def test_home_page_context(self):
-        """"""
+        """Test context content."""
         response = self.client.get('')
         self.assertIn('snt_list', response.context)
         self.assertIn('land_plots_count', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
 
     def test_home_page_context_data(self):
-        """"""
+        """Test context data."""
         response = self.client.get('')
         self.assertEqual(len(response.context['snt_list']), 1)
 

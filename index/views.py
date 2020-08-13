@@ -14,8 +14,16 @@ class HomePage(TemplateView):
         context['snt_list'] = Snt.objects.all()
         context['land_plots_count'] = LandPlot.objects.count()
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
-        context['land_plots'] = get_land_plots(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        elif isinstance(user_model_instance, Accountant):
+            context['land_plots'] = None
+        elif isinstance(user_model_instance, ChairMan):
+            context['land_plots'] = None
+        else:
+            context['land_plots'] = None
         return context
 
 class InfoPage(TemplateView):
@@ -118,8 +126,8 @@ def get_model_by_user(user):
             pass
         return user.username
 
-def get_land_plots(model_instance):
+def get_land_plots(user_model_instance):
     """Returns query set of land plots which belongs
     to model_instance."""
-    if isinstance(model_instance, Owner):
-        return model_instance.landplot_set.all()
+    if isinstance(user_model_instance, Owner):
+        return user_model_instance.landplot_set.all()
