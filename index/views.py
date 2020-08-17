@@ -18,10 +18,6 @@ class HomePage(TemplateView):
         context['user_name'] = str(user_model_instance)
         if isinstance(user_model_instance, Owner):
             context['land_plots'] = user_model_instance.landplot_set.all()
-        elif isinstance(user_model_instance, Accountant):
-            context['land_plots'] = None
-        elif isinstance(user_model_instance, ChairMan):
-            context['land_plots'] = None
         else:
             context['land_plots'] = None
         return context
