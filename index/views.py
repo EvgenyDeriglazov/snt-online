@@ -154,6 +154,9 @@ class LandPlotPage(DetailView):
             context['land_plots'] = user_model_instance.landplot_set.all()
         else:
             context['land_plots'] = None
+        if context['land_plot'].owner.user != self.request.user: 
+            context['land_plot'] = None
+            return context
         return context
 
 # Re-use helper functions
