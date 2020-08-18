@@ -222,3 +222,31 @@ class TestDocsDetailsPage(TestCase):
         self.assertIn('user_name', response.context)
         self.assertIn('land_plots', response.context)
  
+class TestLandPlotPage(TestCase):
+    """"""
+    fixtures = ['all_db.json']
+
+    # Test functions
+    def test_land_plot_page_url(self):
+        """"""
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_land_plot_page_url_name(self):
+        """"""
+        response = self.client.get(reverse('land-plot', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_land_plot_page_template(self):
+        """"""
+        response = self.client.get('/plot-id-1/')
+        self.assertTemplateUsed(response, 'land_plot_page.html')
+
+    def test_land_plot_page_context_content(self):
+        """Test all content[keys] exist in response."""
+        response = self.client.get('/docs/1')
+        self.assertIn('snt_list', response.context)
+        self.assertIn('auth_form', response.context)
+        self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
+        self.assertIn('land_plot', response.context)
