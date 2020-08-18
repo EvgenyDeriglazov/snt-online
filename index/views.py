@@ -136,6 +136,24 @@ class DocsDetailsPage(DetailView):
         return context
 
 
+class LandPlotPage(DetailView):
+    """Class based view to display Docs details page."""
+    model = LandPlot
+    template_name = "land_plot_page.html"
+    context_object_name = "land_plot"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['snt_list'] = Snt.objects.all()
+        context['auth_form'] = AuthenticationForm
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
+        return context
+        
 # Re-use helper functions
 def get_model_by_user(user):
     """Returns related model instance via one-to-one relationship

@@ -61,7 +61,7 @@
     				{% if user.is_authenticated %}
         				<p>{{ user_name }}</br>
                         {% for land_plot in land_plots %}
-                        участок {{ land_plot }}</br>
+                        <a href="{% url 'land-plot' land_plot.id %}"> участок {{ land_plot }}</a></br>
                         {% empty %}
                         за вами не числится ни одного участка</br>
                         {% endfor %}
