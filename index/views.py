@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
 from index.models import *
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 class HomePage(TemplateView):
@@ -135,7 +137,7 @@ class DocsDetailsPage(DetailView):
         context['accountant'] = context['snt_list'][0].accountant
         return context
 
-
+@method_decorator(login_required, name='dispatch')
 class LandPlotPage(DetailView):
     """Class based view to display Docs details page."""
     model = LandPlot
@@ -153,7 +155,7 @@ class LandPlotPage(DetailView):
         else:
             context['land_plots'] = None
         return context
-        
+
 # Re-use helper functions
 def get_model_by_user(user):
     """Returns related model instance via one-to-one relationship
