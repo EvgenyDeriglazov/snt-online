@@ -189,7 +189,8 @@ class Snt(models.Model):
 
     # Custom functions
     def clean_fields(self, exclude=None):
-        """"""
+        """Custom method to check model form fields
+        and restrict to have only one Snt in DB."""
         all_snt = Snt.objects.all()
         if len(all_snt) == 0:
             super().clean_fields(exclude=exclude)

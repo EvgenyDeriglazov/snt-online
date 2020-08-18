@@ -31,14 +31,13 @@ class TestHomePage(TestCase):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
 
-
     def test_home_page_template(self):
         """"""
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home_page.html')
 
-    def test_home_page_context(self):
-        """Test context content."""
+    def test_home_page_context_content(self):
+        """Test all content[keys] exist in response."""
         response = self.client.get('')
         self.assertIn('snt_list', response.context)
         self.assertIn('land_plots_count', response.context)
@@ -69,14 +68,14 @@ class TestInfoPage(TestCase):
         response = self.client.get('/info/')
         self.assertTemplateUsed(response, 'info_page.html')
 
-    def test_info_page_context(self):
-        """"""
+    def test_info_page_context_content(self):
+        """Test dict keys exists."""
         response = self.client.get('/info/')
         self.assertIn('snt_list', response.context)
         self.assertIn('info_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
-
+        self.assertIn('land_plots', response.context)
 
 class TestInfoDetailsPage(TestCase):
     fixtures = ['all_db.json']
@@ -98,14 +97,14 @@ class TestInfoDetailsPage(TestCase):
         response = self.client.get('/info/1')
         self.assertTemplateUsed(response, 'info_details_page.html')
 
-    def test_info_details_page_context(self):
-        """"""
+    def test_info_details_page_context_content(self):
+        """Test all content[keys] exist in response."""
         response = self.client.get('/info/1')
         self.assertIn('info_details', response.context)
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
-
+        self.assertIn('land_plots', response.context)
 
 class TestBankDetailsPage(TestCase):
     """"""
@@ -127,12 +126,13 @@ class TestBankDetailsPage(TestCase):
         response = self.client.get('/snt-bank-details/')
         self.assertTemplateUsed(response, 'snt_bank_details_page.html')
 
-    def test_bank_details_page_context(self):
-        """"""
+    def test_bank_details_page_context_content(self):
+        """Test all content[keys] exist in response."""
         response = self.client.get('/snt-bank-details/')
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
 
 class TestSntContactsPage(TestCase):
     """"""
@@ -154,14 +154,15 @@ class TestSntContactsPage(TestCase):
         response = self.client.get('/contacts/')
         self.assertTemplateUsed(response, 'snt_contacts_page.html')
 
-    def test_snt_contacts_page_context(self):
-        """"""
+    def test_snt_contacts_page_context_content(self):
+        """Test all content[keys] exist in response."""
         response = self.client.get('/contacts/')
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
         self.assertIn('chair_man', response.context)
         self.assertIn('accountant', response.context)
+        self.assertIn('land_plots', response.context)
 
 class TestDocsPage(TestCase):
     """"""
@@ -183,13 +184,14 @@ class TestDocsPage(TestCase):
         response = self.client.get('/docs/')
         self.assertTemplateUsed(response, 'docs_page.html')
 
-    def test_docs_page_context(self):
-        """"""
+    def test_docs_page_context_content(self):
+        """Test all content[keys] exist in response."""
         response = self.client.get('/docs/')
         self.assertIn('snt_list', response.context)
         self.assertIn('docs_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
  
 class TestDocsDetailsPage(TestCase):
     """"""
@@ -211,11 +213,12 @@ class TestDocsDetailsPage(TestCase):
         response = self.client.get('/docs/1')
         self.assertTemplateUsed(response, 'docs_details_page.html')
 
-    def test_docs_page_context(self):
-        """"""
+    def test_docs_page_context_content(self):
+        """Test all content[keys] exist in response."""
         response = self.client.get('/docs/1')
         self.assertIn('snt_list', response.context)
         self.assertIn('docs_details', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
  

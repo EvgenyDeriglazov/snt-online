@@ -33,7 +33,12 @@ class InfoPage(TemplateView):
             status__exact='published',
             ).order_by('-pub_date')
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
         return context
 
 class InfoDetailsPage(DetailView):
@@ -46,7 +51,12 @@ class InfoDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
         return context
 
 
@@ -58,7 +68,12 @@ class SntBankDetailsPage(TemplateView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
         return context
 
 class SntContactsPage(TemplateView):
@@ -69,7 +84,12 @@ class SntContactsPage(TemplateView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
         context['chair_man'] = context['snt_list'][0].chair_man
         context['accountant'] = context['snt_list'][0].accountant
         return context
@@ -85,7 +105,14 @@ class DocsPage(TemplateView):
             context['docs_list'] = Docs.objects.filter(
                 status__exact='published').order_by('-upload_date')
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
+        context['chair_man'] = context['snt_list'][0].chair_man
+        context['accountant'] = context['snt_list'][0].accountant
         return context
 
 class DocsDetailsPage(DetailView):
@@ -98,7 +125,14 @@ class DocsDetailsPage(DetailView):
         context = super().get_context_data(**kwargs)
         context['snt_list'] = Snt.objects.all()
         context['auth_form'] = AuthenticationForm
-        context['user_name'] = str(get_model_by_user(self.request.user))
+        user_model_instance = get_model_by_user(self.request.user)
+        context['user_name'] = str(user_model_instance)
+        if isinstance(user_model_instance, Owner):
+            context['land_plots'] = user_model_instance.landplot_set.all()
+        else:
+            context['land_plots'] = None
+        context['chair_man'] = context['snt_list'][0].chair_man
+        context['accountant'] = context['snt_list'][0].accountant
         return context
 
 
