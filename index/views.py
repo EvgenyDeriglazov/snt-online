@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
+from django.http import Http404
 from index.models import *
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.decorators import method_decorator
@@ -139,25 +140,25 @@ class DocsDetailsPage(DetailView):
 
 @method_decorator(login_required, name='dispatch')
 class LandPlotPage(DetailView):
-    """Class based view to display Docs details page."""
+    """View to display Land Plot details page."""
     model = LandPlot
     template_name = "land_plot_page.html"
     context_object_name = "land_plot"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['snt_list'] = Snt.objects.all()
-        context['auth_form'] = AuthenticationForm
-        user_model_instance = get_model_by_user(self.request.user)
-        context['user_name'] = str(user_model_instance)
-        if isinstance(user_model_instance, Owner):
-            context['land_plots'] = user_model_instance.landplot_set.all()
-        else:
-            context['land_plots'] = None
-        if context['land_plot'].owner.user != self.request.user: 
-            context['land_plot'] = None
+        if context['land_plot'].owner.user == self.request.user: 
+            context['snt_list'] = Snt.objects.all()
+            context['auth_form'] = AuthenticationForm
+            user_model_instance = get_model_by_user(self.request.user)
+            context['user_name'] = str(user_model_instance)
+            if isinstance(user_model_instance, Owner):
+                context['land_plots'] = user_model_instance.landplot_set.all()
+            else:
+                context['land_plots'] = None
             return context
-        return context
+        else:
+            raise Http404
 
 # Re-use helper functions
 def get_model_by_user(user):
