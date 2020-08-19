@@ -65,7 +65,7 @@
                         {% empty %}
                         за вами не числится ни одного участка</br>
                         {% endfor %}
-                        <a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
+                        <a href="{% url 'logout' %}">Выход</a> <!-- ?next={{ request.path }} -->
         				</p>
         			{% else %}
     					<form method="post" action="{% url 'login' %}">

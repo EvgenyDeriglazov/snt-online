@@ -230,12 +230,12 @@ class TestLandPlotPage(TestCase):
     def test_land_plot_page_url(self):
         """"""
         response = self.client.get('/plot-id-1/')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_land_plot_page_url_name(self):
         """"""
         response = self.client.get(reverse('land-plot', kwargs={'pk': 1}))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_land_plot_page_template(self):
         """"""

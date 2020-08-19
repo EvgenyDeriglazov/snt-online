@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+<!-- Normally the template name is relative to the template loader’s root directory -->
+{% block center-column %}
+<div id="center-column">
+	<h4 align="center">Тест</h4>
+	{% if land_plot %}
+
+    <p>Номер участка {{ land_plot.plot_number }}</p>
+    {% endif %}
+     <h6 align="right">Площадь: </br>
+    Владелец: </h6>
+	<a href="{% url 'land-plot' land_plot.id%}">Назад</a>
+</div>
+{% endblock %}
+

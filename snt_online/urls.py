@@ -35,6 +35,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     #path('accounts/login/', MyLoginView.as_view(), name='my-login'),
     path('plot-id-<int:pk>/', LandPlotPage.as_view(), name='land-plot'),
+    path('plot-id-<int:pk>/', include('electricity.urls')),
 ]
 
 urlpatterns += static(

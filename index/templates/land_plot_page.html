@@ -4,7 +4,7 @@
 <div id="center-column">
 	{% if land_plot %}
 	<h4 align="center">Участок {{ land_plot.plot_number }}</h4>
-    <p></p>
+    <p><a href="{% url 'electricity' land_plot.id %}">Электроэнергия</a></p>
      <h6 align="right">Площадь: {{ land_plot.plot_area }}м<sup>2</sup></br>
     Владелец: {{ land_plot.owner }}</h6>
     {% else %}
