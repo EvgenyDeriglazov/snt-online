@@ -19,7 +19,7 @@
 # test_db.json
 # then move the json file to appname.fixtures directory
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from index.models import *
 
 class TestHomePage(TestCase):
@@ -232,26 +232,72 @@ class TestLandPlotPage(TestCase):
     fixtures = ['test_db.json']
 
     # Test functions
-    def test_land_plot_page_url(self):
+    def test_land_plot_page_url_by_unauthenticated_user(self):
         """"""
         response = self.client.get('/plot-id-1/')
         self.assertEqual(response.status_code, 302)
 
+    def test_land_plot_page_url_by_super_user(self):
+        """"""
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(response.status_code, 404)
+    
+    def test_land_plot_page_url_by_chairman_user(self):
+        """"""
+        self.client.login(username='chairman2', password='pswd2000')
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_land_plot_page_url_by_accountant_user(self):
+        """"""
+        self.client.login(username='accountant2', password='pswd4000')
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_land_plot_page_url_by_true_owner_user(self):
+        """Test owner access to his land plot data."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_land_plot_page_url_by_fake_owner_user(self):
+        """Test owner access to other owner land plot data."""
+        self.client.login(username='owner2', password='pswd6000')
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(response.status_code, 404)
+
     def test_land_plot_page_url_name(self):
         """"""
+        self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(reverse('land-plot', kwargs={'pk': 1}))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
     def test_land_plot_page_template(self):
         """"""
+        self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/')
         self.assertTemplateUsed(response, 'land_plot_page.html')
 
     def test_land_plot_page_context_content(self):
         """Test all content[keys] exist in response."""
-        response = self.client.get('/docs/1')
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/')
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
         self.assertIn('land_plots', response.context)
         self.assertIn('land_plot', response.context)
+
+    def test_land_plot_page_context_data(self):
+        """Verify context data is correct."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/')
+        self.assertEqual(
+            response.context['land_plot'],
+            LandPlot.objects.get(id=1),
+            )
+        self.assertEqual(
+            response.context['snt_list'],
+            Snt.objects.all(),
+            )
