@@ -115,7 +115,7 @@ class OwnerModelTest(TestCase):
     def test_meta_options(self):
         self.assertEquals(Owner._meta.verbose_name, "владелец")
         self.assertEquals(Owner._meta.verbose_name_plural, "владельцы")
-        self.assertEquals(len(Owner._meta.constraints), 4)
+        self.assertEquals(len(Owner._meta.constraints), 2)
         self.assertEquals(Owner._meta.constraints[0].fields, ('email',))
         self.assertEquals(
             Owner._meta.constraints[0].name,
@@ -125,16 +125,6 @@ class OwnerModelTest(TestCase):
         self.assertEquals(
             Owner._meta.constraints[1].name,
             'index_owner_phone_unique_constraint'
-            )
-        self.assertEquals(Owner._meta.constraints[2].fields, ('join_date',))
-        self.assertEquals(
-            Owner._meta.constraints[2].name,
-            'index_owner_join_date_unique_constraint'
-            )
-        self.assertEquals(Owner._meta.constraints[3].fields, ('leave_date',))
-        self.assertEquals(
-            Owner._meta.constraints[3].name,
-            'index_owner_leave_date_unique_constraint'
             )
 
     def test_str_method(self):

@@ -449,15 +449,7 @@ class Owner(models.Model):
                 fields=['phone'],
                 name='%(app_label)s_%(class)s_phone_unique_constraint',
                 ),
-            models.UniqueConstraint(
-                fields=['join_date'],
-                name='%(app_label)s_%(class)s_join_date_unique_constraint',
-                ),
-            models.UniqueConstraint(
-                fields=['leave_date'],
-                name='%(app_label)s_%(class)s_leave_date_unique_constraint',
-                ),
-            ]
+           ]
 
     def __str__(self):
         """String to represent the Model(class) object."""
