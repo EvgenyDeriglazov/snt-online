@@ -21,6 +21,7 @@
 
 from django.test import TestCase, Client
 from index.models import *
+from django.contrib.auth.forms import AuthenticationForm
 
 class TestHomePage(TestCase):
     """"""
@@ -293,11 +294,34 @@ class TestLandPlotPage(TestCase):
         """Verify context data is correct."""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/')
+        snt_list = Snt.objects.all()
+        user = User.objects.filter(username__exact='owner1').get()
+        user_name = Owner.objects.filter(
+            user__exact=user).get()
+        land_plots = LandPlot.objects.filter(
+            owner__user__exact=user).all()
+        self.assertEqual(
+            response.context['snt_list'][0],
+            snt_list[0],
+            )       
+        self.assertEqual(
+            response.context['auth_form'],
+            AuthenticationForm,
+            )
+        self.assertEqual(
+            response.context['user_name'],
+            user_name.__str__(),
+            )
+        self.assertEqual(
+            response.context['land_plots'][0],
+            land_plots[0],
+            )       
+        self.assertEqual(
+            response.context['land_plots'][1],
+            land_plots[1],
+            )       
         self.assertEqual(
             response.context['land_plot'],
             LandPlot.objects.get(id=1),
             )
-        self.assertEqual(
-            response.context['snt_list'],
-            Snt.objects.all(),
-            )
+
