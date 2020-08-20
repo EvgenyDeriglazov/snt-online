@@ -1,17 +1,22 @@
 # --- Collectstatic (ValueError: Missing staticfiles manifest entry...) ---
 #  $python3 manage.py collectstatic
+
 # --- Verbosity ---
 #  $python3 manage.py test --verbosity (1-default, 0, 1, 2, 3)
 # --- Run specific test modules ---
 #  $python3 manage.py test data.tests
 #  $python3 manage.py test data.tests.test_models
 #  $python3 manage.py test data.tests.test_models.TestClass
+
 # --- Coverage.py --- 
 #  $coverage run --source='.' manage.py test <appname>
 #  $coverage report
+
 # --- FIXTURES ---
-# use command below
-# python3 manage.py dumpdata -e contenttypes -e auth.Permission  > all_db.json
+# use commands below
+# python3 manage.py dumpdata -e contenttypes -e auth.Permission  > test_db.json
+# python3 manage.py dumpdata --indent 4 --exclude contenttypes --format json >
+# test_db.json
 # then move the json file to appname.fixtures directory
 
 from django.test import TestCase
@@ -19,7 +24,7 @@ from index.models import *
 
 class TestHomePage(TestCase):
     """"""
-    fixtures = ['all_db.json']
+    fixtures = ['test_db.json']
     # Test functions
     def test_home_page_url(self):
         """"""
@@ -78,7 +83,7 @@ class TestInfoPage(TestCase):
         self.assertIn('land_plots', response.context)
 
 class TestInfoDetailsPage(TestCase):
-    fixtures = ['all_db.json']
+    fixtures = ['test_db.json']
 
     # Test functions
     def test_info_details_page_url(self):
@@ -108,7 +113,7 @@ class TestInfoDetailsPage(TestCase):
 
 class TestBankDetailsPage(TestCase):
     """"""
-    #fixtures = ['all_db.json']
+    #fixtures = ['test_db.json']
 
     # Test functions
     def test_bank_details_page_url(self):
@@ -136,7 +141,7 @@ class TestBankDetailsPage(TestCase):
 
 class TestSntContactsPage(TestCase):
     """"""
-    fixtures = ['all_db.json']
+    fixtures = ['test_db.json']
 
     # Test functions
     def test_snt_contacts_page_url(self):
@@ -166,7 +171,7 @@ class TestSntContactsPage(TestCase):
 
 class TestDocsPage(TestCase):
     """"""
-    fixtures = ['all_db.json']
+    fixtures = ['test_db.json']
 
     # Test functions
     def test_docs_page_url(self):
@@ -195,25 +200,25 @@ class TestDocsPage(TestCase):
  
 class TestDocsDetailsPage(TestCase):
     """"""
-    fixtures = ['all_db.json']
+    fixtures = ['test_db.json']
 
     # Test functions
-    def test_docs_page_url(self):
+    def test_docs_details_page_url(self):
         """"""
         response = self.client.get('/docs/1')
         self.assertEqual(response.status_code, 200)
 
-    def test_docs_page_url_name(self):
+    def test_docs_details_page_url_name(self):
         """"""
         response = self.client.get(reverse('docs-details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
 
-    def test_docs_page_template(self):
+    def test_docs_details_page_template(self):
         """"""
         response = self.client.get('/docs/1')
         self.assertTemplateUsed(response, 'docs_details_page.html')
 
-    def test_docs_page_context_content(self):
+    def test_docs_details_page_context_content(self):
         """Test all content[keys] exist in response."""
         response = self.client.get('/docs/1')
         self.assertIn('snt_list', response.context)
@@ -224,7 +229,7 @@ class TestDocsDetailsPage(TestCase):
  
 class TestLandPlotPage(TestCase):
     """"""
-    fixtures = ['all_db.json']
+    fixtures = ['test_db.json']
 
     # Test functions
     def test_land_plot_page_url(self):
