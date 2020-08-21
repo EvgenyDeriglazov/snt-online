@@ -32,7 +32,7 @@ class TestHomePage(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
-    def test_home_page_url_name(self):
+    def test_home_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
@@ -63,7 +63,7 @@ class TestInfoPage(TestCase):
         response = self.client.get('/info/')
         self.assertEqual(response.status_code, 200)
 
-    def test_info_page_url_name(self):
+    def test_info_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('info'))
         self.assertEqual(response.status_code, 200)
@@ -92,7 +92,7 @@ class TestInfoDetailsPage(TestCase):
         response = self.client.get('/info/1')
         self.assertEqual(response.status_code, 200)
 
-    def test_info_details_page_url_name(self):
+    def test_info_details_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('info-details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
@@ -122,7 +122,7 @@ class TestBankDetailsPage(TestCase):
         response = self.client.get('/snt-bank-details/')
         self.assertEqual(response.status_code, 200)
 
-    def test_bank_details_page_url_name(self):
+    def test_bank_details_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('snt-bank-details'))
         self.assertEqual(response.status_code, 200)
@@ -150,7 +150,7 @@ class TestSntContactsPage(TestCase):
         response = self.client.get('/contacts/')
         self.assertEqual(response.status_code, 200)
 
-    def test_snt_contacts_page_url_name(self):
+    def test_snt_contacts_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('snt-contacts'))
         self.assertEqual(response.status_code, 200)
@@ -180,7 +180,7 @@ class TestDocsPage(TestCase):
         response = self.client.get('/docs/')
         self.assertEqual(response.status_code, 200)
 
-    def test_docs_page_url_name(self):
+    def test_docs_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('docs'))
         self.assertEqual(response.status_code, 200)
@@ -209,7 +209,7 @@ class TestDocsDetailsPage(TestCase):
         response = self.client.get('/docs/1')
         self.assertEqual(response.status_code, 200)
 
-    def test_docs_details_page_url_name(self):
+    def test_docs_details_page_url_conf_name(self):
         """"""
         response = self.client.get(reverse('docs-details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
@@ -229,7 +229,7 @@ class TestDocsDetailsPage(TestCase):
         self.assertIn('land_plots', response.context)
  
 class TestLandPlotPage(TestCase):
-    """"""
+    """LandPlotPage in Index app views."""
     fixtures = ['test_db.json']
 
     # Test functions
@@ -268,7 +268,7 @@ class TestLandPlotPage(TestCase):
         response = self.client.get('/plot-id-1/')
         self.assertEqual(response.status_code, 404)
 
-    def test_land_plot_page_url_name(self):
+    def test_land_plot_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(reverse('land-plot', kwargs={'pk': 1}))
