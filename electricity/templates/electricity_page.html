@@ -4,8 +4,19 @@
 <div id="center-column">
 	{% if land_plot %}
 	<h4 align="center">Электроэнергия</h4>
-    <p>Номер участка {{ land_plot.plot_number }}</p>
-     <h6 align="right">Площадь: </br> Владелец: </h6>
+    <p>Участок {{ land_plot.plot_number }}</p>
+
+    {% if e_counter %}
+    <p>Электросчетчик {{ e_counter.model_name }}, {{ e_counter.get_model_type_display|lower }}, серийный номер {{ e_counter.sn }}, дата установки/приемки к учету {{ e_counter.reg_date|date:"j E Y" }}</p>
+    {% endif %}
+    
+     <p>Последнии показания э/счетчика</br>
+     День: var Ночь: var Однотарифный var</br>
+     <a href="#">Внести новые показания</a></p>
+
+     <p>Последния оплата</br>
+     Дата: var Сумма: var</br>
+     <a href="#">Перейти к оплате</a></p>
 	<a href="{% url 'land-plot' land_plot.id%}">Назад</a>
     {% else %}
 	<h4 align="center">Такой страницы не существует.</h4>

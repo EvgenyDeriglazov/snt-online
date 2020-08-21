@@ -15,4 +15,5 @@ class ElectricityPage(LandPlotPage):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['e_counter'] = context['land_plot'].ecounter
         return context
