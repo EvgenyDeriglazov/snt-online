@@ -168,7 +168,7 @@ class ECounterRecordModelTest(TestCase):
  
     def test_get_absolute_url(self):
         obj = ECounterRecord.objects.get(id=1)
-        self.assertEqual(obj.get_absolute_url(), "/data/land-plot-detail/1")
+        self.assertEqual(obj.get_absolute_url(), None)
 
     def test_records_exist(self):
         """Test records_exist() model custom method."""
@@ -184,18 +184,12 @@ class ECounterRecordModelTest(TestCase):
         obj.s = None
         obj.t1 = 5
         obj.t2 = 5
-        with self.assertRaises(ValidationError):
-            obj.e_counter_single_type_fields_ok()
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.e_counter_single_type_fields_ok()
+        self.assertEqual(obj.e_counter_single_type_fields_ok(), False)
 
     def test_e_counter_double_type_fields_ok(self):
         """Tests e_counter_double_type_fields_ok() model custom method."""
         obj = ECounterRecord.objects.get(id=1)
-        with self.assertRaises(ValidationError):
-            obj.e_counter_double_type_fields_ok()
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.e_counter_double_type_fields_ok()
+        self.assertEqual(obj.e_counter_double_type_fields_ok(), False)
         obj.s = None
         obj.t1 = 5
         obj.t2 = 5
@@ -283,16 +277,13 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.check_vs_latest_record(None, "double"), True)
 
     def test_check_vs_latest_record_no_record_single_type_error(self):
-        """check_vs_latest_record() for single type, no record, ValidationError."""
+        """check_vs_latest_record(None, "single")."""
         obj = ECounterRecord.objects.get(id=1)
         obj.s = 0
-        with self.assertRaises(ValidationError):
-            obj.check_vs_latest_record(None, "single")
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.check_vs_latest_record(None, "single")
+        self.assertEqual(obj.check_vs_latest_record(None, "single"), False)
  
     def test_check_vs_latest_record_no_record_double_type_error(self):
-        """check_vs_latest_record() for double type, no record, ValidationError."""
+        """check_vs_latest_record(None, "double")"""
         obj = ECounterRecord.objects.get(id=1)
         ECounter.objects.filter(id=1).update(
             model_type="double",
@@ -303,10 +294,7 @@ class ECounterRecordModelTest(TestCase):
         obj.s = None
         obj.t1 = 0
         obj.t2 = 0
-        with self.assertRaises(ValidationError):
-            obj.check_vs_latest_record(None, "double")
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.check_vs_latest_record(None, "double")
+        self.assertEqual(obj.check_vs_latest_record(None, "double"), False)
  
     def test_check_vs_latest_record_single_type_error(self):
         """check_vs_latest_record() for single type, ValidationError."""
@@ -322,14 +310,12 @@ class ECounterRecordModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         obj_2 = ECounterRecord.objects.get(id=2)
+        self.assertEqual(obj_2.check_vs_latest_record(obj, "single"), True)
         obj_2.s = 0
-        with self.assertRaises(ValidationError):
-            obj_2.check_vs_latest_record(obj, "single")
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj_2.check_vs_latest_record(obj, "single")
+        self.assertEqual(obj_2.check_vs_latest_record(obj, "single"), False)
 
     def test_check_vs_latest_record_double_type_error(self):
-        """check_vs_latest_record() for double type, ValidationError."""
+        """check_vs_latest_record(error_obj, "double")"""
         ECounter.objects.filter(id=1).update(
             model_type="double",
             s=None,
@@ -353,16 +339,13 @@ class ECounterRecordModelTest(TestCase):
         obj_2 = ECounterRecord.objects.get(id=2)
         obj_2.t1 = 0
         obj_2.t2 = 0
-        with self.assertRaises(ValidationError):
-            obj_2.check_vs_latest_record(obj, "double")
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj_2.check_vs_latest_record(obj, "double")
+        self.assertEqual(obj_2.check_vs_latest_record(obj, "double"), False)
         
     def test_save_no_records_single_type_validation_error(self):
         """Test for save() with single type model, incorrect fields 
         and no records."""
         ECounterRecord.objects.all().delete()
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             ECounterRecord.objects.create(
                 s = 0,
                 t1 = None,
@@ -370,7 +353,7 @@ class ECounterRecordModelTest(TestCase):
                 land_plot = LandPlot.objects.get(id=1),
                 e_counter = ECounter.objects.get(id=1),
                 )
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             ECounterRecord.objects.create(
                 s = 0,
                 t1 = None,
@@ -389,7 +372,7 @@ class ECounterRecordModelTest(TestCase):
             t1=100,
             t2=100,
             )
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             ECounterRecord.objects.create(
                 s = None,
                 t1 = 0,
@@ -397,7 +380,7 @@ class ECounterRecordModelTest(TestCase):
                 land_plot = LandPlot.objects.get(id=1),
                 e_counter = ECounter.objects.get(id=1),
                 )
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             ECounterRecord.objects.create(
                 s = None,
                 t1 = 0,
@@ -408,7 +391,7 @@ class ECounterRecordModelTest(TestCase):
  
     def test_save_single_type_validation_error(self):
         """Test for save() with single type model and incorrect fields."""
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             ECounterRecord.objects.create(
                 s = 0,
                 t1 = None,
@@ -416,7 +399,7 @@ class ECounterRecordModelTest(TestCase):
                 land_plot = LandPlot.objects.get(id=1),
                 e_counter = ECounter.objects.get(id=1),
                 )
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             ECounterRecord.objects.create(
                 s = 0,
                 t1 = None,
@@ -439,7 +422,7 @@ class ECounterRecordModelTest(TestCase):
             t1=100,
             t2=100,
             )
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             ECounterRecord.objects.create(
                 s = None,
                 t1 = 0,
@@ -447,7 +430,7 @@ class ECounterRecordModelTest(TestCase):
                 land_plot = LandPlot.objects.get(id=1),
                 e_counter = ECounter.objects.get(id=1),
                 )
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             ECounterRecord.objects.create(
                 s = None,
                 t1 = 0,
@@ -581,8 +564,8 @@ class ECounterRecordModelTest(TestCase):
             s_prev=100,
             land_plot=obj.land_plot,
             e_counter_record=obj,
-            status="payment_confirmed",
             )
+        EPayment.objects.filter(id=1).update(status="payment_confirmed")
         ECounterRecord.objects.create(
             s=300,
             land_plot=LandPlot.objects.get(id=1),
@@ -595,8 +578,8 @@ class ECounterRecordModelTest(TestCase):
             s_prev=obj.s,
             land_plot=obj.land_plot,
             e_counter_record=last_obj,
-            status="payment_confirmed",
             )
+        EPayment.objects.filter(id=2).update(status="payment_confirmed")
         self.assertEqual(obj.last_payment_confirmed_e_counter_record(), last_obj)
         EPayment.objects.filter(id=2).update(status="unpaid")
         self.assertEqual(obj.last_payment_confirmed_e_counter_record(), obj)
