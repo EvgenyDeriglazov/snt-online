@@ -11,7 +11,6 @@ from index.views import get_model_by_user, LandPlotPage
 class ElectricityPage(LandPlotPage):
     """View to display electricity page."""
     template_name = "electricity_page.html"
-#    context_object_name = "snt_list"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -20,6 +19,19 @@ class ElectricityPage(LandPlotPage):
             context['e_counter'], context['land_plot']
             )
         context['e_payment'] = latest_e_payment(context['land_plot'])
+        return context
+
+class ECounterRecordsPage(LandPlotPage):
+    """View to display electrical counter records page."""
+    template_name = "e_counter_records_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['e_counter'] = e_counter(context['land_plot'])
+        context['e_counter_records_list'] = ECounterRecord.objects.filter(
+            e_counter__exact=context['e_counter'],
+            land_plot__exact=context['land_plot'],
+            )
         return context
 
 # Helper functions

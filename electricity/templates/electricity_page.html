@@ -23,7 +23,7 @@
     {% else %}
     Данные отсутствуют</br>
     {% endif %}
-    <a href="#">Перейти к показаниям</a></p>
+    <a href="{% url 'e-counter-records' land_plot.id %}">Перейти к показаниям</a></p>
 
      <p>Последняя оплата</br>
      {% if e_payment %}
