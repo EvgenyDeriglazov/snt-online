@@ -1,4 +1,5 @@
 ﻿from django.db import models
+from django.http import Http404
 from django.db.models import Q
 from index.models import Snt, LandPlot
 from django.core.exceptions import ValidationError
@@ -194,26 +195,95 @@ class ECounterRecord(models.Model):
          pass
 
     # Model custom methods
+    def clean_fields(self, exclude=None):
+        """Custom method to check model form fields
+        to restrict mixing_up e_counters. And check
+        s, t1, t2 fields values."""
+        if self.check_e_counter_vs_land_plot():
+            if self.e_counter.model_type == "single":
+                if self.e_counter_single_type_fields_ok():
+                    model_type = "single"
+                    self.t1 = None
+                    self.t2 = None
+                    if self.check_vs_latest_record(self.get_latest_record(), model_type):
+                        super().clean_fields(exclude=exclude)
+                    else:
+                        raise ValidationError({
+                            's': _(
+                                'Новые показания должны быть больше предыдущих'
+                                ),
+                            })
+                else:
+                    raise ValidationError({
+                        's': _(
+                            'Необходимо указать показания э/счетчика'
+                            ),
+                        })
+            elif self.e_counter.model_type == "double":
+                if self.e_counter_double_type_fields_ok():
+                    model_type = "double"
+                    self.s = None
+                    if self.check_vs_latest_record(self.get_latest_record(), model_type):
+                        super().clean_fields(exclude=exclude)
+                    else:
+                        raise ValidationError({
+                            't1': _(
+                                'Новые показания должны быть больше предыдущих'
+                                ),
+                            't2': _(
+                                'Новые показания должны быть больше предыдущих'
+                                ),
+                            })
+                else:
+                    raise ValidationError({
+                        't1': _('Необходимо указать показания э/счетчика'
+                            ),
+                        't2': _('Необходимо указать показания э/счетчика'
+                            ),
+                        })
+        else:
+            pass
+            raise ValidationError({
+                    'e_counter': _(
+                        'Указан неверный счетчик'
+                        ),
+                    })
+
     # Custom save() method and help methods for data evaluation
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
         model_type = ""
-        if self.e_counter.model_type == "single" and \
-            self.check_e_counter_vs_land_plot():
-            if self.e_counter_single_type_fields_ok() == True:
-                model_type = "single"
-                self.t1 = None
-                self.t2 = None
-                if self.check_vs_latest_record(self.get_latest_record(), model_type):
-                    super().save(*args, **kwargs)
-        elif self.e_counter.model_type == "double" and \
-            self.check_e_counter_vs_land_plot():
-            if self.e_counter_double_type_fields_ok() == True:
-                model_type = "double"
-                self.s = None
-                if self.check_vs_latest_record(self.get_latest_record(), model_type):
-                    super().save(*args, **kwargs)
-    
+        if self.check_e_counter_vs_land_plot():
+            if self.e_counter.model_type == "single":
+                if self.e_counter_single_type_fields_ok():
+                    model_type = "single"
+                    self.t1 = None
+                    self.t2 = None
+                    if self.check_vs_latest_record(
+                        self.get_latest_record(),
+                        model_type
+                        ):
+                        super().save(*args, **kwargs)
+                    else:
+                        raise Http404(
+                            _('Новые показания должны быть больше предыдущих')
+                            )
+            elif self.e_counter.model_type == "double":
+                if self.e_counter_double_type_fields_ok():
+                    model_type = "double"
+                    self.s = None
+                    if self.check_vs_latest_record(
+                        self.get_latest_record(),
+                        model_type
+                        ):
+                        super().save(*args, **kwargs)
+                    else:
+                        raise Http404(
+                            _('Новые показания должны быть больше предыдущих')
+                            )   
+        else:
+            raise Http404(_('Указан неверный счетчик'))
+
     def records_exist(self):
         """Checks if any records already exist in database for
         LandPlot and ECounter."""
@@ -229,24 +299,16 @@ class ECounterRecord(models.Model):
     def e_counter_single_type_fields_ok(self):
         """Validates data in s, t1 and t2 fields to conform with
         field object property e_counter.model_type="single"."""
-        error = ""
         if self.s == None:
-            error = "Необходимо указать показания э/счетчика (один тариф)"
-        if len(error) > 0:
-            raise ValidationError(_(error))
+            return False
         else:
             return True
 
     def e_counter_double_type_fields_ok(self):
         """Validates data in s, t1 and t2 fields to conform with
         field object property e_counter.model_type="double"."""
-        error = "" 
-        if self.t1 == None:
-            error += "Необходимо указать показания э/счетчика тариф Т1 (день)"
-        if self.t2 == None:
-            error += "Необходимо указать показания э/счетчика тариф Т2 (ночь)"
-        if len(error) > 0:
-            raise ValidationError(_(error))
+        if self.t1 == None or self.t2 == None:
+            return False
         else:
             return True
 
@@ -279,33 +341,23 @@ class ECounterRecord(models.Model):
                 if self.s > self.e_counter.s:
                     return True
                 else:
-                    error = self.single_error_message(self.s, self.e_counter.s)
-                    raise ValidationError(_(error))
+                    return False
             elif model_type == "double":
                 if self.t1 > self.e_counter.t1 and self.t2 > self.e_counter.t2:
                     return True
                 else:
-                    error = self.double_error_message(
-                        self.t1, self.e_counter.t1,
-                        self.t2, self.e_counter.t2
-                        )
-                    raise ValidationError(_(error))
+                    return False
         # If records exist in db
         elif model_type == "single":
             if self.s > latest_record.s:
                 return True
             else:
-                error = self.single_error_message(self.s, latest_record.s)
-                raise ValidationError(_(error))
+                return False
         elif model_type == "double":
             if self.t1 > latest_record.t1 and self.t2 > latest_record.t2:
                 return True
             else:
-                error = self.double_error_message(
-                        self.t1, latest_record.t1,
-                        self.t2, latest_record.t2
-                        )
-                raise ValidationError(_(error))
+                return False
 
     def check_e_counter_vs_land_plot(self):
         """Check that e_counter is correct and belongs to land_plot."""

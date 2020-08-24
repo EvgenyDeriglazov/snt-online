@@ -187,7 +187,7 @@ class Snt(models.Model):
         pass
         #return reverse('snt-detail', args=[str(self.id)])
 
-    # Custom functions
+    # Custom methods
     def clean_fields(self, exclude=None):
         """Custom method to check model form fields
         and restrict to have only one Snt in DB."""
