@@ -15,12 +15,10 @@ class ElectricityPage(LandPlotPage):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        try:
-            context['e_counter'] = context['land_plot'].ecounter
-        except LandPlot.ecounter.RelatedObjectDoesNotExist:
-            context['e_counter'] = None
+        context['e_counter'] = e_counter(context['land_plot'])
         context['e_counter_record'] = latest_e_counter_record(
-            context['e_counter'], context['land_plot'])
+            context['e_counter'], context['land_plot']
+            )
         context['e_payment'] = latest_e_payment(context['land_plot'])
         return context
 
@@ -44,3 +42,9 @@ def latest_e_payment(land_plot):
     except EPayment.DoesNotExist:
         return None
 
+def e_counter(land_plot):
+	"""Returns land_plot's e_counter."""
+	try:
+		return land_plot.ecounter
+	except LandPlot.ecounter.RelatedObjectDoesNotExist:
+		return None

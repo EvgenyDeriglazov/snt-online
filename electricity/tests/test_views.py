@@ -13,7 +13,7 @@
 #  $coverage report
 
 # --- FIXTURES ---
-# use commands below
+# use commands below (choose one of 2)
 # python3 manage.py dumpdata -e contenttypes -e auth.Permission  > test_db.json
 # python3 manage.py dumpdata --indent 4 --exclude contenttypes --format json >
 # test_db.json
@@ -85,6 +85,9 @@ class ElectricityPage(TestCase):
         self.assertIn('user_name', response.context)
         self.assertIn('land_plots', response.context)
         self.assertIn('land_plot', response.context)
+        self.assertIn('e_counter', response.context)
+        self.assertIn('e_counter_record', response.context)
+        self.assertIn('e_payment', response.context)
 
     def test_electricity_page_context_data(self):
         """Verify context data is correct."""
@@ -120,3 +123,12 @@ class ElectricityPage(TestCase):
             response.context['land_plot'],
             LandPlot.objects.get(id=1),
             )
+        self.assertEqual(
+        	response.context['e_counter'],
+        	'test')
+        self.assertEqual(
+        	response.context['e_counter_record'],
+        	'test')
+        self.assertEqual(
+        	response.context['e_payment'],
+        	'test')

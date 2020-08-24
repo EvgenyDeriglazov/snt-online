@@ -198,14 +198,16 @@ class ECounterRecord(models.Model):
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
         model_type = ""
-        if self.e_counter.model_type == "single":
+        if self.e_counter.model_type == "single" and \
+            self.check_e_counter_vs_land_plot():
             if self.e_counter_single_type_fields_ok() == True:
                 model_type = "single"
                 self.t1 = None
                 self.t2 = None
                 if self.check_vs_latest_record(self.get_latest_record(), model_type):
                     super().save(*args, **kwargs)
-        elif self.e_counter.model_type == "double":
+        elif self.e_counter.model_type == "double" and \
+            self.check_e_counter_vs_land_plot():
             if self.e_counter_double_type_fields_ok() == True:
                 model_type = "double"
                 self.s = None
@@ -304,6 +306,13 @@ class ECounterRecord(models.Model):
                         self.t2, latest_record.t2
                         )
                 raise ValidationError(_(error))
+
+    def check_e_counter_vs_land_plot(self):
+        """Check that e_counter is correct and belongs to land_plot."""
+        if self.e_counter.land_plot == self.land_plot:
+            return True
+        else:
+            return False
     
     # create_e_payment() method
     def no_e_payment(self):
@@ -349,7 +358,6 @@ class ECounterRecord(models.Model):
             ).latest('payment_date')
         return last_e_payment.e_counter_record
 
-
     def create_e_payment(self):
         """Creates EPayment record in db."""
         if self.no_e_payment():
@@ -391,7 +399,6 @@ class ECounterRecord(models.Model):
             raise ValidationError(_(
                 "У вас уже есть квитанция для этого показания"
                 ))
- 
     
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make
