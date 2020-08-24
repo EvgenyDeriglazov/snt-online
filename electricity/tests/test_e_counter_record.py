@@ -178,7 +178,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.records_exist(), False)
 
     def test_e_counter_single_type_fields_ok(self):
-        """Tests e_counter_single_type_fields_ok() model custom method."""
+        """Tests e_counter_single_type_fields_ok() - True/False."""
         obj = ECounterRecord.objects.get(id=1)
         self.assertEqual(obj.e_counter_single_type_fields_ok(), True)
         obj.s = None
@@ -187,7 +187,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.e_counter_single_type_fields_ok(), False)
 
     def test_e_counter_double_type_fields_ok(self):
-        """Tests e_counter_double_type_fields_ok() model custom method."""
+        """Tests e_counter_double_type_fields_ok() - True/False."""
         obj = ECounterRecord.objects.get(id=1)
         self.assertEqual(obj.e_counter_double_type_fields_ok(), False)
         obj.s = None
@@ -213,7 +213,7 @@ class ECounterRecordModelTest(TestCase):
         ECounterRecord.objects.all().delete()
         self.assertEqual(obj.get_latest_record(), None)
     
-    def test_sinlge_error_message(self):
+    def test_single_error_message(self):
         """single_error_message() custom method."""
         obj = ECounterRecord.objects.get(id=1)
         self.assertEqual(
@@ -229,7 +229,7 @@ class ECounterRecordModelTest(TestCase):
             "Новые показания должны быть больше старых. День: 1 > 2. Ночь: 5 > 8."
             )
  
-    def test_check_vs_latest_record_no_record_single_type(self):
+    def test_check_vs_latest_record_no_record_single_type_true(self):
         """check_vs_latest_record() for single type with/without record."""
         # Prepare objects in db
         ECounterRecord.objects.filter(id=1).update(
@@ -276,13 +276,13 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(obj.check_vs_latest_record(obj_latest, "double"), True)
         self.assertEqual(obj.check_vs_latest_record(None, "double"), True)
 
-    def test_check_vs_latest_record_no_record_single_type_error(self):
+    def test_check_vs_latest_record_no_record_single_type_false(self):
         """check_vs_latest_record(None, "single")."""
         obj = ECounterRecord.objects.get(id=1)
         obj.s = 0
         self.assertEqual(obj.check_vs_latest_record(None, "single"), False)
  
-    def test_check_vs_latest_record_no_record_double_type_error(self):
+    def test_check_vs_latest_record_no_record_double_type_false(self):
         """check_vs_latest_record(None, "double")"""
         obj = ECounterRecord.objects.get(id=1)
         ECounter.objects.filter(id=1).update(
@@ -296,8 +296,8 @@ class ECounterRecordModelTest(TestCase):
         obj.t2 = 0
         self.assertEqual(obj.check_vs_latest_record(None, "double"), False)
  
-    def test_check_vs_latest_record_single_type_error(self):
-        """check_vs_latest_record() for single type, ValidationError."""
+    def test_check_vs_latest_record_single_type_true_and_false(self):
+        """check_vs_latest_record() for single type."""
         ECounterRecord.objects.filter(id=1).update(
             rec_date=datetime.date.today() - datetime.timedelta(days=5),
             )
@@ -340,8 +340,78 @@ class ECounterRecordModelTest(TestCase):
         obj_2.t1 = 0
         obj_2.t2 = 0
         self.assertEqual(obj_2.check_vs_latest_record(obj, "double"), False)
-        
-    def test_save_no_records_single_type_validation_error(self):
+
+    def test_save_with_wrong_e_counter(self):
+        """Test for save() with wrong e_counter selected."""
+        LandPlot.objects.create(
+            plot_number="1",
+            plot_area=8000,
+            snt=Snt.objects.get(id=1),
+            owner=Owner.objects.get(id=1),
+            )
+        ECounter.objects.create(
+            reg_date=datetime.date.today(),
+            model_name="test2",
+            sn="sn1234",
+            model_type="single",
+            s=100,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=2),
+            )
+        with self.assertRaises(Http404):
+            ECounterRecord.objects.create(
+                s=300,
+                t1=None,
+                t2=None,
+                land_plot=LandPlot.objects.get(id=1),
+                e_counter=ECounter.objects.get(id=2),
+                )
+        with self.assertRaisesRegex(Http404, ''):
+            ECounterRecord.objects.create(
+                s=300,
+                t1=None,
+                t2=None,
+                land_plot=LandPlot.objects.get(id=1),
+                e_counter=ECounter.objects.get(id=2),
+                )
+
+    def test_save_with_wrong_land_plot(self):
+        """Test for save() with wrong land_plot selected."""
+        LandPlot.objects.create(
+            plot_number="1",
+            plot_area=8000,
+            snt=Snt.objects.get(id=1),
+            owner=Owner.objects.get(id=1),
+            )
+        ECounter.objects.create(
+            reg_date=datetime.date.today(),
+            model_name="test2",
+            sn="sn1234",
+            model_type="single",
+            s=100,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=2),
+            )
+        with self.assertRaises(Http404):
+            ECounterRecord.objects.create(
+                s=300,
+                t1=None,
+                t2=None,
+                land_plot=LandPlot.objects.get(id=2),
+                e_counter=ECounter.objects.get(id=1),
+                )
+        with self.assertRaisesRegex(Http404, ''):
+            ECounterRecord.objects.create(
+                s=300,
+                t1=None,
+                t2=None,
+                land_plot=LandPlot.objects.get(id=2),
+                e_counter=ECounter.objects.get(id=1),
+                )
+            
+    def test_save_no_records_single_type_http404(self):
         """Test for save() with single type model, incorrect fields 
         and no records."""
         ECounterRecord.objects.all().delete()
@@ -362,7 +432,7 @@ class ECounterRecordModelTest(TestCase):
                 e_counter = ECounter.objects.get(id=1),
                 )
 
-    def test_save_no_records_double_type_validation_error(self):
+    def test_save_no_records_double_type_http404(self):
         """Test for save() with single type model, incorrect fields 
         and no records."""
         ECounterRecord.objects.all().delete()
@@ -389,7 +459,7 @@ class ECounterRecordModelTest(TestCase):
                 e_counter = ECounter.objects.get(id=1),
                 )
  
-    def test_save_single_type_validation_error(self):
+    def test_save_single_type_http404(self):
         """Test for save() with single type model and incorrect fields."""
         with self.assertRaises(Http404):
             ECounterRecord.objects.create(
@@ -408,7 +478,7 @@ class ECounterRecordModelTest(TestCase):
                 e_counter = ECounter.objects.get(id=1),
                 )
 
-    def test_save_double_type_validation_error(self):
+    def test_save_double_type_http404(self):
         """Test for save() with double type model and incorrect fields."""
         ECounter.objects.filter(id=1).update(
             model_type="double",
@@ -439,7 +509,7 @@ class ECounterRecordModelTest(TestCase):
                 e_counter = ECounter.objects.get(id=1),
                 )
 
-    def test_save_single_model_type_with_error_fixing(self):
+    def test_save_single_model_type_fields_error_fixing(self):
         """Test for save() with single model and fields error fixing."""
         ECounterRecord.objects.filter(id=1).update(
             rec_date=datetime.date.today() - datetime.timedelta(days=5),
@@ -457,7 +527,7 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_obj[1].t1, None)
         self.assertEqual(all_obj[1].t2, None)
 
-    def test_save_double_model_type_with_error_fixing(self):
+    def test_save_double_model_type_fields_error_fixing(self):
         """Test for save() with double model and fields error fixing."""
         ECounter.objects.filter(id=1).update(
             model_type="double",
@@ -750,3 +820,29 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_payments[1].t2_amount, Decimal('500.00'))
         self.assertEqual(all_payments[1].sum_total, Decimal('1200.00'))
  
+    def test_check_e_counter_vs_land_plot(self):
+        """Test check_e_counter_vs_land_plot() method."""
+        #Prepare data
+        LandPlot.objects.create(
+            plot_number="1",
+            plot_area=8000,
+            snt=Snt.objects.get(id=1),
+            owner=Owner.objects.get(id=1),
+            )
+        ECounter.objects.create(
+            reg_date=datetime.date.today(),
+            model_name="test2",
+            sn="sn1234",
+            model_type="single",
+            s=100,
+            t1=None,
+            t2=None,
+            land_plot=LandPlot.objects.get(id=2),
+            )
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.check_e_counter_vs_land_plot(), True)
+        ECounterRecord.objects.filter(id=1).update(
+            e_counter=ECounter.objects.get(id=2)
+            )
+        obj = ECounterRecord.objects.get(id=1)
+        self.assertEqual(obj.check_e_counter_vs_land_plot(), False)
