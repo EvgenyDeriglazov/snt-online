@@ -11,28 +11,35 @@
     серийный номер {{ e_counter.sn }},
     дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
     {% endif %}
-    
-    <p>Последнии показания э/счетчика</br>
+    <div class="item-container">Показания</div>
+    <div class="item-container">Квитанции</div>
     {% if e_counter_record %}
+    <div class="item-container">
+        <p>
         Дата {{ e_counter_record.rec_date|date:"d.m.Y" }}</br>
         {% if e_counter.model_type == 'single' %}
         Однотарифный {{ e_counter_record.s }} квт\ч</br>
         {% else %}
         День {{ e_counter_record.t1 }}, Ночь {{ e_counter_record.t2 }}</br>
+    </p>
         {% endif %}
     {% else %}
+    <p>
     Данные отсутствуют</br>
     {% endif %}
     <a href="{% url 'e-counter-records' land_plot.id %}">Перейти к показаниям</a></p>
+    </div>
 
-     <p>Последняя оплата</br>
      {% if e_payment %}
+    <div class="item-container">
+        <p>
         Дата {{ e_payment.payment_date|date:"d.m.Y" }}</br>
         Сумма {{ e_payment.sum_total }} р.</br>
     {% else %}
     Данные отсутствуют</br>
     {% endif %}
     <a href="#">Перейти к оплате</a></p>
+    </div>
 	<a href="{% url 'land-plot' land_plot.id%}">Назад</a>
 </div>
 {% endblock %}
