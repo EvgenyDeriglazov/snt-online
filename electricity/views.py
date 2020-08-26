@@ -84,5 +84,5 @@ def e_counter_records_with_e_payments_list(e_counter, land_plot):
 			list_of_lists.append(list_item)
 		return list_of_lists
 	else:
-		return [None, None]
+		return [[None, None]]
 

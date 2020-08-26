@@ -11,48 +11,41 @@
     серийный номер {{ e_counter.sn }},
     дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
     {% endif %} -->
+    <h4 align="center">Участок {{ land_plot.plot_number }}</br>
+    (электроэнергия)</h4>
     <div class="center-column-block-wrapper">
-    <div class="center-column-block">
-    <div class="center-column-block-item">Показания</div>
-    <div class="center-column-block-item">Квитанции</div>
-	</div>
-    <div class="center-column-block">
-    <a href="#">
-    <div class="center-column-block-item">Внести новые показания</div>
-	</a>
-    <div class="center-column-block-item"></div>
-	</div>   <div class="center-column-block">
-    {% for item in payment_data_list %}
-    	{% if item.0 == None %}
-    	<div class="center-column-block-item">
-    		Показания отсутствуют
-    	</div>
-    	{% else %}
-    	<a href="#">
-    	<div class="center-column-block-item">
-    		{{ item.0 }}
-    	</div>
-    	</a>
-    	{% endif %}
-    	{% if item.1 == None and item.0 != None %}
-    	<a href="#">
-    	<div class="center-column-block-item">
-    		Перейти к оплате
-    	</div>
-    	</a>
-    	{% elif item.1 == None and item.0 == None %}
-     	<div class="center-column-block-item">
-    		Показания отсутствуют
-    	</div>
-    	{% elif item.1 != None and item.0 != None %}
-    	<a href="#">
-    	<div class="center-column-block-item">
-    		{{ item.1 }}
-    	</div>
-    	</a>
-    	{% endif %}
-    {% endfor %}
-    </div>
+        <div class="center-column-block">
+            <div class="center-column-block-item">Показания</div>
+            <div class="center-column-block-item">Квитанции</div>
+	    </div>
+        <div class="center-column-block">
+            <a href="#">
+            <div class="center-column-block-item">Внести новые показания</div>
+	        </a>
+            <div class="center-column-block-item"></div>
+	    </div>   
+        <div class="center-column-block">
+        {% for item in payment_data_list %}
+    	    {% if item.0 == None %}
+    	    <div class="center-column-block-item">Показания отсутствуют</div>
+    	    {% else %}
+    	    <a href="#">
+    	    <div class="center-column-block-item">{{ item.0 }}</div>
+    	    </a>
+    	    {% endif %}
+    	    {% if item.1 == None and item.0 != None %}
+    	    <a href="#">
+    	    <div class="center-column-block-item">Перейти к оплате</div>
+    	    </a>
+    	    {% elif item.1 == None and item.0 == None %}
+     	    <div class="center-column-block-item">Показания отсутствуют</div>
+    	    {% elif item.1 != None and item.0 != None %}
+    	    <a href="#">
+    	    <div class="center-column-block-item">{{ item.1 }}</div>
+    	    </a>
+    	    {% endif %}
+        {% endfor %}
+        </div>
 	</div>
 
 	<a href="{% url 'land-plot' land_plot.id%}">Назад</a>

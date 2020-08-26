@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.http import Http404
 from index.models import *
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
@@ -138,8 +139,8 @@ class DocsDetailsPage(DetailView):
         context['accountant'] = context['snt_list'][0].accountant
         return context
 
-@method_decorator(login_required, name='dispatch')
-class LandPlotPage(DetailView):
+#@method_decorator(login_required, name='dispatch')
+class LandPlotPage(LoginRequiredMixin, DetailView):
     """View to display Land Plot details page."""
     model = LandPlot
     template_name = "land_plot_page.html"
