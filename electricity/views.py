@@ -15,10 +15,9 @@ class ElectricityPage(LandPlotPage):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
-        context['e_counter_record'] = latest_e_counter_record(
-            context['e_counter'], context['land_plot']
-            )
-        context['e_payment'] = latest_e_payment(context['land_plot'])
+        context['payment_data_list'] = e_counter_records_with_e_payments_list(
+        	context['e_counter'], context['land_plot']
+        	)
         return context
 
 class ECounterRecordsPage(LandPlotPage):
@@ -60,3 +59,30 @@ def e_counter(land_plot):
 		return land_plot.ecounter
 	except LandPlot.ecounter.RelatedObjectDoesNotExist:
 		return None
+
+def all_e_counter_records(e_counter, land_plot):
+	"""Returns queryset of all ECounterRecords for land_plot and
+	e_counter args."""
+	return ECounterRecord.objects.filter(
+		e_counter__exact=e_counter,
+		land_plot__exact=land_plot,
+		).order_by('rec_date')
+
+def e_counter_records_with_e_payments_list(e_counter, land_plot):
+	"""Returns list of lists with 2 items, e_counter_record
+	and associated with it e_payment via one-to-one field.
+	If e_payment DoesNotExist adds None value to list."""
+	e_counter_records_list = all_e_counter_records(e_counter, land_plot)
+	if len(e_counter_records_list) > 0:
+		list_of_lists = []
+		for i in e_counter_records_list:
+			list_item = [i]
+			try:
+				list_item.append(i.epayment)
+			except ECounterRecord.epayment.RelatedObjectDoesNotExist:
+				list_item.append(None)
+			list_of_lists.append(list_item)
+		return list_of_lists
+	else:
+		return [None, None]
+

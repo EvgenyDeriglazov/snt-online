@@ -2,44 +2,59 @@
 <!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column">
-	<h4 align="center">Электроэнергия</h4>
-    <p>Участок {{ land_plot.plot_number }}</p>
+<!-- <h4 align="center">Электроэнергия</h4>
+    <p>Участок {{ land_plot.plot_number }}</p> -->
 
-    {% if e_counter %}
+<!--    {% if e_counter %}
     <p>Электросчетчик {{ e_counter.model_name }},
     {{ e_counter.get_model_type_display|lower }},
     серийный номер {{ e_counter.sn }},
     дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
-    {% endif %}
-    <div class="item-container">Показания</div>
-    <div class="item-container">Квитанции</div>
-    {% if e_counter_record %}
-    <div class="item-container">
-        <p>
-        Дата {{ e_counter_record.rec_date|date:"d.m.Y" }}</br>
-        {% if e_counter.model_type == 'single' %}
-        Однотарифный {{ e_counter_record.s }} квт\ч</br>
-        {% else %}
-        День {{ e_counter_record.t1 }}, Ночь {{ e_counter_record.t2 }}</br>
-    </p>
-        {% endif %}
-    {% else %}
-    <p>
-    Данные отсутствуют</br>
-    {% endif %}
-    <a href="{% url 'e-counter-records' land_plot.id %}">Перейти к показаниям</a></p>
+    {% endif %} -->
+    <div class="center-column-block-wrapper">
+    <div class="center-column-block">
+    <div class="center-column-block-item">Показания</div>
+    <div class="center-column-block-item">Квитанции</div>
+	</div>
+    <div class="center-column-block">
+    <a href="#">
+    <div class="center-column-block-item">Внести новые показания</div>
+	</a>
+    <div class="center-column-block-item"></div>
+	</div>   <div class="center-column-block">
+    {% for item in payment_data_list %}
+    	{% if item.0 == None %}
+    	<div class="center-column-block-item">
+    		Показания отсутствуют
+    	</div>
+    	{% else %}
+    	<a href="#">
+    	<div class="center-column-block-item">
+    		{{ item.0 }}
+    	</div>
+    	</a>
+    	{% endif %}
+    	{% if item.1 == None and item.0 != None %}
+    	<a href="#">
+    	<div class="center-column-block-item">
+    		Перейти к оплате
+    	</div>
+    	</a>
+    	{% elif item.1 == None and item.0 == None %}
+     	<div class="center-column-block-item">
+    		Показания отсутствуют
+    	</div>
+    	{% elif item.1 != None and item.0 != None %}
+    	<a href="#">
+    	<div class="center-column-block-item">
+    		{{ item.1 }}
+    	</div>
+    	</a>
+    	{% endif %}
+    {% endfor %}
     </div>
+	</div>
 
-     {% if e_payment %}
-    <div class="item-container">
-        <p>
-        Дата {{ e_payment.payment_date|date:"d.m.Y" }}</br>
-        Сумма {{ e_payment.sum_total }} р.</br>
-    {% else %}
-    Данные отсутствуют</br>
-    {% endif %}
-    <a href="#">Перейти к оплате</a></p>
-    </div>
 	<a href="{% url 'land-plot' land_plot.id%}">Назад</a>
 </div>
 {% endblock %}

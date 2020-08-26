@@ -50,8 +50,8 @@ body {
 	width: 200px;
 	padding: 0 18px;
 	max-height: 280px;
-    /*margin-right: 10px;*/
-    margin: auto;
+    margin-right: 10px;
+    /*margin: auto;*/
 }
 
 #left-column input[type=text], input[type=password] {
@@ -60,20 +60,50 @@ body {
 
 #center-column {
 	background-color: #FFFFFF;
-	/*margin: 0 20px;*/
+	margin: 0 20px;
 	padding: 0 18px;
-	margin: auto;
-	max-width: 440px;
+	width: 440px;
 	min-height: 500px;
 	/*flex-grow: 2;*/
+	/*display: flex;
+	justify-content: space-around;*/
+	/*flex-wrap: wrap;
+	flex-direction: column;*/
+	/*flex-flow: column wrap;
+	align-items: flex-start;*/
+	
+}
+
+.center-column-block-wrapper {
 	display: flex;
-	justify-content: space-between;
+	flex-wrap: wrap;
+	margin: 5px auto;
+	background: black;
+	max-width: 380px;
 }
 
-.item-container {
+.center-column-block {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+	width: 380px;
+	background: white;
 
 }
 
+.center-column-block a {
+	text-decoration: none;
+	color: black;
+}
+
+.center-column-block-item {
+	height: 50px;
+	width: 150px;
+	border: 1px solid black;
+	background: steelblue;
+	border-radius: 3px;
+	margin-bottom: 5px;
+}
 .info-container {
 	
 }
