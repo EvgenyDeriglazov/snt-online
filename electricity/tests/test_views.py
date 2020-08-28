@@ -23,6 +23,8 @@ from django.test import TestCase, Client
 from index.models import *
 from electricity.models import *
 from django.contrib.auth.forms import AuthenticationForm
+from electricity.views import e_counter, all_e_counter_records
+from electricity.views import e_counter_records_with_e_payments_list
 
 class ElectricityPage(TestCase):
     """ElectriciyPage in Electricity app view."""
@@ -86,8 +88,7 @@ class ElectricityPage(TestCase):
         self.assertIn('land_plots', response.context)
         self.assertIn('land_plot', response.context)
         self.assertIn('e_counter', response.context)
-        self.assertIn('e_counter_record', response.context)
-        self.assertIn('e_payment', response.context)
+        self.assertIn('payment_data_list', response.context)
 
     def test_electricity_page_context_data(self):
         """Verify context data is correct."""
@@ -99,6 +100,13 @@ class ElectricityPage(TestCase):
             user__exact=user).get()
         land_plots = LandPlot.objects.filter(
             owner__user__exact=user).all()
+        land_plot_1 = LandPlot.objects.get(id=1)
+        e_counter_obj = land_plot_1.ecounter
+        #e_counter_obj = e_counter(land_plot_1)
+        payment_data_list = e_counter_records_with_e_payments_list(
+            e_counter_obj,
+            land_plot_1
+            )
         self.assertEqual(
             response.context['snt_list'][0],
             snt_list[0],
@@ -125,10 +133,63 @@ class ElectricityPage(TestCase):
             )
         self.assertEqual(
         	response.context['e_counter'],
-        	'test')
+        	e_counter_obj
+            )
         self.assertEqual(
-        	response.context['e_counter_record'],
-        	'test')
+            response.context['payment_data_list'],
+            payment_data_list
+            )
+
+    def test_e_counter_method(self):
+        """Test for helper function e_counter()."""
+        land_plot_1 = LandPlot.objects.get(id=1)
+        e_counter_obj = land_plot_1.ecounter
         self.assertEqual(
-        	response.context['e_payment'],
-        	'test')
+            e_counter(land_plot_1),
+            e_counter_obj
+            )
+
+    def test_all_e_counter_records_method(self):
+        """Test for helper function all_e_counter_records()."""
+        land_plot_1 = LandPlot.objects.get(id=1)
+        e_counter_obj = land_plot_1.ecounter 
+        e_counter_records_list = ECounterRecord.objects.filter(
+            e_counter__exact=e_counter_obj,
+            land_plot__exact=land_plot_1,
+            ).order_by('rec_date')
+        test = all_e_counter_records(e_counter_obj, land_plot_1)
+        for i, _ in enumerate(e_counter_records_list):
+            self.assertEqual(
+                test[i],
+                e_counter_records_list[i]
+                )
+
+    def e_counter_records_with_e_payments_list_method(self):
+        """Test for helper function
+        e_coutner_records_with_e_payemnts_list()."""
+        # Test result with data
+        land_plot_1 = LandPlot.objects.get(id=1)
+        e_counter_obj = land_plot_1.ecounter 
+        payment_data_list = e_counter_records_with_e_payments_list(
+            e_counter_obj, land_plot_1
+            )
+        e_counter_records_list = all_e_counter_records(e_counter, land_plot)
+        if len(e_counter_records_list) > 0:
+            list_of_lists = []
+            for i in e_counter_records_list:
+                list_item = [i]
+                try:
+                    list_item.append(i.epayment)
+                except ECounterRecord.epayment.RelatedObjectDoesNotExist:
+                    list_item.append(None)
+                list_of_lists.append(list_item)
+        else:
+            list_of_lists = [[None, None]]
+        self.assertEqual(payment_data_list, list_of_lists)
+        # Test result without data
+        land_plot_4 = LandPlot.objects.get(id=4)
+        e_counter_obj = land_plot_4.ecounter 
+        payment_data_list = e_counter_records_with_e_payments_list(
+            e_counter_obj, land_plot_4
+            )
+        self.assertEqual(payment_data_list, [[None, None]])

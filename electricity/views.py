@@ -61,12 +61,12 @@ def e_counter(land_plot):
 		return None
 
 def all_e_counter_records(e_counter, land_plot):
-	"""Returns queryset of all ECounterRecords for land_plot and
-	e_counter args."""
-	return ECounterRecord.objects.filter(
-		e_counter__exact=e_counter,
-		land_plot__exact=land_plot,
-		).order_by('rec_date')
+    """Returns queryset of all ECounterRecords for land_plot and
+    e_counter args."""
+    return ECounterRecord.objects.filter(
+        e_counter__exact=e_counter,
+        land_plot__exact=land_plot,
+        ).order_by('rec_date')
 
 def e_counter_records_with_e_payments_list(e_counter, land_plot):
 	"""Returns list of lists with 2 items, e_counter_record
