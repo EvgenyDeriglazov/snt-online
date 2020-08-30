@@ -4,7 +4,7 @@ from django.http import Http404
 from index.models import *
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.decorators import method_decorator
+# from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.

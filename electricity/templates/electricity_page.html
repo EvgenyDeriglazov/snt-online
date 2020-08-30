@@ -29,7 +29,7 @@
     	    {% if item.0 == None %}
     	    <div class="center-column-block-item">Показания отсутствуют</div>
     	    {% else %}
-    	    <a href="#">
+    	    <a href="{% url 'e-counter-record-details' land_plot.id item.0.id %}">
     	    <div class="center-column-block-item">{{ item.0 }}</div>
     	    </a>
     	    {% endif %}
@@ -48,7 +48,7 @@
         </div>
 	</div>
 
-	<a href="{% url 'land-plot' land_plot.id%}">Назад</a>
+	<a href="{% url 'land-plot' land_plot.id %}">Назад</a>
 </div>
 {% endblock %}
 

@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from index.models import *
 from electricity.models import *
 from index.views import get_model_by_user, LandPlotPage
@@ -20,19 +21,29 @@ class ElectricityPage(LandPlotPage):
         	)
         return context
 
-class ECounterRecordsPage(LandPlotPage):
-    """View to display electrical counter records page."""
-    template_name = "e_counter_records_page.html"
+class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
+    """View to display electrical counter records detail page."""
+    model = ECounterRecord
+    template_name = "e_counter_record_detail_page.html"
+    context_object_name = "record"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['e_counter'] = e_counter(context['land_plot'])
-        context['e_counter_records_list'] = ECounterRecord.objects.filter(
-            e_counter__exact=context['e_counter'],
-            land_plot__exact=context['land_plot'],
-            )
-        return context
-
+        if context['record'].land_plot.owner.user == self.request.user:
+            context['snt_list'] = Snt.objects.all()
+            context['land_plot'] = context['record'].land_plot
+            context['auth_form'] = AuthenticationForm
+            context['counter_type'] = context['record'].e_counter.model_type
+            user_model_instance = get_model_by_user(self.request.user)
+            context['user_name'] = str(user_model_instance)
+            if isinstance(user_model_instance, Owner):
+                context['land_plots'] = user_model_instance.landplot_set.all()
+            else:
+                context['land_plots'] = None
+            return context
+        else:
+            raise Http404("Такой страницы не существует")
+                
 # Helper functions
 def latest_e_counter_record(e_counter, land_plot):
     """Returns latest e_counter_record."""
