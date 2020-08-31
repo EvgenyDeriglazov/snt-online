@@ -266,3 +266,63 @@ class ECounterRecordDetailsPage(TestCase):
                 )
             )
         self.assertEqual(response.status_code, 200)
+
+    # Test context content and data
+    def test_record_details_page_context_content(self):
+        """Test all content[keys] exist in response."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertIn('snt_list', response.context)
+        self.assertIn('auth_form', response.context)
+        self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
+        self.assertIn('land_plot', response.context)
+        self.assertIn('counter_type', response.context)
+        self.assertIn('record', response.context)
+
+    def test_record_details_page_context_data(self):
+        """Verify context data is correct."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        snt_list = Snt.objects.all()
+        record = ECounterRecord.objects.get(id=1)
+        user = User.objects.filter(username__exact='owner1').get()
+        user_name = Owner.objects.filter(
+            user__exact=user).get()
+        land_plots = LandPlot.objects.filter(
+            owner__user__exact=user).all()
+        land_plot_1 = LandPlot.objects.get(id=1)
+        counter_type = record.e_counter.model_type
+
+        self.assertEqual(
+            response.context['snt_list'][0],
+            snt_list[0],
+            )       
+        self.assertEqual(
+            response.context['auth_form'],
+            AuthenticationForm,
+            )
+        self.assertEqual(
+            response.context['user_name'],
+            user_name.__str__(),
+            )
+        self.assertEqual(
+            response.context['land_plots'][0],
+            land_plots[0],
+            )       
+        self.assertEqual(
+            response.context['land_plots'][1],
+            land_plots[1],
+            )       
+        self.assertEqual(
+            response.context['land_plot'],
+            LandPlot.objects.get(id=1),
+            )
+        self.assertEqual(
+            response.context['counter_type'],
+            counter_type
+            )
+        self.assertEqual(
+            response.context['record'],
+            record,
+            )
