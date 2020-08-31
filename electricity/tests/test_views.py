@@ -30,7 +30,7 @@ class ElectricityPage(TestCase):
     """ElectriciyPage in Electricity app view."""
     fixtures = ['test_db.json']
 
-    # Test functions
+    # Test URL access
     def test_electricity_page_url_by_unauthenticated_user(self):
         """"""
         response = self.client.get('/plot-id-1/electricity/')
@@ -66,6 +66,8 @@ class ElectricityPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/')
         self.assertEqual(response.status_code, 404)
 
+    # Test URLconf name and template
+
     def test_electricity_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
@@ -78,6 +80,7 @@ class ElectricityPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/')
         self.assertTemplateUsed(response, 'electricity_page.html')
 
+    # Test context content and data
     def test_electricity_page_context_content(self):
         """Test all content[keys] exist in response."""
         self.client.login(username='owner1', password='pswd5000')
@@ -140,6 +143,7 @@ class ElectricityPage(TestCase):
             payment_data_list
             )
 
+    # Test helper functions
     def test_e_counter_method(self):
         """Test for helper function e_counter()."""
         land_plot_1 = LandPlot.objects.get(id=1)
@@ -193,3 +197,72 @@ class ElectricityPage(TestCase):
             e_counter_obj, land_plot_4
             )
         self.assertEqual(payment_data_list, [[None, None]])
+
+class ECounterRecordDetailsPage(TestCase):
+    """ECounterRecordDetailsPage in Electricity app views."""
+    fixtures = ['test_db.json']
+
+    # Test URL access
+    def test_record_details_page_url_by_unauthenticated_user(self):
+        """Test unauthenticated user access to owner user data."""
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertEqual(response.status_code, 302)
+
+    def test_record_details_page_url_by_super_user(self):
+        """Test super user access to owner user data."""
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertEqual(response.status_code, 404)
+    
+    def test_record_details_page_url_by_chairman_user(self):
+        """Test chairman user access to owner user data."""
+        self.client.login(username='chairman2', password='pswd2000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertEqual(response.status_code, 404)
+
+    def test_record_details_page_url_by_accountant_user(self):
+        """Test accountant user access to owner user data."""
+        self.client.login(username='accountant2', password='pswd4000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertEqual(response.status_code, 404)
+
+    def test_record_details_page_url_by_true_owner_user(self):
+        """Test owner access to his record details data."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_record_details_page_url_by_fake_owner_user(self):
+        """Test owner access to other owner electricity data."""
+        self.client.login(username='owner2', password='pswd6000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertEqual(response.status_code, 404)
+
+    # Test URLconf name and template
+    def test_record_details_page_url_conf_name(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get(
+            reverse(
+                'e-counter-record-details',
+                kwargs={'pk': 1, 'record_id': 1}
+                )
+            )
+        self.assertEqual(response.status_code, 200)
+
+    def test_record_details_page_template(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1')
+        self.assertTemplateUsed(response, 'e_counter_record_details_page.html')
+
+    def test2_record_details_page_url_conf_name(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get(
+            reverse(
+                'e-counter-record-details',
+                args=[1, 1]
+                )
+            )
+        self.assertEqual(response.status_code, 200)

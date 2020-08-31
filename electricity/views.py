@@ -24,8 +24,9 @@ class ElectricityPage(LandPlotPage):
 class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
     """View to display electrical counter records detail page."""
     model = ECounterRecord
-    template_name = "e_counter_record_detail_page.html"
+    template_name = "e_counter_record_details_page.html"
     context_object_name = "record"
+    pk_url_kwarg = "record_id"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
