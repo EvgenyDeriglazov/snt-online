@@ -10,6 +10,11 @@ urlpatterns = [
         ECounterRecordDetailsPage.as_view(),
         name='e-counter-record-details'
         ),
+    path(
+        'electricity/new-record/',
+        CreateNewECounterRecordPage.as_view(),
+        name='new-e-counter-record'
+        ),
 ]
 
 urlpatterns += static(

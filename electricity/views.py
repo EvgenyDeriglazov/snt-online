@@ -6,8 +6,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from index.models import *
 from electricity.models import *
+from electricity.forms import *
 from index.views import get_model_by_user, LandPlotPage
-# Create your views here.
 
 class ElectricityPage(LandPlotPage):
     """View to display electricity page."""
@@ -44,7 +44,20 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
             return context
         else:
             raise Http404("Такой страницы не существует")
+
+class CreateNewECounterRecordPage(LandPlotPage):
+    """View to create new ECounterRecord by owner."""
+    template_name = "create_new_e_counter_record.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['e_counter'] = e_counter(context['land_plot'])
+        if self.request.method == 'POST':
+            pass
+        else:
+            context['form'] = NewECounterRecordForm(initial={'s': 10})
+        return context
                 
+
 # Helper functions
 def latest_e_counter_record(e_counter, land_plot):
     """Returns latest e_counter_record."""
