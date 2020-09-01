@@ -52,21 +52,9 @@ class CreateNewECounterRecordPage(LandPlotPage):
         context = super().get_context_data(**kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
         if self.request.method == 'POST':
-            raise Http404("Ошибка")
-            form = NewSingleECounterRecordForm(self.request.POST)#new_e_counter_record_form(context['e_counter'])(self.request.POST)
+            form = NewSingleECounterRecordForm(self.request.POST)
             if form.is_valid():
-                raise Http404("Ошибка")
-                if isinstance(form, NewSingleECounterRecordForm):
-                    s_clean = form.cleaned_data['s']
-                    ECounterRecord.objects.create(
-                        t1=None,
-                        t2=None,
-                        s=s_clean,
-                        e_counter=context['e_counter'],
-                        land_plot=context['land_plot'],
-                        )
-                elif isinstance(form, NewDoubleECounterRecordForm):
-                    pass
+                new_record = form.save()
             else:
                 raise Http404("Ошибка")
         else:
