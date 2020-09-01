@@ -54,7 +54,8 @@ class CreateNewECounterRecordPage(LandPlotPage):
         if self.request.method == 'POST':
             pass
         else:
-            context['form'] = NewECounterRecordForm(initial={'s': 10})
+            context['form'] = new_e_counter_record_form(context['e_counter']) 
+
         return context
                 
 
@@ -111,3 +112,10 @@ def e_counter_records_with_e_payments_list(e_counter, land_plot):
 	else:
 		return [[None, None]]
 
+def new_e_counter_record_form(e_counter):
+    """Returns single or double NewECounterRecordForm depending
+    on electrical counter model type."""
+    if e_counter and e_counter.model_type == "single":
+        return NewSingleECounterRecordForm()
+    elif e_counter and e_counter.model_type == "double":
+        return NewDoubleECounterRecordForm()
