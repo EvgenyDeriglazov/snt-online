@@ -1,13 +1,15 @@
-from django.shortcuts import render
+#from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.forms import AuthenticationForm
-from django.utils.decorators import method_decorator
-# from django.contrib.auth.decorators import login_required
+#from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from index.models import *
 from electricity.models import *
 from electricity.forms import *
 from index.views import get_model_by_user, LandPlotPage
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
 class ElectricityPage(LandPlotPage):
     """View to display electricity page."""
@@ -51,17 +53,27 @@ class CreateNewECounterRecordPage(LandPlotPage):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
-        if self.request.method == 'POST':
-            form = NewSingleECounterRecordForm(self.request.POST)
-            if form.is_valid():
-                new_record = form.save()
-            else:
-                raise Http404("Ошибка")
-        else:
-            context['form'] = new_e_counter_record_form(context['e_counter'])
+        context['form'] = new_e_counter_record_form(
+                context['e_counter'], context['land_plot']
+                )
 
         return context
-                
+    
+    def post(self, request, *args, **kwargs):
+        form = NewSingleECounterRecordForm(request.POST)
+        if form.is_valid():
+            new_rec = form.save()
+            return HttpResponseRedirect(
+                reverse(
+                    'e-counter-record-details', kwargs={
+                        'record_id': new_rec.id, 'pk': new_rec.land_plot.id}
+                        )
+                )
+        return HttpResponseRedirect(
+            reverse(
+                'new-e-counter-record', kwargs={'pk': request.POST['land_plot']}
+                )
+            ) 
 
 # Helper functions
 def latest_e_counter_record(e_counter, land_plot):
@@ -116,10 +128,14 @@ def e_counter_records_with_e_payments_list(e_counter, land_plot):
 	else:
 		return [[None, None]]
 
-def new_e_counter_record_form(e_counter):
+def new_e_counter_record_form(e_counter, land_plot):
     """Returns single or double NewECounterRecordForm depending
     on electrical counter model type."""
     if e_counter and e_counter.model_type == "single":
-        return NewSingleECounterRecordForm(initial={'e_counter': e_counter})
+        return NewSingleECounterRecordForm(
+            initial={'e_counter': e_counter, 'land_plot': land_plot}
+            )
     elif e_counter and e_counter.model_type == "double":
-        return NewDoubleECounterRecordForm()
+        return NewDoubleECounterRecordForm(
+            initial={'e_counter': e_counter, 'land_plot': land_plot}
+            ) 

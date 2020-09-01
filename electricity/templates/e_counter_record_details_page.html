@@ -14,7 +14,7 @@
 
     <h4 align="center">Участок {{ land_plot.plot_number }}</br>
     (показания)</h4>
-    <p>Дата показаний: {{ record.rec_date|date:"d.m.y"  }}</p>
+    <p>Дата показаний: {{ record.rec_date|date:"d.m.y."  }}</p>
     {% if counter_type == "single" %}
     <p>Показания: {{ record.s }} квт/ч</p>
     {% elif counter_type == "double" %}
