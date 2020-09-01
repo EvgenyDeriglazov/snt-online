@@ -24,8 +24,8 @@
 	        </a>
             <div class="center-column-block-item"></div>
 	    </div>   
-        <div class="center-column-block">
         {% for item in payment_data_list %}
+        <div class="center-column-block">
     	    {% if item.0 == None %}
     	    <div class="center-column-block-item">Показания отсутствуют</div>
     	    {% else %}
@@ -44,8 +44,8 @@
     	    <div class="center-column-block-item">{{ item.1 }}</div>
     	    </a>
     	    {% endif %}
-        {% endfor %}
         </div>
+        {% endfor %}
 	</div>
 
 	<a href="{% url 'land-plot' land_plot.id %}">Назад</a>

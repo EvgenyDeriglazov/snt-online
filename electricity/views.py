@@ -58,7 +58,7 @@ class CreateNewECounterRecordPage(LandPlotPage):
             else:
                 raise Http404("Ошибка")
         else:
-            context['form'] = new_e_counter_record_form(context['e_counter']) 
+            context['form'] = new_e_counter_record_form(context['e_counter'])
 
         return context
                 
@@ -120,6 +120,6 @@ def new_e_counter_record_form(e_counter):
     """Returns single or double NewECounterRecordForm depending
     on electrical counter model type."""
     if e_counter and e_counter.model_type == "single":
-        return NewSingleECounterRecordForm()
+        return NewSingleECounterRecordForm(initial={'e_counter': e_counter})
     elif e_counter and e_counter.model_type == "double":
         return NewDoubleECounterRecordForm()
