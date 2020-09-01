@@ -15,13 +15,16 @@
     <h4 align="center">Участок {{ land_plot.plot_number }}</br>
     (внесение новых показаний)</h4>
 
-    <form>
+    <form action="" method="post">
         {% csrf_token %}
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
         {{ form }}
         <p><input type="submit" value="Сохранить"></p>
     </form>
 
-	<a href="{% url 'electricity' land_plot.id%}">Назад</a>
+	<a href="{% url 'electricity' land_plot.id %}">Назад</a>
 </div>
 {% endblock %}
 

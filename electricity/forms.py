@@ -6,7 +6,7 @@ class NewSingleECounterRecordForm(ModelForm):
     electrical counter model."""
     class Meta:
         model = ECounterRecord
-        fields = ['s']
+        fields = '__all__'#['s']
 
 class NewDoubleECounterRecordForm(ModelForm):
     """Form to create new ECounterRecord for double type
