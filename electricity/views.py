@@ -51,18 +51,16 @@ class CreateNewECounterRecordPage(LandPlotPage):
     """View to create new ECounterRecord by owner."""
     template_name = "create_new_e_counter_record.html"
 
-#    def dispatch(self, request, *args, **kwargs):
-#        self.form_context = {}
-#        return super().dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.form_context = {}
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
         context['form'] = new_e_counter_record_form(
-                context['e_counter'], context['land_plot']
-                )
-#        self.form_context = context
-
+            context['e_counter'], context['land_plot']
+            )           
         return context
     
     def post(self, request, *args, **kwargs):
@@ -75,8 +73,21 @@ class CreateNewECounterRecordPage(LandPlotPage):
                         'record_id': new_rec.id, 'pk': new_rec.land_plot.id}
                         )
                 )
-        #request.path_info = '/'
-        return render(request, self.template_name, {'form': form, 'land_plot': form.instance.land_plot})
+        else:
+            context = {}
+            context['land_plot'] = form.instance.land_plot
+            context['snt_list'] = Snt.objects.all()
+            context['auth_form'] = AuthenticationForm 
+            user_model_instance = get_model_by_user(self.request.user)
+            context['user_name'] = str(user_model_instance)        
+            context['e_counter'] = form.instance.e_counter
+            context['form'] = form
+            if isinstance(user_model_instance, Owner):
+                context['land_plots'] = user_model_instance.landplot_set.all()
+            else:
+                context['land_plots'] = None
+
+            return render(request, self.template_name, context)
 
 # Helper functions
 def latest_e_counter_record(e_counter, land_plot):
@@ -111,7 +122,7 @@ def all_e_counter_records(e_counter, land_plot):
     return ECounterRecord.objects.filter(
         e_counter__exact=e_counter,
         land_plot__exact=land_plot,
-        ).order_by('rec_date')
+        ).order_by('-rec_date')
 
 def e_counter_records_with_e_payments_list(e_counter, land_plot):
 	"""Returns list of lists with 2 items, e_counter_record
