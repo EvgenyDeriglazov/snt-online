@@ -23,14 +23,14 @@ urlpatterns = [
     path('', HomePage.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('info/', InfoPage.as_view(), name='info'),
-    path('info/<int:pk>', InfoDetailsPage.as_view(), name='info-details'),
+    path('info/<int:pk>/', InfoDetailsPage.as_view(), name='info-details'),
     path(
         'snt-bank-details/',
         SntBankDetailsPage.as_view(),
         name='snt-bank-details'
         ),
     path('docs/', DocsPage.as_view(), name='docs'),
-    path('docs/<int:pk>', DocsDetailsPage.as_view(), name='docs-details'),
+    path('docs/<int:pk>/', DocsDetailsPage.as_view(), name='docs-details'),
     path('contacts/', SntContactsPage.as_view(), name='snt-contacts'),
     path('accounts/', include('django.contrib.auth.urls')),
     #path('accounts/login/', MyLoginView.as_view(), name='my-login'),

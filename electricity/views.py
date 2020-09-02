@@ -1,4 +1,3 @@
-#from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.forms import AuthenticationForm
 #from django.utils.decorators import method_decorator
@@ -49,11 +48,7 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
 
 class CreateNewECounterRecordPage(LandPlotPage):
     """View to create new ECounterRecord by owner."""
-    template_name = "create_new_e_counter_record.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        self.form_context = {}
-        return super().dispatch(request, *args, **kwargs)
+    template_name = "create_new_e_counter_record_page.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

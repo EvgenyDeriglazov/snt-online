@@ -89,7 +89,7 @@ class TestInfoDetailsPage(TestCase):
     # Test functions
     def test_info_details_page_url(self):
         """"""
-        response = self.client.get('/info/1')
+        response = self.client.get('/info/1/')
         self.assertEqual(response.status_code, 200)
 
     def test_info_details_page_url_conf_name(self):
@@ -100,12 +100,12 @@ class TestInfoDetailsPage(TestCase):
 
     def test_info_details_page_template(self):
         """"""
-        response = self.client.get('/info/1')
+        response = self.client.get('/info/1/')
         self.assertTemplateUsed(response, 'info_details_page.html')
 
     def test_info_details_page_context_content(self):
         """Test all content[keys] exist in response."""
-        response = self.client.get('/info/1')
+        response = self.client.get('/info/1/')
         self.assertIn('info_details', response.context)
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
@@ -206,7 +206,7 @@ class TestDocsDetailsPage(TestCase):
     # Test functions
     def test_docs_details_page_url(self):
         """"""
-        response = self.client.get('/docs/1')
+        response = self.client.get('/docs/1/')
         self.assertEqual(response.status_code, 200)
 
     def test_docs_details_page_url_conf_name(self):
@@ -216,12 +216,12 @@ class TestDocsDetailsPage(TestCase):
 
     def test_docs_details_page_template(self):
         """"""
-        response = self.client.get('/docs/1')
+        response = self.client.get('/docs/1/')
         self.assertTemplateUsed(response, 'docs_details_page.html')
 
     def test_docs_details_page_context_content(self):
         """Test all content[keys] exist in response."""
-        response = self.client.get('/docs/1')
+        response = self.client.get('/docs/1/')
         self.assertIn('snt_list', response.context)
         self.assertIn('docs_details', response.context)
         self.assertIn('auth_form', response.context)

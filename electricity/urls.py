@@ -6,7 +6,7 @@ from electricity.views import *
 urlpatterns = [
 	path('electricity/', ElectricityPage.as_view(), name='electricity'),
 	path(
-        'electricity/record-id-<int:record_id>',
+        'electricity/record-id-<int:record_id>/',
         ECounterRecordDetailsPage.as_view(),
         name='e-counter-record-details'
         ),
