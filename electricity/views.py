@@ -50,12 +50,18 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
 class CreateNewECounterRecordPage(LandPlotPage):
     """View to create new ECounterRecord by owner."""
     template_name = "create_new_e_counter_record.html"
+
+#    def dispatch(self, request, *args, **kwargs):
+#        self.form_context = {}
+#        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
         context['form'] = new_e_counter_record_form(
                 context['e_counter'], context['land_plot']
                 )
+#        self.form_context = context
 
         return context
     
@@ -69,11 +75,8 @@ class CreateNewECounterRecordPage(LandPlotPage):
                         'record_id': new_rec.id, 'pk': new_rec.land_plot.id}
                         )
                 )
-        return HttpResponseRedirect(
-            reverse(
-                'new-e-counter-record', kwargs={'pk': request.POST['land_plot']}
-                )
-            ) 
+        #request.path_info = '/'
+        return render(request, self.template_name, {'form': form, 'land_plot': form.instance.land_plot})
 
 # Helper functions
 def latest_e_counter_record(e_counter, land_plot):
