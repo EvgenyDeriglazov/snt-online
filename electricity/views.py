@@ -38,7 +38,9 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
             context['counter_type'] = context['record'].e_counter.model_type
             user_model_instance = get_model_by_user(self.request.user)
             context['user_name'] = str(user_model_instance)
-            context['form'] = CreateEPaymentForm(instance=context['record'])
+            context.update(
+                return_create_e_payment_form_or_e_payment(context['record'])
+                )
             if isinstance(user_model_instance, Owner):
                 context['land_plots'] = user_model_instance.landplot_set.all()
             else:
@@ -111,25 +113,6 @@ class CreateNewECounterRecordPage(LandPlotPage):
             return render(request, self.template_name, context)
 
 # Helper functions
-def latest_e_counter_record(e_counter, land_plot):
-    """Returns latest e_counter_record."""
-    try:
-        return ECounterRecord.objects.filter(
-            land_plot__exact=land_plot,
-            e_counter__exact=e_counter,
-            ).latest('rec_date')
-    except ECounterRecord.DoesNotExist:
-        return None
-
-def latest_e_payment(land_plot):
-    """Returns latest e_payment."""
-    try:
-        return EPayment.objects.filter(
-            land_plot__exact=land_plot,
-            ).latest('payment_date')
-    except EPayment.DoesNotExist:
-        return None
-
 def e_counter(land_plot):
 	"""Returns land_plot's e_counter."""
 	try:
@@ -165,7 +148,8 @@ def e_counter_records_with_e_payments_list(e_counter, land_plot):
 
 def create_e_counter_record_form(e_counter, land_plot, request=None):
     """Returns single or double NewECounterRecordForm depending
-    on electrical counter model type."""
+    on electrical counter model type. If request.POST is provided
+    returns bound form."""
     if e_counter and e_counter.model_type == "single":
         return CreateSingleECounterRecordForm(
             request,
@@ -176,3 +160,12 @@ def create_e_counter_record_form(e_counter, land_plot, request=None):
             request,
             initial={'e_counter': e_counter, 'land_plot': land_plot}
             ) 
+
+def return_create_e_payment_form_or_e_payment(record):
+    """Returns dictionary: e_payment for record if exists, otherwise
+    CreateEPaymentForm.""" 
+    try:
+        return {'e_payment': record.epayment}
+    except ECounterRecord.epayment.RelatedObjectDoesNotExist:
+        return {'form': CreateEPaymentForm(instance=record)}  
+

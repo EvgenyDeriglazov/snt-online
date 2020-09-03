@@ -25,14 +25,17 @@
     {% if form %}
        <form action="" method="post">
         {% csrf_token %}
-      <!--  {% if form.errors %} -->
-            {{ form.errors }}
-    <!--{% endif %} -->
+           <!--  {% if form.errors %} -->
+             {{ form.errors }}
+           <!--{% endif %} -->
         {{ form }}
         <p><input type="submit" value="Сформировать квитанцию"></p>
         </form> 
     {% else %}
-    <p> Квитанция </p>
+    <a href="#">Квитанция</a>
+    <p>
+    {{ e_payment }}
+    </p>
     {% endif %}
 
 	<a href="{% url 'electricity' land_plot.id%}">Назад</a>
