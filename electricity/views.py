@@ -8,7 +8,7 @@ from electricity.forms import *
 from index.views import get_model_by_user, LandPlotPage
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 class ElectricityPage(LandPlotPage):
     """View to display electricity page."""
@@ -53,13 +53,22 @@ class CreateNewECounterRecordPage(LandPlotPage):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
-        context['form'] = new_e_counter_record_form(
+        context['form'] = create_e_counter_record_form(
             context['e_counter'], context['land_plot']
             )           
         return context
     
     def post(self, request, *args, **kwargs):
-        form = NewSingleECounterRecordForm(request.POST)
+        if 'pk' in kwargs:
+            land_plot = get_object_or_404(LandPlot, pk=kwargs['pk'])
+            e_counter_obj = e_counter(land_plot)
+            if e_counter_obj == None:
+                raise Http404("Счетчик не найден")
+            form = create_e_counter_record_form(
+                e_counter_obj, land_plot, request.POST,
+                )
+        else:
+            raise Http404("Данные участка не найдены")
         if form.is_valid():
             new_rec = form.save()
             return HttpResponseRedirect(
@@ -137,14 +146,16 @@ def e_counter_records_with_e_payments_list(e_counter, land_plot):
 	else:
 		return [[None, None]]
 
-def new_e_counter_record_form(e_counter, land_plot):
+def create_e_counter_record_form(e_counter, land_plot, request=None):
     """Returns single or double NewECounterRecordForm depending
     on electrical counter model type."""
     if e_counter and e_counter.model_type == "single":
-        return NewSingleECounterRecordForm(
+        return CreateSingleECounterRecordForm(
+            request,
             initial={'e_counter': e_counter, 'land_plot': land_plot}
             )
     elif e_counter and e_counter.model_type == "double":
-        return NewDoubleECounterRecordForm(
+        return CreateDoubleECounterRecordForm(
+            request,
             initial={'e_counter': e_counter, 'land_plot': land_plot}
             ) 
