@@ -49,7 +49,7 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         if 'record_id' in kwargs:
-            e_record = ECounterRecord.objects.get(id=kwargs['pk'])
+            e_record = ECounterRecord.objects.get(id=kwargs['record_id'])
             #form = CreateEPaymentForm(request.POST)
             e_payment = e_record.create_e_payment()
             return HttpResponseRedirect(
