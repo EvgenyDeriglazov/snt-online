@@ -38,6 +38,7 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
             context['counter_type'] = context['record'].e_counter.model_type
             user_model_instance = get_model_by_user(self.request.user)
             context['user_name'] = str(user_model_instance)
+            context['form'] = CreateEPaymentForm(instance=context['record'])
             if isinstance(user_model_instance, Owner):
                 context['land_plots'] = user_model_instance.landplot_set.all()
             else:
@@ -45,6 +46,22 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
             return context
         else:
             raise Http404("Такой страницы не существует")
+
+    def post(self, request, *args, **kwargs):
+        if 'record_id' in kwargs:
+            e_record = ECounterRecord.objects.get(id=kwargs['pk'])
+            #form = CreateEPaymentForm(request.POST)
+            e_payment = e_record.create_e_payment()
+            return HttpResponseRedirect(
+                reverse(
+                    'e-counter-record-details', kwargs={
+                        'record_id': kwargs['record_id'],
+                        'pk': kwargs['pk'],
+                        }
+                    )
+                )
+        else:
+            raise Http404("Данные записи не найдены")
 
 class CreateNewECounterRecordPage(LandPlotPage):
     """View to create new ECounterRecord by owner."""
@@ -75,7 +92,7 @@ class CreateNewECounterRecordPage(LandPlotPage):
                 reverse(
                     'e-counter-record-details', kwargs={
                         'record_id': new_rec.id, 'pk': new_rec.land_plot.id}
-                        )
+                    )
                 )
         else:
             context = {}

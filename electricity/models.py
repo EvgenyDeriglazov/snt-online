@@ -494,11 +494,11 @@ class ERate(models.Model):
                 fields=['date'],
                 name='%(app_label)s_%(class)s_date_unique_constraint'
                 ),
-            models.CheckConstraint(
-                check=models.Q(date__gte=datetime.date.today()),
-                name='%(app_label)s_%(class)s_date_greater_or_equal_today'
-                    + '_constraint'
-                )
+           # models.CheckConstraint(
+           #     check=models.Q(date__gte=datetime.date.today()),
+           #     name='%(app_label)s_%(class)s_date_greater_or_equal_today'
+           #         + '_constraint'
+           #     )
             ]
 
     def __str__(self):
@@ -637,7 +637,7 @@ class EPayment(models.Model):
 
     def __str__(self):
          """String to represent the Model(class) object."""
-         return str(self.payment_date) + "-" + self.land_plot.plot_number
+         return "Квитанция" + str(self.id) + "-" + self.land_plot.plot_number
 
     def get_absolute_url(self):
          """Returns url to access an instance of the model."""

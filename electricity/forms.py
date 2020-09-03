@@ -20,4 +20,4 @@ class CreateEPaymentForm(ModelForm):
 	"""From to create EPayment based on ECounterRecord."""
 	class Meta:
 		model = ECounterRecord
-		exclude = '__all__'
+		fields = []
