@@ -23,6 +23,7 @@
     {% endif %}
 
     {% if form %}
+    <p><a href="#">Удалить показания</a></p>
        <form action="" method="post">
         {% csrf_token %}
            <!--  {% if form.errors %} -->
@@ -36,6 +37,13 @@
     <p>
     {{ e_payment }}
     </p>
+    {% endif %}
+
+    {% if e_payment.status == "not_paid" %}
+    <p><a href="#">Оплатить по QR коду</a></p>
+    <p><a href="#">Удалить квитанцию</a></p>
+    {% elif e_payment.status == "paid" or e_payment.status == "payment_confirmed" %}
+    <p><a href="#">Детали платежа</a></p>
     {% endif %}
 
 	<a href="{% url 'electricity' land_plot.id%}">Назад</a>
