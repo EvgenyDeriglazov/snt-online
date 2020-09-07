@@ -23,7 +23,7 @@
     {% endif %}
 
     {% if form %}
-    <p><a href="#">Удалить показания</a></p>
+    <p><a href="{% url 'delete-e-counter-record' land_plot.id record.id %}">Удалить показания</a></p>
        <form action="" method="post">
         {% csrf_token %}
            <!--  {% if form.errors %} -->
@@ -46,7 +46,7 @@
     <p><a href="#">Детали платежа</a></p>
     {% endif %}
 
-	<a href="{% url 'electricity' land_plot.id%}">Назад</a>
+	<a href="{% url 'electricity' land_plot.id %}">Назад</a>
 </div>
 {% endblock %}
 

@@ -21,3 +21,9 @@ class CreateEPaymentForm(ModelForm):
 	class Meta:
 		model = ECounterRecord
 		fields = []
+
+class DeleteECounterRecord(ModelForm):
+	"""Form to delete ECounterRecord from db."""
+	class Meta:
+		model = ECounterRecord
+		fields = []

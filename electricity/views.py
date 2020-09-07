@@ -112,6 +112,31 @@ class CreateNewECounterRecordPage(LandPlotPage):
 
             return render(request, self.template_name, context)
 
+class DeleteECounterRecordPage(ECounterRecordDetailsPage):
+    """View to display delete page for ECounterRecord."""
+    template_name = "delete_e_counter_record_page.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            return_delete_e_payment_form_or_e_payment(context['record'])
+            )
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if 'record_id' in kwargs:
+            e_record = ECounterRecord.objects.get(id=kwargs['record_id'])
+            #form = CreateEPaymentForm(request.POST)
+            e_record.delete()
+            return HttpResponseRedirect(
+                reverse(
+                    'electricity',
+                    kwargs={'pk': kwargs['pk']}
+                    )
+                )
+        else:
+            raise Http404("Данные записи не найдены")
+            
 # Helper functions
 def e_counter(land_plot):
 	"""Returns land_plot's e_counter."""
@@ -169,3 +194,10 @@ def return_create_e_payment_form_or_e_payment(record):
     except ECounterRecord.epayment.RelatedObjectDoesNotExist:
         return {'form': CreateEPaymentForm(instance=record)}  
 
+def return_delete_e_payment_form_or_e_payment(record):
+    """Returns dictionary: e_payment for record if exists, otherwise
+    DeleteEPaymentForm.""" 
+    try:
+        return {'e_payment': record.epayment}
+    except ECounterRecord.epayment.RelatedObjectDoesNotExist:
+        return {'form': CreateEPaymentForm(instance=record)}
