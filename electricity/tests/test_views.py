@@ -25,6 +25,7 @@ from electricity.models import *
 from django.contrib.auth.forms import AuthenticationForm
 from electricity.views import e_counter, all_e_counter_records
 from electricity.views import e_counter_records_with_e_payments_list
+from electricity.views import create_e_counter_record_form
 from electricity.forms import *
 
 class ElectricityPage(TestCase):
@@ -470,3 +471,150 @@ class CreateNewECounterRecordPage(TestCase):
             response.context['form'],
             CreateSingleECounterRecordForm,
             )
+    
+    # Test helper functions
+    def test_create_e_counter_record_form(self):
+        """Test helper function create_e_counter_record_form()."""
+        land_plot_1 = LandPlot.objects.get(id=1)
+        e_counter_1 = land_plot_1.ecounter 
+        test_form = create_e_counter_record_form(e_counter_1, land_plot_1)
+        self.assertIsInstance(test_form, CreateSingleECounterRecordForm)
+        e_counter_1.model_type = "double"
+        test_form = create_e_counter_record_form(e_counter_1, land_plot_1)
+        self.assertIsInstance(test_form, CreateDoubleECounterRecordForm)
+
+class DeleteECounterRecordPage(TestCase):
+    """"""
+    fixtures = ['test_db.json']
+    
+    # Test URL access
+    def test_del_e_counter_record_page_url_by_unauthenticated_user(self):
+        """Test unauthenticated user access to owner user data."""
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_del_e_counter_record_page_url_by_super_user(self):
+        """Test super user access to owner user data."""
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertEqual(response.status_code, 404)
+    
+    def test_del_e_counter_record_page_url_by_chairman_user(self):
+        """Test chairman user access to owner user data."""
+        self.client.login(username='chairman2', password='pswd2000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_del_e_counter_record_page_url_by_accountant_user(self):
+        """Test accountant user access to owner user data."""
+        self.client.login(username='accountant2', password='pswd4000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_del_e_counter_record_page_url_by_true_owner_user(self):
+        """Test owner access to his record details data."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_del_e_counter_record_page_url_by_fake_owner_user(self):
+        """Test owner access to other owner electricity data."""
+        self.client.login(username='owner2', password='pswd6000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertEqual(response.status_code, 404)
+
+    # Test URLconf name and template
+    def test_del_e_counter_record_page_url_conf_name(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get(
+            reverse(
+                'delete-e-counter-record',
+                kwargs={'pk': 1, 'record_id': 1}
+                )
+            )
+        self.assertEqual(response.status_code, 200)
+
+    def test_del_e_counter_record_page_template(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertTemplateUsed(response, 'delete_e_counter_record_page.html')
+
+    def test2_del_e_counter_record_page_url_conf_name(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get(
+            reverse(
+                'delete-e-counter-record',
+                args=[1, 1]
+                )
+            )
+        self.assertEqual(response.status_code, 200)
+
+    # Test context content and data
+    def test_del_e_counter_record_page_context_content(self):
+        """Test all content[keys] exist in response."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        self.assertIn('snt_list', response.context)
+        self.assertIn('auth_form', response.context)
+        self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
+        self.assertIn('land_plot', response.context)
+        self.assertIn('counter_type', response.context)
+        self.assertIn('record', response.context)
+        self.assertIn('form', response.context)
+
+    def test_del_e_counter_record_page_context_data(self):
+        """Verify context data is correct."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        # Prepare data
+        snt_list = Snt.objects.all()
+        record = ECounterRecord.objects.get(id=1)
+        user = User.objects.filter(username__exact='owner1').get()
+        user_name = Owner.objects.filter(
+            user__exact=user).get()
+        land_plots = LandPlot.objects.filter(
+            owner__user__exact=user).all()
+        counter_type = record.e_counter.model_type
+        # Run tests
+        self.assertEqual(
+            response.context['snt_list'][0],
+            snt_list[0],
+            )       
+        self.assertEqual(
+            response.context['auth_form'],
+            AuthenticationForm,
+            )
+        self.assertEqual(
+            response.context['user_name'],
+            user_name.__str__(),
+            )
+        self.assertEqual(
+            response.context['land_plots'][0],
+            land_plots[0],
+            )       
+        self.assertEqual(
+            response.context['land_plots'][1],
+            land_plots[1],
+            )       
+        self.assertEqual(
+            response.context['land_plot'],
+            LandPlot.objects.get(id=1),
+            )
+        self.assertEqual(
+            response.context['counter_type'],
+            counter_type
+            )
+        self.assertEqual(
+            response.context['record'],
+            record,
+            )
+        self.assertIsInstance(
+            response.context['form'],
+            DeleteECounterRecordForm,
+            )
+
+

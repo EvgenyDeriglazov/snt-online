@@ -124,16 +124,12 @@ class DeleteECounterRecordPage(ECounterRecordDetailsPage):
             raise Http404("У вас уже есть квитанция")
         else:
             context['form'] = DeleteECounterRecordForm()
-            #context.update(
-            #    return_delete_e_payment_form_or_e_payment(context['record'])
-            #    )
 
         return context
 
     def post(self, request, *args, **kwargs):
         if 'record_id' in kwargs:
             e_record = ECounterRecord.objects.get(id=kwargs['record_id'])
-            #form = CreateEPaymentForm(request.POST)
             e_record.delete()
             return HttpResponseRedirect(
                 reverse(
@@ -201,10 +197,4 @@ def return_create_e_payment_form_or_e_payment(record):
     except ECounterRecord.epayment.RelatedObjectDoesNotExist:
         return {'form': CreateEPaymentForm()}  
 
-def return_delete_e_payment_form_or_e_payment(record):
-    """Returns dictionary: e_payment for record if exists, otherwise
-    DeleteEPaymentForm.""" 
-    try:
-        return {'e_payment': record.epayment}
-    except ECounterRecord.epayment.RelatedObjectDoesNotExist:
-        return {'form': DeleteECounterRecordForm()}
+
