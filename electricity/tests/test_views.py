@@ -68,7 +68,6 @@ class ElectricityPage(TestCase):
         self.assertEqual(response.status_code, 404)
 
     # Test URLconf name and template
-
     def test_electricity_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
@@ -327,6 +326,24 @@ class ECounterRecordDetailsPage(TestCase):
             record,
             )
 
+    def test_record_details_page_conditional_context_content(self):
+        """Test context['e_payment'] and context['form'] keys.
+        Form to create EPayment or EPayment if it exists."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        self.assertIn('form', response.context)
+        self.assertNotIn('e_payment', response.context)
+        rec_1 = ECounterRecord.objects.get(id=1)
+        # Create EPayment and check context content keys again.
+        rec_1.create_e_payment()
+        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        self.assertIn('e_payment', response.context)
+        self.assertNotIn('form', response.context)
+        self.assertEqual(
+            response.context['e_payment'],
+            EPayment.objects.get(id=1)
+            )
+
 class CreateNewECounterRecordPage(TestCase):
     """CreateNewECounterRecordPage in Electricity app views."""
     fixtures = ['test_db.json']
@@ -421,7 +438,7 @@ class CreateNewECounterRecordPage(TestCase):
             owner__user__exact=user).all()
         land_plot_1 = LandPlot.objects.get(id=1)
         e_counter_obj = land_plot_1.ecounter
-        single_form = NewSingleECounterRecordForm(
+        single_form = CreateSingleECounterRecordForm(
             initial={'e_counter': e_counter_obj, 'land_plot': land_plot_1}
             )
 
@@ -449,7 +466,7 @@ class CreateNewECounterRecordPage(TestCase):
             response.context['land_plot'],
             LandPlot.objects.get(id=1),
             )
-        self.assertEqual(
+        self.assertIsInstance(
             response.context['form'],
-            None,
+            CreateSingleECounterRecordForm,
             )
