@@ -117,9 +117,16 @@ class DeleteECounterRecordPage(ECounterRecordDetailsPage):
     template_name = "delete_e_counter_record_page.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            return_delete_e_payment_form_or_e_payment(context['record'])
-            )
+        if EPayment.objects.filter(
+            land_plot__exact=context['land_plot'],
+            e_counter_record__exact=context['record'],
+            ).exists():
+            raise Http404("У вас уже есть квитанция")
+        else:
+            context['form'] = DeleteECounterRecordForm()
+            #context.update(
+            #    return_delete_e_payment_form_or_e_payment(context['record'])
+            #    )
 
         return context
 
@@ -136,7 +143,7 @@ class DeleteECounterRecordPage(ECounterRecordDetailsPage):
                 )
         else:
             raise Http404("Данные записи не найдены")
-            
+
 # Helper functions
 def e_counter(land_plot):
 	"""Returns land_plot's e_counter."""
@@ -192,7 +199,7 @@ def return_create_e_payment_form_or_e_payment(record):
     try:
         return {'e_payment': record.epayment}
     except ECounterRecord.epayment.RelatedObjectDoesNotExist:
-        return {'form': CreateEPaymentForm(instance=record)}  
+        return {'form': CreateEPaymentForm()}  
 
 def return_delete_e_payment_form_or_e_payment(record):
     """Returns dictionary: e_payment for record if exists, otherwise
@@ -200,4 +207,4 @@ def return_delete_e_payment_form_or_e_payment(record):
     try:
         return {'e_payment': record.epayment}
     except ECounterRecord.epayment.RelatedObjectDoesNotExist:
-        return {'form': CreateEPaymentForm(instance=record)}
+        return {'form': DeleteECounterRecordForm()}
