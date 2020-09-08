@@ -20,6 +20,11 @@ urlpatterns = [
         DeleteECounterRecordPage.as_view(),
         name='delete-e-counter-record'
         ),
+    path(
+    	'electricity/e-payment-id-<int:e_payment_id>/',
+    	EPaymentDetailsPage.as_view(),
+    	name='e-payment-details',
+    	),
 ]
 
 urlpatterns += static(

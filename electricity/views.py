@@ -140,6 +140,32 @@ class DeleteECounterRecordPage(ECounterRecordDetailsPage):
         else:
             raise Http404("Данные записи не найдены")
 
+class EPaymentDetailsPage(LoginRequiredMixin, DetailView):
+    """View to display EPayment detail page."""
+    model = EPayment
+    template_name = "e_payment_details_page.html"
+    context_object_name = "e_payment"
+    pk_url_kwarg = "e_payment_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if context['e_payment'].land_plot.owner.user == self.request.user:
+            context['record'] = context['e_payment'].e_counter_record
+            context['snt_list'] = Snt.objects.all()
+            context['land_plot'] = context['record'].land_plot
+            context['auth_form'] = AuthenticationForm
+            context['counter_type'] = \
+                context['e_payment'].e_counter_record.e_counter.model_type
+            user_model_instance = get_model_by_user(self.request.user)
+            context['user_name'] = str(user_model_instance)
+            if isinstance(user_model_instance, Owner):
+                context['land_plots'] = user_model_instance.landplot_set.all()
+            else:
+                context['land_plots'] = None
+            return context
+        else:
+            raise Http404("Такой страницы не существует")
+
 # Helper functions
 def e_counter(land_plot):
 	"""Returns land_plot's e_counter."""

@@ -33,7 +33,7 @@
         <p><input type="submit" value="Сформировать квитанцию"></p>
         </form> 
     {% else %}
-    <a href="#">Квитанция</a>
+    <a href="{% url 'e-payment-details' land_plot.id e_payment.id %}">Квитанция</a>
     <p>
     {{ e_payment }}
     </p>
