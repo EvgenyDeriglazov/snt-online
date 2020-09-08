@@ -161,7 +161,7 @@ class ElectricityPage(TestCase):
         e_counter_records_list = ECounterRecord.objects.filter(
             e_counter__exact=e_counter_obj,
             land_plot__exact=land_plot_1,
-            ).order_by('rec_date')
+            ).order_by('-rec_date')
         test = all_e_counter_records(e_counter_obj, land_plot_1)
         for i, _ in enumerate(e_counter_records_list):
             self.assertEqual(
@@ -206,37 +206,37 @@ class ECounterRecordDetailsPage(TestCase):
     # Test URL access
     def test_record_details_page_url_by_unauthenticated_user(self):
         """Test unauthenticated user access to owner user data."""
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 302)
 
     def test_record_details_page_url_by_super_user(self):
         """Test super user access to owner user data."""
         self.client.login(username='admin', password='admin')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 404)
     
     def test_record_details_page_url_by_chairman_user(self):
         """Test chairman user access to owner user data."""
         self.client.login(username='chairman2', password='pswd2000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 404)
 
     def test_record_details_page_url_by_accountant_user(self):
         """Test accountant user access to owner user data."""
         self.client.login(username='accountant2', password='pswd4000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 404)
 
     def test_record_details_page_url_by_true_owner_user(self):
         """Test owner access to his record details data."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 200)
 
     def test_record_details_page_url_by_fake_owner_user(self):
         """Test owner access to other owner electricity data."""
         self.client.login(username='owner2', password='pswd6000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 404)
 
     # Test URLconf name and template
@@ -254,7 +254,7 @@ class ECounterRecordDetailsPage(TestCase):
     def test_record_details_page_template(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertTemplateUsed(response, 'e_counter_record_details_page.html')
 
     def test2_record_details_page_url_conf_name(self):
@@ -272,7 +272,7 @@ class ECounterRecordDetailsPage(TestCase):
     def test_record_details_page_context_content(self):
         """Test all content[keys] exist in response."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
@@ -284,9 +284,9 @@ class ECounterRecordDetailsPage(TestCase):
     def test_record_details_page_context_data(self):
         """Verify context data is correct."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         snt_list = Snt.objects.all()
-        record = ECounterRecord.objects.get(id=1)
+        record = ECounterRecord.objects.get(id=3)
         user = User.objects.filter(username__exact='owner1').get()
         user_name = Owner.objects.filter(
             user__exact=user).get()
@@ -331,19 +331,18 @@ class ECounterRecordDetailsPage(TestCase):
         """Test context['e_payment'] and context['form'] keys.
         Form to create EPayment or EPayment if it exists."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
-        self.assertIn('form', response.context)
-        self.assertNotIn('e_payment', response.context)
-        rec_1 = ECounterRecord.objects.get(id=1)
-        # Create EPayment and check context content keys again.
-        rec_1.create_e_payment()
-        response = self.client.get('/plot-id-1/electricity/record-id-1/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertIn('e_payment', response.context)
         self.assertNotIn('form', response.context)
         self.assertEqual(
             response.context['e_payment'],
-            EPayment.objects.get(id=1)
+            EPayment.objects.get(id=3)
             )
+        # Delete EPayment and check context content keys again.
+        EPayment.objects.filter(id=3).delete()
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
+        self.assertIn('form', response.context)
+        self.assertNotIn('e_payment', response.context)
 
 class CreateNewECounterRecordPage(TestCase):
     """CreateNewECounterRecordPage in Electricity app views."""
@@ -486,41 +485,44 @@ class CreateNewECounterRecordPage(TestCase):
 class DeleteECounterRecordPage(TestCase):
     """"""
     fixtures = ['test_db.json']
+    @classmethod
+    def setUpTestData(cls):
+        EPayment.objects.filter(id=3).delete()
     
     # Test URL access
     def test_del_e_counter_record_page_url_by_unauthenticated_user(self):
         """Test unauthenticated user access to owner user data."""
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertEqual(response.status_code, 302)
 
     def test_del_e_counter_record_page_url_by_super_user(self):
         """Test super user access to owner user data."""
         self.client.login(username='admin', password='admin')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertEqual(response.status_code, 404)
     
     def test_del_e_counter_record_page_url_by_chairman_user(self):
         """Test chairman user access to owner user data."""
         self.client.login(username='chairman2', password='pswd2000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertEqual(response.status_code, 404)
 
     def test_del_e_counter_record_page_url_by_accountant_user(self):
         """Test accountant user access to owner user data."""
         self.client.login(username='accountant2', password='pswd4000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertEqual(response.status_code, 404)
 
     def test_del_e_counter_record_page_url_by_true_owner_user(self):
         """Test owner access to his record details data."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertEqual(response.status_code, 200)
 
     def test_del_e_counter_record_page_url_by_fake_owner_user(self):
         """Test owner access to other owner electricity data."""
         self.client.login(username='owner2', password='pswd6000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertEqual(response.status_code, 404)
 
     # Test URLconf name and template
@@ -537,8 +539,9 @@ class DeleteECounterRecordPage(TestCase):
 
     def test_del_e_counter_record_page_template(self):
         """"""
+        EPayment.objects.filter(id=3).delete()
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertTemplateUsed(response, 'delete_e_counter_record_page.html')
 
     def test2_del_e_counter_record_page_url_conf_name(self):
@@ -556,7 +559,7 @@ class DeleteECounterRecordPage(TestCase):
     def test_del_e_counter_record_page_context_content(self):
         """Test all content[keys] exist in response."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
@@ -569,10 +572,10 @@ class DeleteECounterRecordPage(TestCase):
     def test_del_e_counter_record_page_context_data(self):
         """Verify context data is correct."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/electricity/record-id-1/delete/')
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         # Prepare data
         snt_list = Snt.objects.all()
-        record = ECounterRecord.objects.get(id=1)
+        record = ECounterRecord.objects.get(id=3)
         user = User.objects.filter(username__exact='owner1').get()
         user_name = Owner.objects.filter(
             user__exact=user).get()
@@ -618,3 +621,136 @@ class DeleteECounterRecordPage(TestCase):
             )
 
 
+class EPaymentDetailsPage(TestCase):
+    """"""
+    fixtures = ['test_db.json']
+
+    # Test URL access
+    def test_e_payment_details_page_url_by_unauthenticated_user(self):
+        """Test unauthenticated user access to owner user data."""
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_e_payment_details_page_url_by_super_user(self):
+        """Test super user access to owner user data."""
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 404)
+    
+    def test_e_payment_details_page_url_by_chairman_user(self):
+        """Test chairman user access to owner user data."""
+        self.client.login(username='chairman2', password='pswd2000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_e_payment_details_page_url_by_accountant_user(self):
+        """Test accountant user access to owner user data."""
+        self.client.login(username='accountant2', password='pswd4000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_e_payment_details_page_url_by_true_owner_user(self):
+        """Test owner access to his record details data."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_e_payment_details_page_url_by_fake_owner_user(self):
+        """Test owner access to other owner electricity data."""
+        self.client.login(username='owner2', password='pswd6000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 404)
+
+    # Test URLconf name and template
+    def test_e_payment_details_page_url_conf_name(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get(
+            reverse(
+                'e-payment-details',
+                kwargs={'pk': 1, 'e_payment_id': 3}
+                )
+            )
+        self.assertEqual(response.status_code, 200)
+
+    def test_e_payment_details_page_template(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertTemplateUsed(response, 'e_payment_details_page.html')
+
+    def test2_e_payment_details_page_url_conf_name(self):
+        """"""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get(
+            reverse(
+                'e-payment-details',
+                args=[1, 3]
+                )
+            )
+        self.assertEqual(response.status_code, 200)
+
+    # Test context content and data
+    def test_e_payment_details_page_context_content(self):
+        """Test all content[keys] exist in response."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertIn('snt_list', response.context)
+        self.assertIn('auth_form', response.context)
+        self.assertIn('user_name', response.context)
+        self.assertIn('land_plots', response.context)
+        self.assertIn('land_plot', response.context)
+        self.assertIn('counter_type', response.context)
+        self.assertIn('record', response.context)
+        self.assertIn('e_payment', response.context)
+
+    def test_e_payment_details_page_context_data(self):
+        """Verify context data is correct."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        snt_list = Snt.objects.all()
+        record = ECounterRecord.objects.get(id=3)
+        user = User.objects.filter(username__exact='owner1').get()
+        user_name = Owner.objects.filter(
+            user__exact=user).get()
+        land_plots = LandPlot.objects.filter(
+            owner__user__exact=user).all()
+        counter_type = record.e_counter.model_type
+        e_payment = record.epayment
+
+        self.assertEqual(
+            response.context['snt_list'][0],
+            snt_list[0],
+            )       
+        self.assertEqual(
+            response.context['auth_form'],
+            AuthenticationForm,
+            )
+        self.assertEqual(
+            response.context['user_name'],
+            user_name.__str__(),
+            )
+        self.assertEqual(
+            response.context['land_plots'][0],
+            land_plots[0],
+            )       
+        self.assertEqual(
+            response.context['land_plots'][1],
+            land_plots[1],
+            )       
+        self.assertEqual(
+            response.context['land_plot'],
+            LandPlot.objects.get(id=1),
+            )
+        self.assertEqual(
+            response.context['counter_type'],
+            counter_type
+            )
+        self.assertEqual(
+            response.context['record'],
+            record,
+            )
+        self.assertEqual(
+            response.context['e_payment'],
+            e_payment,
+            )

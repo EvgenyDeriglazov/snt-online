@@ -740,7 +740,11 @@
     "pk": 3,
     "fields": {
         "name": "Owners",
-        "permissions": []
+        "permissions": [
+            65,
+            66,
+            67
+        ]
     }
 },
 {
@@ -766,7 +770,7 @@
     "pk": 3,
     "fields": {
         "password": "pbkdf2_sha256$180000$uzOjyOiCLk1A$bJFRSd8iBZYuHPwsEhD+RM6LLAxUCZ6VoRgjFMsrrVQ=",
-        "last_login": "2020-08-24T17:10:59.184Z",
+        "last_login": "2020-09-07T12:20:39.380Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
@@ -864,7 +868,7 @@
     "pk": 9,
     "fields": {
         "password": "pbkdf2_sha256$180000$bzOj4hzh9xCk$1b6awXdWVRtAl6+lPuM89vbuXpWmsN3tMPX2q+TZjW0=",
-        "last_login": "2020-08-26T10:13:11.418Z",
+        "last_login": "2020-09-07T12:36:07.304Z",
         "is_superuser": false,
         "username": "owner1",
         "first_name": "",
@@ -961,6 +965,14 @@
     "fields": {
         "session_data": "OTQxZDFjZjM2ZDMwZmIyOGQyNmQxNjAyM2E4Y2UwNDE4OTZhYjc4Zjp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkYjQ4MjEyZjY5ZWY4MThmMGFjYTU0OTcwMzAwMTBmZTQ4ZjQwNTQxIn0=",
         "expire_date": "2020-09-03T10:56:15.723Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "uj11dpbofypia7x2pju3veakqosd3sr0",
+    "fields": {
+        "session_data": "ZTI4NmYzNmU1OTY1ODY5NjJlN2FhYmI1Yjk1OTBhODQzYjhlM2VlMjp7Il9hdXRoX3VzZXJfaWQiOiI5IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJmZDYxMGQyOTY1YWZjNWQ1ZGMxYzI3N2RjMzEyMDc0OTc4YTljZWI4In0=",
+        "expire_date": "2020-09-21T12:36:07.316Z"
     }
 },
 {
@@ -1155,10 +1167,22 @@
 },
 {
     "model": "electricity.ecounterrecord",
-    "pk": 1,
+    "pk": 3,
     "fields": {
-        "rec_date": "2020-08-23",
-        "s": 10,
+        "rec_date": "2020-09-02",
+        "s": 11,
+        "t1": null,
+        "t2": null,
+        "land_plot": 1,
+        "e_counter": 1
+    }
+},
+{
+    "model": "electricity.ecounterrecord",
+    "pk": 7,
+    "fields": {
+        "rec_date": "2020-09-07",
+        "s": 500,
         "t1": null,
         "t2": null,
         "land_plot": 1,
@@ -1174,6 +1198,29 @@
         "t1": "6.00",
         "t2": "3.00",
         "snt": 1
+    }
+},
+{
+    "model": "electricity.epayment",
+    "pk": 3,
+    "fields": {
+        "payment_date": null,
+        "s_new": 11,
+        "t1_new": null,
+        "t2_new": null,
+        "s_prev": 0,
+        "t1_prev": null,
+        "t2_prev": null,
+        "s_cons": 11,
+        "t1_cons": null,
+        "t2_cons": null,
+        "s_amount": "55.00",
+        "t1_amount": null,
+        "t2_amount": null,
+        "sum_total": "55.00",
+        "status": "not_paid",
+        "land_plot": 1,
+        "e_counter_record": 3
     }
 },
 {
@@ -1746,6 +1793,123 @@
         "object_repr": "2020-08-23",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 53,
+    "fields": {
+        "action_time": "2020-08-28T06:08:57.057Z",
+        "user": 3,
+        "content_type": 14,
+        "object_id": "1",
+        "object_repr": "\u041d\u0415\u0412\u04101",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"\\u0423\\u0447\\u0430\\u0441\\u0442\\u043e\\u043a\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 54,
+    "fields": {
+        "action_time": "2020-08-28T06:10:03.542Z",
+        "user": 3,
+        "content_type": 14,
+        "object_id": "1",
+        "object_repr": "\u041d\u0415\u0412\u04101",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"\\u0423\\u0447\\u0430\\u0441\\u0442\\u043e\\u043a\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 55,
+    "fields": {
+        "action_time": "2020-09-01T09:13:16.815Z",
+        "user": 3,
+        "content_type": 3,
+        "object_id": "3",
+        "object_repr": "Owners",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 56,
+    "fields": {
+        "action_time": "2020-09-01T10:29:45.833Z",
+        "user": 3,
+        "content_type": 3,
+        "object_id": "3",
+        "object_repr": "Owners",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 57,
+    "fields": {
+        "action_time": "2020-09-01T13:05:53.751Z",
+        "user": 3,
+        "content_type": 17,
+        "object_id": "2",
+        "object_repr": "2020-09-01 \u0443\u0447-1",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 58,
+    "fields": {
+        "action_time": "2020-09-02T05:06:03.519Z",
+        "user": 3,
+        "content_type": 17,
+        "object_id": "2",
+        "object_repr": "2020-09-01 \u0443\u0447-1",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 59,
+    "fields": {
+        "action_time": "2020-09-03T07:12:06.444Z",
+        "user": 3,
+        "content_type": 17,
+        "object_id": "4",
+        "object_repr": "2020-09-03 \u0443\u0447-1",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 60,
+    "fields": {
+        "action_time": "2020-09-03T11:40:34.885Z",
+        "user": 3,
+        "content_type": 16,
+        "object_id": "1",
+        "object_repr": "None-1",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 61,
+    "fields": {
+        "action_time": "2020-09-03T11:47:03.022Z",
+        "user": 3,
+        "content_type": 16,
+        "object_id": "2",
+        "object_repr": "None-1",
+        "action_flag": 3,
+        "change_message": ""
     }
 }
 ]
