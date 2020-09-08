@@ -166,6 +166,35 @@ class EPaymentDetailsPage(LoginRequiredMixin, DetailView):
         else:
             raise Http404("Такой страницы не существует")
 
+class DeleteEPaymentPage(EPaymentDetailsPage):
+    """View to display EPayment detail page with delete form."""
+    template_name = "delete_e_payment_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if context['e_payment'].status == "not_paid":
+            context['form'] = DeleteEPaymentForm()
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if 'e_payment_id' in kwargs:
+            e_payment = EPayment.objects.get(id=kwargs['e_payment_id'])
+            if e_payment.status == "not_paid":
+                record_id = e_payment.e_counter_record.id
+                pk = e_payment.land_plot.id
+                e_payment.delete()
+                return HttpResponseRedirect(
+                    reverse(
+                        'e-counter-record-details',
+                        kwargs={'pk': pk, 'record_id': record_id}
+                        )
+                    )
+            else:
+                raise Http404("Статус записи изменился")
+        else:
+            raise Http404("Данные записи не найдены")
+
 # Helper functions
 def e_counter(land_plot):
 	"""Returns land_plot's e_counter."""
