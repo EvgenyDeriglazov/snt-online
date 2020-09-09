@@ -30,7 +30,11 @@ urlpatterns = [
     	DeleteEPaymentPage.as_view(),
     	name='delete-e-payment',
     	),
-
+    path(
+    	'electricity/e-payment-id-<int:e_payment_id>/pay/',
+    	PayEPaymentPage.as_view(),
+    	name='pay-e-payment',
+    	),
 ]
 
 urlpatterns += static(

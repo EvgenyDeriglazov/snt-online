@@ -852,7 +852,7 @@ class DeleteEPaymentPage(TestCase):
             owner__user__exact=user).all()
         counter_type = record.e_counter.model_type
         e_payment = record.epayment
-        form = DeleteEPaymentForm()
+        form = NoFieldsEPaymentForm()
 
         self.assertEqual(
             response.context['snt_list'][0],
@@ -892,5 +892,5 @@ class DeleteEPaymentPage(TestCase):
             )
         self.assertIsInstance(
             response.context['form'],
-            DeleteEPaymentForm,
+            NoFieldsEPaymentForm,
             )

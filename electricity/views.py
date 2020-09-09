@@ -158,6 +158,7 @@ class EPaymentDetailsPage(LoginRequiredMixin, DetailView):
                 context['e_payment'].e_counter_record.e_counter.model_type
             user_model_instance = get_model_by_user(self.request.user)
             context['user_name'] = str(user_model_instance)
+            context['qr_pay_data'] = context['e_payment'].create_qr_text()
             if isinstance(user_model_instance, Owner):
                 context['land_plots'] = user_model_instance.landplot_set.all()
             else:
@@ -173,8 +174,7 @@ class DeleteEPaymentPage(EPaymentDetailsPage):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if context['e_payment'].status == "not_paid":
-            context['form'] = DeleteEPaymentForm()
-
+            context['form'] = NoFieldsEPaymentForm()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -184,6 +184,35 @@ class DeleteEPaymentPage(EPaymentDetailsPage):
                 record_id = e_payment.e_counter_record.id
                 pk = e_payment.land_plot.id
                 e_payment.delete()
+                return HttpResponseRedirect(
+                    reverse(
+                        'e-counter-record-details',
+                        kwargs={'pk': pk, 'record_id': record_id}
+                        )
+                    )
+            else:
+                raise Http404("Статус записи изменился")
+        else:
+            raise Http404("Данные записи не найдены")
+
+class PayEPaymentPage(EPaymentDetailsPage):
+    """View to display EPaymentDetailsPage with NoFieldsEPaymentForm
+    to change EPayment status from not_paid to paid by Owner."""
+    template_name = "pay_e_payment_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if context['e_payment'].status == "not_paid":
+            context['form'] = NoFieldsEPaymentForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if 'e_payment_id' in kwargs:
+            e_payment = EPayment.objects.get(id=kwargs['e_payment_id'])
+            if e_payment.status == "not_paid":
+                record_id = e_payment.e_counter_record.id
+                pk = e_payment.land_plot.id
+                e_payment.paid()
                 return HttpResponseRedirect(
                     reverse(
                         'e-counter-record-details',

@@ -12,15 +12,14 @@
     дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
     {% endif %} -->
 
-    <h4 align="center">Участок {{ land_plot.plot_number }}<br>
-    (квитанция)</h4>
+    <h4 align="center">Участок {{ land_plot.plot_number }}</br>
+    (оплата по QR коду)</h4>
     <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     
     {% if counter_type == "single" %}
 
-    <p> Дата оплаты: 
-        {{ e_payment.payment_date|date:"d.m.y." }}<br>
-        Статус: {{ e_payment.get_status_display|lower }}<br>
+    <p> Дата оплаты: {{ e_payment.payment_date|date:"d.m.y." }}<br>
+        Статус: {{ e_payment.status|lower }}<br>
         Новые показания: {{ e_payment.s_new }} квт/ч<br>
         Предыдущие показания: {{ e_payment.s_prev }} квт/ч<br>
         Расход: {{ e_payment.s_cons }} квт/ч<br>
@@ -29,8 +28,7 @@
 
     {% elif counter_type == "double" %}
 
-    <p>Дата оплаты: 
-        {{ e_payment.payment_date|date:"d.m.y." }}<br>
+    <p> Дата оплаты: {{ e_payment.payment_date|date:"d.m.y." }}<br>
     Статус: {{ e_payment.get_status_display|lower }}<br>
     Новые показания день (T1): {{ e_payment.t1_new }} квт/ч<br>
     Новые показания ночь (T2): {{ e_payment.t2_new }} квт/ч<br>
@@ -43,8 +41,19 @@
     Итог: {{ e_payment.sum_total }} р.<br></p>
 
     {% endif %}
+
     {% load qr_code %}
     <p>{% qr_from_text qr_pay_data size=2 image_format="png" %}</p>
+    <p><b>После успешной уплаты, укажите, что квитанция оплачена.</b></p>
+    <form action="" method="post">
+        {% csrf_token %}
+      <!--  {% if form.errors %} -->
+            {{ form.errors }}
+    <!--{% endif %} -->
+        {{ form }}
+        <p><input type="submit" value="Оплачено"></p>
+    </form>
+
 	<a href="{% url 'e-counter-record-details' land_plot.id record.id %}">Назад</a>
 </div>
 {% endblock %}

@@ -28,8 +28,8 @@ class DeleteECounterRecordForm(ModelForm):
 		model = ECounterRecord
 		fields = []
 
-class DeleteEPaymentForm(ModelForm):
-	"""Form to delete EPayment form db."""
+class NoFieldsEPaymentForm(ModelForm):
+	"""EPayment form without fields to call model methods."""
 	class Meta:
 		model = EPayment
 		fields = []

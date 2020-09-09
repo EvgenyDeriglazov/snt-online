@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'index',
     'electricity',
     'membership',
+    'qr_code',
 ]
 
 MIDDLEWARE = [

@@ -14,7 +14,35 @@
 
     <h4 align="center">Участок {{ land_plot.plot_number }}</br>
     (удаление квитанции)</h4>
-    <p>{{ e_payment }}</p>
+    <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
+    
+    {% if counter_type == "single" %}
+
+    <p> Дата оплаты: 
+        {% with payment_date=e_payment.payment_date %}
+        {{ payment_date|default_if_none:"-" }}
+        {{ payment_date|date:"d.m.y" }}
+        {% endwith %}<br>
+        Статус: {{ e_payment.get_status_display|lower }}<br>
+        Новые показания: {{ e_payment.s_new }} квт/ч<br>
+        Предыдущие показания: {{ e_payment.s_prev }} квт/ч<br>
+        Расход: {{ e_payment.s_cons }} квт/ч<br>
+        Сумма: {{ e_payment.s_amount }} р.<br>
+        Итог: {{ e_payment.sum_total }} р.<br></p>
+
+    {% elif counter_type == "double" %}
+
+    <p>Новые показания день (T1): {{ e_payment.t1_new }} квт/ч<br>
+    Новые показания ночь (T2): {{ e_payment.t2_new }} квт/ч<br>
+    Предыдущие показания день (T1): {{ e_payment.t1_prev }} квт/ч<br>
+    Предыдущие показания ночь (T2): {{ e_payment.t2_prev }} квт/ч<br>
+    Расход день (T1): {{ e_payment.t1_cons }} квт/ч<br>
+    Расход ночь (T2): {{ e_payment.t2_cons }} квт/ч<br>
+    Сумма день (T1): {{ e_payment.t1_amount }} р.<br>
+    Сумма ночь (T2): {{ e_payment.t2_amount }} р.<br>
+    Итог: {{ e_payment.sum_total }} р.<br></p>
+
+    {% endif %}
     
     <form action="" method="post">
         {% csrf_token %}

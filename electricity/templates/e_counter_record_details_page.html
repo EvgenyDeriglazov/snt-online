@@ -42,10 +42,10 @@
     {% endif %}
 
     {% if e_payment.status == "not_paid" %}
-        <p><a href="#">Оплатить по QR коду</a></p>
+        <p><a href="{% url 'pay-e-payment' land_plot.id e_payment.id %}">Оплатить по QR коду</a></p>
         <p><a href="{% url 'delete-e-payment' land_plot.id e_payment.id %}">Удалить квитанцию</a></p>
     {% elif e_payment.status == "paid" or e_payment.status == "payment_confirmed" %}
-        <p><a href="#">Детали платежа</a></p>
+        <p><a href="{% url 'e-payment-details' land_plot.id e_payment.id %}">Детали платежа</a></p>
     {% endif %}
 	<a href="{% url 'electricity' land_plot.id %}">Назад</a>
 </div>
