@@ -27,6 +27,9 @@ from electricity.views import e_counter, all_e_counter_records
 from electricity.views import e_counter_records_with_e_payments_list
 from electricity.views import create_e_counter_record_form
 from electricity.forms import *
+import datetime
+
+# response is a TemplateResponse object
 
 class ElectricityPage(TestCase):
     """ElectriciyPage in Electricity app view."""
@@ -257,7 +260,7 @@ class ECounterRecordDetailsPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertTemplateUsed(response, 'e_counter_record_details_page.html')
 
-    def test2_record_details_page_url_conf_name(self):
+    def test_by_args_record_details_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
@@ -413,6 +416,31 @@ class CreateNewECounterRecordPage(TestCase):
             )
         self.assertEqual(response.status_code, 200)
 
+    # Test POST method
+    def test_create_new_record_post_method(self):
+        """Submit the form to server."""
+        # response is a TemplateResponse object
+        self.client.login(username='owner1', password='pswd5000')
+        land_plot_1 = LandPlot.objects.get(id=1)
+        e_counter_1 = land_plot_1.ecounter
+        response = self.client.post(
+            '/plot-id-1/electricity/new_record/',
+            {'s': 500, 'land_plot': land_plot_1, 'e_counter': e_counter_1},
+            follow=True
+            )
+        #self.assertEqual(response.status_code, 200)
+        # Check that e_counter_record was created
+        self.assertEqual(
+            ECounterRecord.objects.filter(
+                rec_date__exact=datetime.date.today()
+                ).exists(), 
+            True
+            )
+
+        #response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        #self.assertEqual(response.status_code, 200)
+
+
     # Test context content and data
     def test_create_new_record_page_context_content(self):
         """Test all content[keys] exist in response."""
@@ -544,7 +572,7 @@ class DeleteECounterRecordPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
         self.assertTemplateUsed(response, 'delete_e_counter_record_page.html')
 
-    def test2_del_e_counter_record_page_url_conf_name(self):
+    def test_by_args_del_e_counter_record_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
@@ -554,6 +582,25 @@ class DeleteECounterRecordPage(TestCase):
                 )
             )
         self.assertEqual(response.status_code, 200)
+
+    # Test POST method
+    def test_del_e_counter_record_post_method(self):
+        """Submit the form to server."""
+        # response is a TemplateResponse object
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/electricity/record-id-3/delete/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        # Check that e_payment was deleted
+        self.assertEqual(ECounterRecord.objects.filter(id=3).exists(), False)
+        response = self.client.get('/plot-id-1/electricity/record-id-3/')
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get('/plot-id-1/electricity/record-id-3/delete/')
+        self.assertEqual(response.status_code, 404)
+
+
 
     # Test context content and data
     def test_pay_e_counter_record_page_context_content(self):
@@ -679,7 +726,7 @@ class EPaymentDetailsPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
         self.assertTemplateUsed(response, 'e_payment_details_page.html')
 
-    def test2_e_payment_details_page_url_conf_name(self):
+    def test_by_args_e_payment_details_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
@@ -813,7 +860,7 @@ class DeleteEPaymentPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertTemplateUsed(response, 'delete_e_payment_page.html')
 
-    def test2_del_e_payment_page_url_conf_name(self):
+    def test_by_args_del_e_payment_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
@@ -823,6 +870,23 @@ class DeleteEPaymentPage(TestCase):
                 )
             )
         self.assertEqual(response.status_code, 200)
+
+    # Test POST method
+    def test_del_e_payment_post_method(self):
+        """Submit the form to server."""
+        # response is a TemplateResponse object
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/electricity/e-payment-id-3/delete/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        # Check that e_payment was deleted
+        self.assertEqual(EPayment.objects.filter(id=3).exists(), False)
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
+        self.assertEqual(response.status_code, 404)
 
     # Test context content and data
     def test_pay_e_payment_page_context_content(self):
@@ -953,7 +1017,7 @@ class PayEPaymentPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/pay/')
         self.assertTemplateUsed(response, 'pay_e_payment_page.html')
 
-    def test2_del_e_payment_page_url_conf_name(self):
+    def test_by_args_pay_e_payment_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
@@ -963,6 +1027,27 @@ class PayEPaymentPage(TestCase):
                 )
             )
         self.assertEqual(response.status_code, 200)
+
+    # Test POST method
+    def test_pay_e_payment_post_method(self):
+        """Submit the form to server."""
+        # response is a TemplateResponse object
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/electricity/e-payment-id-3/pay/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        # Check that e_payment was deleted
+        self.assertEqual(
+            EPayment.objects.filter(
+                id=3, status__exact="paid"
+                ).exists(),
+            True
+            )
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/pay/')
+        self.assertEqual(response.status_code, 404)
+
 
     # Test context content and data
     def test_pay_e_payment_page_context_content(self):

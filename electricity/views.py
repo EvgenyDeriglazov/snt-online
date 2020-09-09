@@ -204,7 +204,9 @@ class PayEPaymentPage(EPaymentDetailsPage):
         context = super().get_context_data(**kwargs)
         if context['e_payment'].status == "not_paid":
             context['form'] = NoFieldsEPaymentForm()
-        return context
+            return context
+        else:
+            raise Http404("Квитанция уже оплачена")
 
     def post(self, request, *args, **kwargs):
         if 'e_payment_id' in kwargs:
