@@ -28,6 +28,7 @@ from electricity.views import e_counter_records_with_e_payments_list
 from electricity.views import create_e_counter_record_form
 from electricity.forms import *
 import datetime
+import json
 
 # response is a TemplateResponse object
 
@@ -423,12 +424,15 @@ class CreateNewECounterRecordPage(TestCase):
         self.client.login(username='owner1', password='pswd5000')
         land_plot_1 = LandPlot.objects.get(id=1)
         e_counter_1 = land_plot_1.ecounter
+        #response = self.client.post('/accounts/login/', {'username': 'owner1', 'password': 'pswd5000'}, content_type="application/x-www-form-urlencoded")
         response = self.client.post(
-            '/plot-id-1/electricity/new_record/',
-            {'s': 500, 'land_plot': land_plot_1, 'e_counter': e_counter_1},
-            follow=True
+            reverse('new-e-counter-record', kwargs={'pk': 1}),
+            #'/plot-id-1/electricity/new_record/',
+            {'s': 700, 'e_counter': e_counter_1, 'land_plot': land_plot_1},
+            #follow=True,
+            content_type='application/x-www-form-urlencoded',
             )
-        #self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         # Check that e_counter_record was created
         self.assertEqual(
             ECounterRecord.objects.filter(
