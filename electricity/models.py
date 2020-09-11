@@ -689,16 +689,16 @@ class EPayment(models.Model):
         # Prepare purpose text
         if self.s_new != None:
             purpose = f"Взносы за э/энергию, однотарифный"
-            purpose += f"/{self.s_new}-{self.s_prev}/{self.s_cons}, "
-            purpose += f"{self.s_cons}x{self.s_amount/self.s_cons}/"
+            purpose += f"/{self.s_new}-{self.s_prev}/{self.s_cons}"
+            purpose += f"x{self.s_amount/self.s_cons}/"
             purpose += f"{self.s_amount}. Итого/{self.sum_total}."
         elif self.t1_new != None and self.t2_new != None:
             purpose = f"Взносы за э/энергию, "
-            purpose += f"T1/{self.t1_new}-{self.t1_prev}/{self.t1_cons}, " 
-            purpose += f"T2/{self.t2_new}-{self.t2_prev}/{self.t2_cons}, " 
-            purpose += f"T1/{self.t1_cons}x{self.t1_amount/self.t1_cons}/"
+            purpose += f"T1/{self.t1_new}-{self.t1_prev}/{self.t1_cons}" 
+            purpose += f"x{self.t1_amount/self.t1_cons}/"
             purpose += f"{self.t1_amount}, " 
-            purpose += f"T2/{self.t2_cons}x{self.t2_amount/self.t2_cons}/"
+            purpose += f"T2/{self.t2_new}-{self.t2_prev}/{self.t2_cons}" 
+            purpose += f"x{self.t2_amount/self.t2_cons}/"
             purpose += f"{self.t2_amount}. Итого/{self.sum_total}." 
         # Prepare payer address text
         payer_address = f"участок №{self.land_plot.plot_number}, "
