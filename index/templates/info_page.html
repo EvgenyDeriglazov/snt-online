@@ -6,7 +6,7 @@
 	<h3>Информация</h3>
 	{% for info in info_list %}
 	<h4>{{ info.title }}</h4>
-    <h6>Дата: {{ info.pub_date|date:"j E Y" }}</br>
+    <h6>Дата: {{ info.pub_date|date:"j E Y" }}<br>
     Автор: {{ info.author }}</h6>
 	<p>
 	{{ info.body|truncatewords:20 }}

@@ -12,13 +12,13 @@
     дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
     {% endif %} -->
 
-    <h4 align="center">Участок {{ land_plot.plot_number }}</br>
+    <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (показания)</h4>
     <p>Дата показаний: {{ record.rec_date|date:"d.m.y."  }}</p>
     {% if counter_type == "single" %}
     <p>Показания: {{ record.s }} квт/ч</p>
     {% elif counter_type == "double" %}
-    <p>День (T1): {{ record.t1 }}</br>
+    <p>День (T1): {{ record.t1 }}<br>
     Ночь (T2): {{ record.t2 }}<p>
     {% endif %}
 

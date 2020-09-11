@@ -6,7 +6,7 @@
 	<h4 align="center">{{ info_details.title }}</h4>
     <p>{{ info_details.body }}</p>
 	{% endif %}
-     <h6 align="right">Дата: {{ info_details.pub_date|date:"j E Y" }}</br>
+     <h6 align="right">Дата: {{ info_details.pub_date|date:"j E Y" }}<br>
     Автор: {{ info_details.author }}</h6>
 	<a href="{% url 'info' %}">Назад</a>
 </div>

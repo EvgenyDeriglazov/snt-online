@@ -59,19 +59,19 @@
     				{% endif %}
     				
     				{% if user.is_authenticated %}
-        				<p>{{ user_name }}</br>
+        				<p>{{ user_name }}<br>
                         {% for land_plot in land_plots %}
-                        <a href="{% url 'land-plot' land_plot.id %}"> участок {{ land_plot }}</a></br>
+                        <a href="{% url 'land-plot' land_plot.id %}"> участок {{ land_plot }}</a><br>
                         {% empty %}
-                        за вами не числится ни одного участка</br>
+                        за вами не числится ни одного участка<br>
                         {% endfor %}
                         <a href="{% url 'logout' %}">Выход</a> <!-- ?next={{ request.path }} -->
         				</p>
         			{% else %}
     					<form method="post" action="{% url 'login' %}">
         				{% csrf_token %}
-        				<p>Логин{{ auth_form.username }}</br>
-        				Пароль{{ auth_form.password }}</br>
+        				<p>Логин{{ auth_form.username }}<br>
+        				Пароль{{ auth_form.password }}<br>
         				</p>
         				<input type="submit" value="Войти">
         				<input type="hidden" name="next" value="{{ next }}">
