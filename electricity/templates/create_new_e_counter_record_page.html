@@ -14,14 +14,24 @@
 
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (внесение новых показаний)</h4>
+    <p>Э/счетчик {{ e_counter }}, номер {{ e_counter.sn }}</p>
 
     <form action="" method="post">
-        {% csrf_token %}
-      <!--  {% if form.errors %} -->
-            {{ form.errors }}
-    <!--{% endif %} -->
-        {{ form }}
-        <p><input type="submit" value="Сохранить"></p>
+    {% csrf_token %}
+    {% for field in form %}
+        {% if not field.is_hidden %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        {% else %}
+            {{ field }}
+        {% endif %}
+    {% endfor %}
+    <p><input type="submit" value="Сохранить"></p>
     </form>
 
 	<a href="{% url 'electricity' land_plot.id %}">Назад</a>
