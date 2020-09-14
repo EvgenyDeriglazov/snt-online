@@ -279,7 +279,7 @@ class EPaymentModelTest(TestCase):
 
     def test_str_method(self):
         obj = EPayment.objects.get(id=1)
-        object_name = f"{obj.payment_date}-{obj.land_plot.plot_number}"
+        object_name = f"Квитанция-{obj.id}-уч-{obj.land_plot.plot_number}"
         self.assertEquals(object_name, obj.__str__())
         # or self.assertEquals(object_name, str(obj))
  
@@ -290,7 +290,7 @@ class EPaymentModelTest(TestCase):
     def test_calculate(self):
         """Test for calculate() custom method."""
         obj = EPayment.objects.get(id=1)
-        # Check for all fields are None
+        # Check all fields are None condition
         obj.s_new = None
         obj.s_prev = None
         obj.calculate()
@@ -301,14 +301,14 @@ class EPaymentModelTest(TestCase):
         self.assertEqual(obj.t1_amount, None)
         self.assertEqual(obj.t2_amount, None)
         self.assertEqual(obj.sum_total, Decimal('0'))
-        # Check for single type e_counter
+        # Check single type e_counter condition
         obj.s_new = 500
         obj.s_prev = 0
         obj.calculate()
         self.assertEqual(obj.s_cons, 500)
         self.assertEqual(obj.s_amount, Decimal('750.00'))
         self.assertEqual(obj.sum_total, Decimal('750.00'))
-        # Check for double type e_counter
+        # Check double type e_counter condition
         obj.s_new = None
         obj.s_prev = None
         obj.t1_new = 100
@@ -321,6 +321,15 @@ class EPaymentModelTest(TestCase):
         self.assertEqual(obj.t1_amount, Decimal('350.00'))
         self.assertEqual(obj.t2_amount, Decimal('250.00'))
         self.assertEqual(obj.sum_total, Decimal('600.00'))
+
+    def test_calculate_without_e_rate(self):
+        """Test calculate() method without ERate instance."""
+        obj = EPayment.objects.get(id=1)
+        obj.s_new = None
+        obj.s_prev = None
+        ERate.objects.filter(id=1).delete()
+        with self.assertRaises(ValidationError):
+            obj.calculate()
 
     def test_save(self):
         """Test for save() custom method."""
@@ -383,7 +392,7 @@ class EPaymentModelTest(TestCase):
         qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
         qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
         qr_text += 'Purpose=Взносы за э/энергию, '
-        qr_text += 'однотарифный/200-50/150, 150x1.50/225.00. Итого/225.00.|'
+        qr_text += 'однотарифный/200-50/150x1.50/225.00. Итого/225.00.|'
         qr_text += 'PayerAddress=участок №10, СНТ "Бобровка"|Sum=22500'
         self.assertEqual(obj.create_qr_text(), qr_text)
         # Test for double type electrical counter
@@ -406,8 +415,8 @@ class EPaymentModelTest(TestCase):
         qr_text += 'CorrespAcc=01234567898765432101|INN=0123456789|'
         qr_text += 'LastName=Сергеев|FirstName=Сергей|MiddleName=Сергеевич|'
         qr_text += 'Purpose=Взносы за э/энергию, '
-        qr_text += 'T1/100-0/100, T2/100-0/100, '
-        qr_text += 'T1/100x3.50/350.00, T2/100x2.50/250.00. Итого/600.00.|'
+        qr_text += 'T1/100-0/100x3.50/350.00, T2/100-0/100x2.50/250.00. '
+        qr_text += 'Итого/600.00.|'
         qr_text += 'PayerAddress=участок №10, СНТ "Бобровка"|Sum=60000'
         self.assertEqual(obj.create_qr_text(), qr_text)
 

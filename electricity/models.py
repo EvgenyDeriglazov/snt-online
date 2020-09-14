@@ -648,7 +648,7 @@ class EPayment(models.Model):
 
     def __str__(self):
          """String to represent the Model(class) object."""
-         return "Квитанция" + str(self.id) + "-" + self.land_plot.plot_number
+         return "Квитанция-" + str(self.id) + "-уч-" + self.land_plot.plot_number
 
     def get_absolute_url(self):
          """Returns url to access an instance of the model."""
@@ -657,7 +657,10 @@ class EPayment(models.Model):
     # Custom methods
     def calculate(self):
         """Calculates e_payment."""
-        rate = ERate.objects.latest('date')
+        try:
+            rate = ERate.objects.latest('date')
+        except ERate.DoesNotExist:
+            raise ValidationError(_("Данные тарифа не найдены"))
         if self.s_new != None and self.s_prev != None:
             self.s_cons = self.s_new - self.s_prev
             self.s_amount = self.s_cons * rate.s
