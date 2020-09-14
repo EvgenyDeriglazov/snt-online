@@ -271,7 +271,7 @@ class TestLandPlotPage(TestCase):
     def test_land_plot_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get(reverse('land-plot', kwargs={'pk': 1}))
+        response = self.client.get(reverse('land-plot', kwargs={'plot_id': 1}))
         self.assertEqual(response.status_code, 200)
 
     def test_land_plot_page_template(self):

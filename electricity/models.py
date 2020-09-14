@@ -660,7 +660,7 @@ class EPayment(models.Model):
         try:
             rate = ERate.objects.latest('date')
         except ERate.DoesNotExist:
-            raise ValidationError(_("Данные тарифа не найдены"))
+            raise ValidationError(_("Данные текущего тарифа не найдены"))
         if self.s_new != None and self.s_prev != None:
             self.s_cons = self.s_new - self.s_prev
             self.s_amount = self.s_cons * rate.s

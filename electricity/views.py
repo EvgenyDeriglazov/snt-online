@@ -9,6 +9,7 @@ from index.views import get_model_by_user, LandPlotPage
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.db import IntegrityError
 
 class ElectricityPage(LandPlotPage):
     """View to display electricity page."""
@@ -61,7 +62,7 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
                 reverse(
                     'e-counter-record-details', kwargs={
                         'record_id': kwargs['record_id'],
-                        'pk': kwargs['pk'],
+                        'plot_id': kwargs['plot_id'],
                         }
                     )
                 )
@@ -81,8 +82,8 @@ class CreateNewECounterRecordPage(LandPlotPage):
         return context
     
     def post(self, request, *args, **kwargs):
-        if 'pk' in kwargs:
-            land_plot = get_object_or_404(LandPlot, pk=kwargs['pk'])
+        if 'plot_id' in kwargs:
+            land_plot = get_object_or_404(LandPlot, pk=kwargs['plot_id'])
             e_counter_obj = e_counter(land_plot)
             if e_counter_obj == None:
                 raise Http404("Счетчик не найден")
@@ -92,11 +93,16 @@ class CreateNewECounterRecordPage(LandPlotPage):
         else:
             raise Http404("Данные участка не найдены")
         if form.is_valid():
-            new_rec = form.save()
+            try:
+                new_rec = form.save()
+            except IntegrityError as e:
+                raise Http404(
+                    "Показания на определенную дату можно добавить только один раз"
+                    )
             return HttpResponseRedirect(
                 reverse(
                     'e-counter-record-details', kwargs={
-                        'record_id': new_rec.id, 'pk': new_rec.land_plot.id}
+                        'record_id': new_rec.id, 'plot_id': new_rec.land_plot.id}
                     )
                 )
         else:
@@ -137,7 +143,7 @@ class DeleteECounterRecordPage(ECounterRecordDetailsPage):
             return HttpResponseRedirect(
                 reverse(
                     'electricity',
-                    kwargs={'pk': kwargs['pk']}
+                    kwargs={'plot_id': kwargs['plot_id']}
                     )
                 )
         else:
@@ -185,12 +191,12 @@ class DeleteEPaymentPage(EPaymentDetailsPage):
             e_payment = EPayment.objects.get(id=kwargs['e_payment_id'])
             if e_payment.status == "not_paid":
                 record_id = e_payment.e_counter_record.id
-                pk = e_payment.land_plot.id
+                plot_id = e_payment.land_plot.id
                 e_payment.delete()
                 return HttpResponseRedirect(
                     reverse(
                         'e-counter-record-details',
-                        kwargs={'pk': pk, 'record_id': record_id}
+                        kwargs={'plot_id': plot_id, 'record_id': record_id}
                         )
                     )
             else:
@@ -216,12 +222,12 @@ class PayEPaymentPage(EPaymentDetailsPage):
             e_payment = EPayment.objects.get(id=kwargs['e_payment_id'])
             if e_payment.status == "not_paid":
                 record_id = e_payment.e_counter_record.id
-                pk = e_payment.land_plot.id
+                plot_id = e_payment.land_plot.id
                 e_payment.paid()
                 return HttpResponseRedirect(
                     reverse(
                         'e-counter-record-details',
-                        kwargs={'pk': pk, 'record_id': record_id}
+                        kwargs={'plot_id': plot_id, 'record_id': record_id}
                         )
                     )
             else:

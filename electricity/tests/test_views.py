@@ -76,7 +76,7 @@ class ElectricityPage(TestCase):
     def test_electricity_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get(reverse('electricity', kwargs={'pk': 1}))
+        response = self.client.get(reverse('electricity', kwargs={'plot_id': 1}))
         self.assertEqual(response.status_code, 200)
 
     def test_electricity_page_template(self):
@@ -250,7 +250,7 @@ class ECounterRecordDetailsPage(TestCase):
         response = self.client.get(
             reverse(
                 'e-counter-record-details',
-                kwargs={'pk': 1, 'record_id': 1}
+                kwargs={'plot_id': 1, 'record_id': 1}
                 )
             )
         self.assertEqual(response.status_code, 200)
@@ -422,7 +422,7 @@ class CreateNewECounterRecordPage(TestCase):
         response = self.client.get(
             reverse(
                 'new-e-counter-record',
-                kwargs={'pk': 1}
+                kwargs={'plot_id': 1}
                 )
             )
         self.assertEqual(response.status_code, 200)
@@ -456,7 +456,7 @@ class CreateNewECounterRecordPage(TestCase):
 #            )
         #response = self.client.post('/accounts/login/', {'username': 'owner1', 'password': 'pswd5000'}, content_type="application/x-www-form-urlencoded")
 #        response = self.client.post(
-#            reverse('new-e-counter-record', kwargs={'pk': 1}),
+#            reverse('new-e-counter-record', kwargs={'plot_id': 1}),
             #'/plot-id-1/electricity/new_record/',
 #            {'s': 700, 'e_counter': 1, 'land_plot': land_plot_1},
             #follow=True,
@@ -594,7 +594,7 @@ class DeleteECounterRecordPage(TestCase):
         response = self.client.get(
             reverse(
                 'delete-e-counter-record',
-                kwargs={'pk': 1, 'record_id': 1}
+                kwargs={'plot_id': 1, 'record_id': 1}
                 )
             )
         self.assertEqual(response.status_code, 200)
@@ -749,7 +749,7 @@ class EPaymentDetailsPage(TestCase):
         response = self.client.get(
             reverse(
                 'e-payment-details',
-                kwargs={'pk': 1, 'e_payment_id': 3}
+                kwargs={'plot_id': 1, 'e_payment_id': 3}
                 )
             )
         self.assertEqual(response.status_code, 200)
@@ -883,7 +883,7 @@ class DeleteEPaymentPage(TestCase):
         response = self.client.get(
             reverse(
                 'delete-e-payment',
-                kwargs={'pk': 1, 'e_payment_id': 3}
+                kwargs={'plot_id': 1, 'e_payment_id': 3}
                 )
             )
         self.assertEqual(response.status_code, 200)
@@ -1040,7 +1040,7 @@ class PayEPaymentPage(TestCase):
         response = self.client.get(
             reverse(
                 'pay-e-payment',
-                kwargs={'pk': 1, 'e_payment_id': 3}
+                kwargs={'plot_id': 1, 'e_payment_id': 3}
                 )
             )
         self.assertEqual(response.status_code, 200)

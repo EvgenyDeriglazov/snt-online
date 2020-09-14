@@ -144,6 +144,7 @@ class LandPlotPage(LoginRequiredMixin, DetailView):
     model = LandPlot
     template_name = "land_plot_page.html"
     context_object_name = "land_plot"
+    pk_url_kwarg = "plot_id"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
