@@ -505,11 +505,6 @@ class ERate(models.Model):
                 fields=['date'],
                 name='%(app_label)s_%(class)s_date_unique_constraint'
                 ),
-           # models.CheckConstraint(
-           #     check=models.Q(date__gte=datetime.date.today()),
-           #     name='%(app_label)s_%(class)s_date_greater_or_equal_today'
-           #         + '_constraint'
-           #     )
             ]
 
     def __str__(self):

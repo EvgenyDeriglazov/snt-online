@@ -10,13 +10,14 @@
 # coverage run --source='.' manage.py test <appname>
 # coverage report
 
-from django.test import TestCase
+from django.test import TestCase, tag
 from index.models import *
 from electricity.models import *
 from django.contrib.auth.models import User
 import datetime
 from decimal import *
 
+@tag('model', 'electricity')
 class ECounterRecordModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):

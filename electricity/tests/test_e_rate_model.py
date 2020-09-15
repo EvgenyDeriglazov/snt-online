@@ -10,13 +10,14 @@
 # coverage run --source='.' manage.py test <appname>
 # coverage report
 
-from django.test import TestCase
+from django.test import TestCase, tag
 from index.models import *
 from electricity.models import *
 from django.contrib.auth.models import User
 import datetime
 from django.db.models import Q
 
+@tag('model', 'electricity')
 class ECounterRecordModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -141,7 +142,7 @@ class ECounterRecordModelTest(TestCase):
             ERate._meta.verbose_name_plural,
             "тарифы за э/энергию"
             )
-        self.assertEquals(len(ERate._meta.constraints), 2)
+        self.assertEquals(len(ERate._meta.constraints), 1)
         self.assertEquals(
             ERate._meta.constraints[0].fields,
             ('date',)
@@ -149,14 +150,6 @@ class ECounterRecordModelTest(TestCase):
         self.assertEquals(
             ERate._meta.constraints[0].name,
             'electricity_erate_date_unique_constraint'
-            )
-        self.assertEquals(
-            ERate._meta.constraints[1].check,
-            Q(date__gte=datetime.date.today(),)
-            )
-        self.assertEquals(
-            ERate._meta.constraints[1].name,
-            'electricity_erate_date_greater_or_equal_today_constraint'
             )
    
     def test_str_method(self):
