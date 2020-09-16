@@ -4,7 +4,11 @@ from django.conf import settings
 from electricity.views import *
 
 urlpatterns = [
-	path('electricity/', ElectricityPage.as_view(), name='electricity'),
+	path(
+        'electricity/',
+        ElectricityPaymentsPage.as_view(),
+        name='electricity'
+        ),
 	path(
         'electricity/record-id-<int:record_id>/',
         ECounterRecordDetailsPage.as_view(),

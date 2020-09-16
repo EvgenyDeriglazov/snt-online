@@ -84,7 +84,7 @@ class ElectricityPage(TestCase):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/electricity/')
-        self.assertTemplateUsed(response, 'electricity_page.html')
+        self.assertTemplateUsed(response, 'electricity_payments_page.html')
 
     # Test context content and data
     def test_electricity_page_context_content(self):

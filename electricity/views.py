@@ -11,9 +11,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 
-class ElectricityPage(LandPlotPage):
+class ElectricityPaymentsPage(LandPlotPage):
     """View to display electricity page."""
-    template_name = "electricity_page.html"
+    template_name = "electricity_payments_page.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
