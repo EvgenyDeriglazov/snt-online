@@ -23,99 +23,113 @@ from django.test import TestCase, Client, tag
 from index.models import *
 from membership.models import *
 from django.contrib.auth.forms import AuthenticationForm
-#from membership.forms import *
+from membership.forms import *
 import datetime
 import json
 
 # response is a TemplateResponse object
 
 @tag('views', 'membership', 'membership-views')
-class MembershipPaymentsPage(TestCase):
-    """MembershipPaymentsPage in Membership app view."""
+class MembershipPaymentDetailsPage(TestCase):
+    """MembershipPaymentDetailsPage in Membership app view."""
     fixtures = ['test_db.json']
+    @classmethod
+    def setUpTestData(cls):
+        m_rate = MRate.objects.create(
+            date=datetime.date.today(),
+            year_period='2020',
+            rate=1000,
+            snt=Snt.objects.get(id=1),
+            )
+        m_payment = MPayment.objects.create(
+            year_period='2020',
+            land_plot=LandPlot.objects.get(id=1),
+            )
 
     # Test URL access
-    def test_membership_page_url_by_unauthenticated_user(self):
+    def test_membership_details_page_url_by_unauthenticated_user(self):
         """"""
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 302)
 
-    def test_membership_page_url_by_super_user(self):
+    def test_membership_details_page_url_by_super_user(self):
         """"""
         self.client.login(username='admin', password='admin')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 404)
     
-    def test_membership_page_url_by_chairman_user(self):
+    def test_membership_details_page_url_by_chairman_user(self):
         """"""
         self.client.login(username='chairman2', password='pswd2000')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 404)
 
-    def test_membership_page_url_by_accountant_user(self):
+    def test_membership_details_page_url_by_accountant_user(self):
         """"""
         self.client.login(username='accountant2', password='pswd4000')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 404)
 
-    def test_membership_page_url_by_true_owner_user(self):
+    def test_membership_details_page_url_by_true_owner_user(self):
         """Test owner access to his membership data."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 200)
 
-    def test_membership_page_url_by_fake_owner_user(self):
+    def test_membership_details_page_url_by_fake_owner_user(self):
         """Test owner access to other owner membership data."""
         self.client.login(username='owner2', password='pswd6000')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 404)
 
     # Test URLconf name and template
-    def test_membership_page_url_conf_name(self):
+    def test_membership_details_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
             reverse(
-                'membership-payments',
-                kwargs={'plot_id': 1}
+                'membership-payment-details',
+                kwargs={'plot_id': 1, 'm_payment_id': 1}
                 )
             )
         self.assertEqual(response.status_code, 200)
 
-    def test_by_args_membership_page_url_conf_name(self):
+    def test_by_args_membership_details_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
             reverse(
-                'membership-payments',
-                args=[1]
+                'membership-payment-details',
+                args=[1, 1]
                 )
             )
         self.assertEqual(response.status_code, 200)
 
     # Test template
-    def test_membership_page_template(self):
+    def test_membership_details_page_template(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/membership/')
-        self.assertTemplateUsed(response, 'membership_payments_page.html')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
+        self.assertTemplateUsed(response, 'membership_payment_details_page.html')
 
     # Test context content and data
-    def test_membership_page_context_keys(self):
+    def test_membership_details_page_context_keys(self):
         """Test all content[keys] exist in response."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertIn('snt_list', response.context)
         self.assertIn('auth_form', response.context)
         self.assertIn('user_name', response.context)
         self.assertIn('land_plots', response.context)
         self.assertIn('land_plot', response.context)
-        self.assertIn('payment_data_list', response.context)
+        self.assertIn('m_payment', response.context)
+        self.assertIn('qr_pay_data', response.context)
+        self.assertIn('form', response.context)
 
-    def test_membership_page_context_data(self):
+    def test_membership_details_page_context_values(self):
         """Verify context data is correct."""
         self.client.login(username='owner1', password='pswd5000')
-        response = self.client.get('/plot-id-1/membership/')
+        response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         snt_list = Snt.objects.all()
         user = User.objects.filter(username__exact='owner1').get()
         user_name = Owner.objects.filter(
@@ -123,9 +137,7 @@ class MembershipPaymentsPage(TestCase):
         land_plots = LandPlot.objects.filter(
             owner__user__exact=user).all()
         land_plot_1 = LandPlot.objects.get(id=1)
-        payment_data_list = MPayment.objects.filter(
-            land_plot__exact=land_plot_1,
-            ).order_by('-year_period')
+
         self.assertEqual(
             response.context['snt_list'][0],
             snt_list[0],
@@ -148,9 +160,11 @@ class MembershipPaymentsPage(TestCase):
             response.context['land_plot'],
             LandPlot.objects.get(id=1),
             )
-        if len(response.context['payment_data_list']) > 0:
-            for key, value in enumerate(response.context['payment_data_list']):
-                self.assertEqual(
-                    value,
-                    payment_data_list[key]
-                    )
+        self.assertEqual(
+            response.context['m_payment'],
+            MPayment.objects.get(id=1),
+            )
+        self.assertIsInstance(
+            response.context['form'],
+            NoFieldsMPaymentForm,
+            )
