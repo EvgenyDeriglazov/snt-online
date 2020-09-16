@@ -107,7 +107,8 @@ class ECounterRecordDetailsPage(TestCase):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         record = ECounterRecord.objects.get(id=3)
-        # Try to create EPayment to get Http404()
+        # Try to create EPayment to get Http404() as EPayment
+        # already exists in db.
         response = self.client.post(
             '/plot-id-1/electricity/record-id-3/',
             follow=True,

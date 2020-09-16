@@ -112,6 +112,24 @@ class MembershipPaymentDetailsPage(TestCase):
         response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertTemplateUsed(response, 'membership_payment_details_page.html')
 
+    # Test POST method to set MPayment.status = 'paid'.
+    def test_membership_details_page_post_method(self):
+        """MPayment model paid() method."""
+        self.assertEqual(
+            MPayment.objects.filter(id=1, status__exact='paid').exists(),
+            False
+            )       
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/membership/m-payment-id-1/',
+            follow=True,
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            MPayment.objects.filter(id=1, status__exact='paid').exists(),
+            True
+            )
+        
     # Test context content and data
     def test_membership_details_page_context_keys(self):
         """Test all content[keys] exist in response."""
