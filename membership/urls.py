@@ -19,6 +19,12 @@ urlpatterns = [
 		MembershipPaymentDetailsPage.as_view(),
 		name='membership-payment-details'
 		),
+	path(
+		'membership/t-payment-id-<int:t_payment_id>/',
+		TargetPaymentDetailsPage.as_view(),
+		name='target-payment-details'
+		),
+
 ]
 
 urlpatterns += static(

@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+<!-- Normally the template name is relative to the template loader’s root directory -->
+{% block center-column %}
+<div id="center-column">
+
+    <h4 align="center">Участок {{ land_plot.plot_number }}<br>
+    (целевые взносы)</h4>
+        <p>Дата платежа: {{ t_payment.payment_date|date:"d.m.Y." }}<br>
+            Цель: {{ t_payment.target }}<br>
+            Размер взонса: {{ t_payment.amount }}р.<br>
+            Статус: {{ t_payment.get_status_display }}</p>
+
+        {% load qr_code %}
+        <p>{% qr_from_text qr_pay_data size=2 image_format="png" %}</p>
+        
+        {% if t_payment.status == 'not_paid' %}
+        <p><b>После успешной оплаты, укажите, что квитанция оплачена.</b></p>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <p><input type="submit" value="Оплачено"></p>
+            </form>
+        {% endif %}
+
+	<a href="{% url 'target-payments' land_plot.id %}">Назад</a>
+</div>
+{% endblock %}
+

@@ -80,3 +80,47 @@ class MembershipPaymentDetailsPage(LoginRequiredMixin, DetailView):
                 raise Http404("Статус записи изменился")
         else:
             raise Http404("Данные записи не найдены")
+
+class TargetPaymentDetailsPage(LoginRequiredMixin, DetailView):
+    """View to display electrical counter records detail page."""
+    model = TPayment
+    template_name = "target_payment_details_page.html"
+    context_object_name = "t_payment"
+    pk_url_kwarg = "t_payment_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if context['t_payment'].land_plot.owner.user == self.request.user:
+            context['snt_list'] = Snt.objects.all()
+            context['land_plot'] = context['t_payment'].land_plot
+            context['auth_form'] = AuthenticationForm
+            user_model_instance = get_model_by_user(self.request.user)
+            context['user_name'] = str(user_model_instance)
+            context['qr_pay_data'] = context['t_payment'].create_qr_text()
+            context['form'] = NoFieldsTPaymentForm()
+            if isinstance(user_model_instance, Owner):
+                context['land_plots'] = user_model_instance.landplot_set.all()
+            else:
+                context['land_plots'] = None
+            return context
+        else:
+            raise Http404("Такой страницы не существует")
+
+    def post(self, request, *args, **kwargs):
+        if 't_payment_id' in kwargs:
+            t_payment = TPayment.objects.get(id=kwargs['t_payment_id'])
+            if t_payment.status == "not_paid":
+                plot_id = t_payment.land_plot.id
+                t_payment.paid()
+                return HttpResponseRedirect(
+                    reverse(
+                        'target-payment-details',
+                        kwargs={
+                        	'plot_id': plot_id, 't_payment_id': t_payment.id
+                        	}
+                        )
+                    )
+            else:
+                raise Http404("Статус записи изменился")
+        else:
+            raise Http404("Данные записи не найдены")
