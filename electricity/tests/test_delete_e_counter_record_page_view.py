@@ -32,7 +32,7 @@ import json
 
 # response is a TemplateResponse object
 
-@tag('view', 'electricity')
+@tag('views', 'electricity', 'electricity-views')
 class DeleteECounterRecordPage(TestCase):
     """"""
     fixtures = ['test_db.json']

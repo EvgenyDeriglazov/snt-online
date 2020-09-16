@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 import datetime
 from django.db.models import Q
 
-@tag('model', 'electricity')
+@tag('models', 'electricity', 'electricity-models')
 class ECounterRecordModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):

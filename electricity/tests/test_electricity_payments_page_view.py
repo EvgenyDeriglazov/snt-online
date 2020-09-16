@@ -32,7 +32,7 @@ import json
 
 # response is a TemplateResponse object
 
-@tag('view', 'electricity')
+@tag('views', 'electricity', 'electricity-views')
 class ElectricityPage(TestCase):
     """ElectriciyPage in Electricity app view."""
     fixtures = ['test_db.json']

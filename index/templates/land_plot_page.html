@@ -8,12 +8,12 @@
                 <a href="{% url 'electricity' land_plot.id %}">
                 <div class="center-column-block-item">Электроэнергия</div>
                 </a>
-	            <a href="{% url 'membership' land_plot.id %}">
-                <div class="center-column-block-item">Взносы</div>
+	            <a href="{% url 'membership-payments' land_plot.id %}">
+                <div class="center-column-block-item"> Членские взносы</div>
                 </a>
             </div>
         </div>
-<a href="{% url 'target' land_plot.id %}">Целевые возносы</a>
+<a href="{% url 'target-payments' land_plot.id %}">Целевые возносы</a>
 <a href="{% url 'home' %}">Главная</a>
 </div>
 {% endblock %}

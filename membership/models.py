@@ -42,7 +42,7 @@ class MPayment(models.Model):
         help_text="Выберите месяц, если начисления" 
         + " членских взносов расчитываются помесячно",
         max_length=3,
-        #blank=True,
+        blank=True,
         choices=MONTH_PERIOD_CHOICES,
         default='',
         )
@@ -51,16 +51,19 @@ class MPayment(models.Model):
         help_text="Размер членского взноса за сотку (100 м.кв)/рублей",
         max_digits=7,
         decimal_places=2,
+        blank=True,
         )
     plot_area = models.PositiveIntegerField(
         "Площадь участка",
         help_text="Площадь участка в квадратных метрах",
+        blank=True,
         )
     amount = models.DecimalField(
         "Сумма",
         help_text="Сумма взноса к оплате",
         max_digits=7,
         decimal_places=2,
+        blank=True,
         )
     land_plot = models.ForeignKey(
         LandPlot,
@@ -94,7 +97,7 @@ class MPayment(models.Model):
 
     def __str__(self):
         """String to represent the Model(class) object."""
-        return self.year_period + " " + self.land_plot.plot_number
+        return self.year_period + " уч-" + self.land_plot.plot_number
 
     def get_absolute_url(self):
         """Returns url to access an instance of the model."""
@@ -193,7 +196,7 @@ class MRate(models.Model):
         help_text="Выберите месяц, если начисления" 
         + " членских взносов расчитываются помесячно",
         max_length=3,
-        #blank=True,
+        blank=True,
         choices=MONTH_PERIOD_CHOICES,
         default='',
         )

@@ -7,12 +7,17 @@ urlpatterns = [
 	path(
 		'membership/',
 		MembershipPaymentsPage.as_view(),
-		name='membership'
+		name='membership-payments'
 		),
 	path(
 		'target/',
 		TargetPaymentsPage.as_view(),
-		name='target'
+		name='target-payments'
+		),
+	path(
+		'membership/m-payment-id-<int:m_payment_id>/',
+		MembershipPaymentDetailsPage.as_view(),
+		name='membership-payment-details'
 		),
 ]
 

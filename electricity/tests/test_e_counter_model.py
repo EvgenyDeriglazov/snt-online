@@ -16,7 +16,7 @@ from electricity.models import *
 from django.contrib.auth.models import User
 import datetime
 
-@tag('model', 'electricity')
+@tag('models', 'electricity', 'electricity-models')
 class ECounterModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
