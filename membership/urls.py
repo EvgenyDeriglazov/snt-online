@@ -4,8 +4,16 @@ from django.conf import settings
 from membership.views import *
 
 urlpatterns = [
-	path('membership/', MembershipPage.as_view(), name='membership')
-
+	path(
+		'membership/',
+		MembershipPaymentsPage.as_view(),
+		name='membership'
+		),
+	path(
+		'target/',
+		TargetPaymentsPage.as_view(),
+		name='target'
+		),
 ]
 
 urlpatterns += static(

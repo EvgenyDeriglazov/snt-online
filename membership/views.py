@@ -13,14 +13,26 @@ from django.db import IntegrityError
 
 # Create your views here.
 
-class MembershipPage(LandPlotPage):
+class MembershipPaymentsPage(LandPlotPage):
     """View to display membership payments page as list of items."""
-    template_name = "membership_page.html"
+    template_name = "membership_payments_page.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['payment_data_list'] = MPayment.objects.filter(
         	land_plot__exact=context['land_plot']
-        	).order_by('year_period')
+        	).order_by('-year_period')
+
+        return context
+
+class TargetPaymentsPage(LandPlotPage):
+    """View to display membership payments page as list of items."""
+    template_name = "target_payments_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['payment_data_list'] = TPayment.objects.filter(
+        	land_plot__exact=context['land_plot']
+        	).order_by('-payment_date')
 
         return context
