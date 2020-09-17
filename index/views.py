@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from index.models import *
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -24,6 +24,25 @@ class HomePage(TemplateView):
         else:
             context['land_plots'] = None
         return context
+
+    def get(self, request):
+        if self.request.user.is_authenticated:
+            user_model_instance = get_model_by_user(self.request.user)
+            if isinstance(user_model_instance, Owner):
+                user_land_plots = user_model_instance.landplot_set.all()
+                if len(user_land_plots) > 0:
+                    return HttpResponseRedirect(
+                        reverse(
+                            'land-plot',
+                            kwargs={'plot_id': user_land_plots[0].id},
+                            )
+                        )
+                else:
+                    return super().get(request)
+            else:
+                return super().get(request)
+        else:
+            return super().get(request)
 
 class InfoPage(TemplateView):
     """Class based view to display Info model page."""
@@ -159,7 +178,7 @@ class LandPlotPage(LoginRequiredMixin, DetailView):
                 context['land_plots'] = None
             return context
         else:
-            raise Http404
+            raise Http404("Такой страницы не существует")
 
 # Re-use helper functions
 def get_model_by_user(user):

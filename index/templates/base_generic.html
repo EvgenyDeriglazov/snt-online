@@ -22,30 +22,22 @@
 	<body>
 		<div id="top-bar">
 		    <div class="fixed-container">
+		    	<a href="{% url 'home' %}">
                 {% if snt_list %}
                 СНТ "{{ snt_list.0.name}}"
                 {% else %}
                 СНТ Онлайн
                 {% endif %}
+            	</a>
             </div>
 		</div>
-		{% block menu %}
-		<div id="menu-container">
-			<div class="fixed-container">
-				<a href="{% url 'home' %}">Главная</a>
-				<a href="{% url 'info' %}">Информация</a>
-				<a href="{% url 'docs' %}">Документы</a>
-				<a href="{% url 'snt-bank-details' %}">Реквизиты</a>
-				<a href="{% url 'snt-contacts' %}">Контакты</a>
-			</div>
-		</div>
-		{% endblock %}
 		
 		<div id="central-container">
 			<div class="fixed-container" id="flex-container">
 				{% block left-column %}
 				<div id="left-column">
 					<h4>Личный кабинет</h4>
+
     				{% if auth_form.errors %}
         			<p>Неверное имя пользователя или пароль.</p>
     				{% endif %}
@@ -70,11 +62,14 @@
         			{% else %}
     					<form method="post" action="{% url 'login' %}">
         				{% csrf_token %}
-        				<p>Логин{{ auth_form.username }}<br>
-        				Пароль{{ auth_form.password }}<br>
+        				<p>Логин {{ auth_form.username }}<br>
+        				Пароль {{ auth_form.password }}<br>
         				</p>
         				<input type="submit" value="Войти">
         				<input type="hidden" name="next" value="{{ next }}">
+        				<p>
+        				<a href="#">Забыли пароль?</a>
+        				</p>
     					</form>
     				{% endif %}
 				</div>
@@ -83,8 +78,6 @@
 				{% block center-column %}
 				{% endblock center-column %}
 
-				{% block right-column %}
-				{% endblock right-column %}
 			</div>
 		</div>
 		{% block bottom-bar %}

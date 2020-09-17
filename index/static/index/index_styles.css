@@ -5,13 +5,22 @@ body {
 	font-family: Arial;
 }
 
+:root {
+	--basic-color: OliveDrab;
+	}
+
 #top-bar {
-	background-color: black;
+	background-color: var(--basic-color);
 	color: white;
 	padding: 10px 0;
 	font-size: 16px;
 	font-weight: bold;
 }
+
+	#top-bar a {
+		text-decoration: none;
+		color: white;
+	}
 
 #menu-container {
 	padding: 5px 0;
@@ -30,8 +39,8 @@ body {
 }
 
 #central-container {
-	background-color: #f9f9f9;
-	padding-top: 20px;
+	background-color: white;
+	padding: 10px 0;
 }
 
 #flex-container {
@@ -47,31 +56,39 @@ body {
 
 #left-column {
 	background-color: #FFFFFF;
-	width: 200px;
+	width: 150px;
 	padding: 0 18px;
 	max-height: 280px;
-    margin-right: 10px;
+    margin: 0 5px;
+    border: 1px solid var(--basic-color);
+    border-radius: 5px;
     /*margin: auto;*/
 }
 
-#left-column input[type=text], input[type=password] {
-    width: 100px;
-}
+	#left-column input[type=text], input[type=password] {
+    	width: 100px;
+    	margin: 5px 5px;
+    	border: 1px solid var(--basic-color);
+    	border-radius: 5px;
+	}
+
+	#left-column input[type=submit] {
+    	margin: 5px auto;
+    	border-radius: 5px;
+    	border: 1px solid var(--basic-color);
+    	background-color: var(--basic-color);
+    	color: white;
+	}
 
 #center-column {
 	background-color: #FFFFFF;
-	margin: 0 20px;
+	margin: 0 5px;
 	padding: 0 18px;
-	width: 440px;
+	max-width: 760px;
 	min-height: 500px;
-	/*flex-grow: 2;*/
-	/*display: flex;
-	justify-content: space-around;*/
-	/*flex-wrap: wrap;
-	flex-direction: column;*/
-	/*flex-flow: column wrap;
-	align-items: flex-start;*/
-	
+    border: 1px solid var(--basic-color);
+    border-radius: 5px;
+    flex-grow: 1;
 }
 
 .center-column-block-wrapper {
@@ -111,20 +128,9 @@ body {
 	text-align: center;
 }
 
-#right-column {
-	background-color: #FFFFFF;
-	max-width: 200px;
-	padding: 0 18px;	
-	max-height: 280px;
-    margin-left: 10px;
-}
-
-#right-column p {
-	font-size: 14px;
-}
 
 #bottom-bar {
-	background-color: black;
+	background-color: var(--basic-color);
 	color: white;
 	padding: 8px 0;
 	font-size: 12px;

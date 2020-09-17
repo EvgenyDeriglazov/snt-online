@@ -2,27 +2,9 @@
 
 {% block center-column %}
 <div id="center-column">
-	<h3>Информация</h3>
-	{% for info in info_list %}
-	<h4>{{ info.title }}</h4>
-	<p>{{ info.body|truncatewords:20 }}</p>
-	{% empty %}
-	<p>Пока еще не опубликовано ни одной записи.</p>
-	{% endfor %}
+	<h3>СНТ "{{ snt_list.0.name }}"</h3>
+    <p>Адрес: </p>
+    <p>Число участков: {{ land_plots_count }}</p>
 </div>
 {% endblock center-column %}
-
-{% block right-column %}
-<div id="right-column">
-	<h4>Данные садоводства</h4>
-	<p>Название: 
-		{% if snt_list %} 
-		СНТ "{{ snt_list.0.name }}"
-		{% else %} 
-		СНТ Онлайн<br>
-		{% endif %}
-	Число участков: {{ land_plots_count }}<br>
-	</p>
-</div>
-{% endblock right-column %}
 
