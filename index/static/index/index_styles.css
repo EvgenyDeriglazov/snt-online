@@ -27,16 +27,16 @@ body {
 
 }
 
-#menu-container a {
-	color: black;
-	font-size: 14px;
-	margin-right: 20px;
-	text-decoration: none;
-}
+	#menu-container a {
+		color: black;
+		font-size: 14px;
+		margin-right: 20px;
+		text-decoration: none;
+	}
 
-#menu-container a:hover {
-	color: #202020;
-}
+	#menu-container a:hover {
+		color: #202020;
+	}
 
 #central-container {
 	background-color: white;
@@ -58,7 +58,7 @@ body {
 	background-color: #FFFFFF;
 	width: 150px;
 	padding: 0 18px;
-	max-height: 280px;
+	max-height: 300px;
     margin: 0 5px;
     border: 1px solid var(--basic-color);
     border-radius: 5px;
@@ -90,44 +90,53 @@ body {
     border-radius: 5px;
     flex-grow: 1;
 }
+	#center-column h3 {
+		text-align: center;
+	}
 
-.center-column-block-wrapper {
-	display: flex;
-	flex-wrap: wrap;
-	margin: 5px auto;
-	background: black;
-	max-width: 380px;
-}
+	.center-column-block-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 5px auto;
+		/*background: black;*/
+		max-width: 700px;
+		justify-content: space-around;
+	}
+		.center-column-block-wrapper a {
+			text-decoration: none;
+			color: black;
+		}
 
-.center-column-block {
-	display: flex;
-	flex-wrap: nowrap;
-	justify-content: space-around;
-	width: 380px;
-	background: white;
+	/*.center-column-block {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-around;
+		width: 380px;
+		background: white;
+    	border: 1px solid var(--basic-color);
+	}
 
-}
+		.center-column-block a {
+			text-decoration: none;
+			color: black;
+		}*/
 
-.center-column-block a {
-	text-decoration: none;
-	color: black;
-}
+	.center-column-block-item {
+		height: 60px;
+		width: 150px;
+		border: 1px solid black;
+		border-radius: 3px;
+    	border: 1px solid var(--basic-color);
+	}
+		.center-column-block-item h5 {
+			text-align: center;
+		}
 
-.center-column-block-item {
-	height: 50px;
-	width: 150px;
-	border: 1px solid black;
-	background: steelblue;
-	border-radius: 3px;
-	margin-bottom: 5px;
-}
+
+
 .info-container {
 	
 }
-#center-column h3 {
-	text-align: center;
-}
-
 
 #bottom-bar {
 	background-color: var(--basic-color);

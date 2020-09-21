@@ -4,17 +4,25 @@
 <div id="center-column">
 	<h4 align="center">Участок {{ land_plot.plot_number }}</h4>
         <div class="center-column-block-wrapper">
-            <div class="center-column-block">
+            <!--<div class="center-column-block">-->
                 <a href="{% url 'electricity' land_plot.id %}">
-                <div class="center-column-block-item">Электроэнергия</div>
+                <div class="center-column-block-item">
+                <h5>Электроэнергия</h5>
+                </div>
                 </a>
 	            <a href="{% url 'membership-payments' land_plot.id %}">
-                <div class="center-column-block-item"> Членские взносы</div>
+                <div class="center-column-block-item">
+                <h5>Членские взносы</h5>
+                </div>
                 </a>
-            </div>
+                <a href="{% url 'target-payments' land_plot.id %}">
+                <div class="center-column-block-item">
+                <h5>Целевые возносы</h5>
+                </div>
+                </a>
+            <!--</div>-->
         </div>
-<a href="{% url 'target-payments' land_plot.id %}">Целевые возносы</a>
-<a href="{% url 'home' %}">Главная</a>
+
 </div>
 {% endblock %}
 

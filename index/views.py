@@ -26,6 +26,7 @@ class HomePage(TemplateView):
         return context
 
     def get(self, request):
+        """If user is authenticated redirects to land plot page."""
         if self.request.user.is_authenticated:
             user_model_instance = get_model_by_user(self.request.user)
             if isinstance(user_model_instance, Owner):
