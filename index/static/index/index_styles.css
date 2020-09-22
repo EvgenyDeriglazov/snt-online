@@ -7,6 +7,9 @@ body {
 
 :root {
 	--basic-color: OliveDrab;
+	--button-color: LightGreen;
+	--hover-color: MediumSeaGreen;
+	--active-color: SeaGreen;
 	}
 
 #top-bar {
@@ -94,7 +97,7 @@ body {
 		text-align: center;
 	}
 
-	.center-column-block-wrapper {
+	.center-column-wrapper {
 		display: flex;
 		flex-wrap: wrap;
 		margin: 5px auto;
@@ -102,7 +105,7 @@ body {
 		max-width: 700px;
 		justify-content: space-around;
 	}
-		.center-column-block-wrapper a {
+		.center-column-wrapper a {
 			text-decoration: none;
 			color: black;
 		}
@@ -119,17 +122,37 @@ body {
 			color: black;
 		}
 
-	.center-column-block-item {
+	.center-column-item {
 		height: 60px;
 		width: 150px;
 		border-radius: 3px;
     	border: 1px solid var(--basic-color);
     	margin: 5px auto;
+    	font-size: 14px;
 	}
-		.center-column-block-item h5 {
+		.center-column-item h6 {
 			text-align: center;
 		}
 
+	.center-column-button-item {
+		width: 150px;
+		border-radius: 3px;
+    	border: 1px solid var(--basic-color);
+    	margin: 5px auto;
+		text-align: center;
+		font-size: 14px;
+		padding: 2px 0px;
+		font-weight: bold;
+		background-color: var(--button-color);
+	}
+
+		.center-column-button-item:hover {
+			background-color: var(--hover-color);
+		}
+	
+		.center-column-button-item:active {
+			background-color: var(--active-color);
+		}
 
 
 .info-container {

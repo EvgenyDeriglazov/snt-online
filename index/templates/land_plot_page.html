@@ -3,20 +3,20 @@
 {% block center-column %}
 <div id="center-column">
 	<h4 align="center">Участок {{ land_plot.plot_number }}</h4>
-        <div class="center-column-block-wrapper">
+        <div class="center-column-wrapper">
             <!--<div class="center-column-block">-->
                 <a href="{% url 'electricity' land_plot.id %}">
-                <div class="center-column-block-item">
+                <div class="center-column-item">
                 <h5>Электроэнергия</h5>
                 </div>
                 </a>
 	            <a href="{% url 'membership-payments' land_plot.id %}">
-                <div class="center-column-block-item">
+                <div class="center-column-item">
                 <h5>Членские взносы</h5>
                 </div>
                 </a>
                 <a href="{% url 'target-payments' land_plot.id %}">
-                <div class="center-column-block-item">
+                <div class="center-column-item">
                 <h5>Целевые возносы</h5>
                 </div>
                 </a>
