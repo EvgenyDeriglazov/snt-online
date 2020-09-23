@@ -3,13 +3,15 @@ body {
 	padding: 0;
 	min-width: 320px;
 	font-family: Arial;
+	color: #003000;
 }
 
 :root {
-	--basic-color: OliveDrab;
-	--button-color: LightGreen;
-	--hover-color: MediumSeaGreen;
-	--active-color: SeaGreen;
+	--basic-color: SeaGreen;
+	--button-background-color: #F3FFF3;/*#F3FFF3#E5FFE5*/
+	--hover-color: DarkGreen;
+	--active-color: MediumSeaGreen;
+	--font-color: #003000;
 	}
 
 #top-bar {
@@ -107,7 +109,7 @@ body {
 	}
 		.center-column-wrapper a {
 			text-decoration: none;
-			color: black;
+			color: var(--font-color);
 		}
 
 	.center-column-block {
@@ -117,21 +119,21 @@ body {
 		width: 200px;
 	}
 
-		.center-column-block a {
-			text-decoration: none;
-			color: black;
-		}
-
 	.center-column-item {
-		height: 60px;
+		min-height: 80px;
 		width: 150px;
 		border-radius: 3px;
     	border: 1px solid var(--basic-color);
     	margin: 5px auto;
     	font-size: 14px;
+    	padding: 3px 3px;
 	}
-		.center-column-item h6 {
+		.center-column-item h5 {
 			text-align: center;
+		}
+		.center-column-item:hover {
+			border: 1px solid var(--hover-color);
+			background-color: var(--button-background-color);
 		}
 
 	.center-column-button-item {
@@ -141,19 +143,34 @@ body {
     	margin: 5px auto;
 		text-align: center;
 		font-size: 14px;
-		padding: 2px 0px;
-		font-weight: bold;
-		background-color: var(--button-color);
+		padding: 5px 0px;
+		/*font-weight: bold;*/
+		background-color: var(--button-background-color);
+		color: var(--basic-color);
 	}
-
 		.center-column-button-item:hover {
-			background-color: var(--hover-color);
+			/*background-color: var(--hover-color);*/
+			border: 1px solid var(--hover-color);
+			color: var(--hover-color);
 		}
-	
 		.center-column-button-item:active {
-			background-color: var(--active-color);
+			/*background-color: var(--active-color);*/
 		}
 
+	.center-column-back-link {
+		text-align:center;
+		font-weight: bold;
+		font-size: 14px;
+		margin-bottom: 0;
+		align-self: flex-end;
+	}
+		.center-column-back-link a {
+			text-decoration: none;
+			color: var(--basic-color);
+		}
+		.center-column-back-link a:hover {
+			color: var(--hover-color);
+		}
 
 .info-container {
 	

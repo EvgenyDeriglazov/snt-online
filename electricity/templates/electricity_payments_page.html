@@ -2,35 +2,44 @@
 <!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column">
-<!-- <h4 align="center">Электроэнергия</h4>
-    <p>Участок {{ land_plot.plot_number }}</p> -->
-
-<!--    {% if e_counter %}
-    <p>Электросчетчик {{ e_counter.model_name }},
-    {{ e_counter.get_model_type_display|lower }},
-    серийный номер {{ e_counter.sn }},
-    дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
-    {% endif %} -->
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (электроэнергия-показания)</h4>
     <div class="center-column-wrapper">
         <div class="center-column-block">
             <a href="{% url 'new-e-counter-record' land_plot.id %}">
-            <div class="center-column-button-item">Внести новые показания</div>
+            <div class="center-column-button-item">
+                Новые показания
+            </div>
 	        </a>
         {% for item in payment_data_list %}
     	    {% if item.0 == None %}
     	    <div class="center-column-item">Показания отсутствуют</div>
     	    {% else %}
     	    <a href="{% url 'e-counter-record-details' land_plot.id item.0.id %}">
-    	    <div class="center-column-item">{{ item.0.rec_date|date:"d.m.Y." }}</div>
+    	    <div class="center-column-item">
+                Дата: {{ item.0.rec_date|date:"d.m.Y." }}<br>
+                {% if e_counter.model_type == "single" %}
+                    Показания: {{ item.0.s }} квт/ч<br>
+                {% else %}
+                    День(T1): {{ item.0.t1 }} квт/ч<br>
+                    Ночь(T2): {{ item.0.t2 }} квт/ч<br>
+                {% endif %}
+                {% if item.1 %}
+                    Статус: {{ item.1.get_status_display }}<br>
+                    Сумма: {{ item.1.sum_total }} р.<br>
+                {% else %}
+                    Статус: -<br>
+                    Сумма: -<br>
+                {% endif %}
+            </div>
     	    </a>
     	    {% endif %}
         {% endfor %}
         </div>
 	</div>
-
-	<a href="{% url 'land-plot' land_plot.id %}">Назад</a>
+    <div class="center-column-back-link"> 
+	   <a href="{% url 'land-plot' land_plot.id %}">Назад</a>
+    </div>
 </div>
 {% endblock %}
 
