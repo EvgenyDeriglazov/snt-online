@@ -10,7 +10,7 @@ body {
 	--basic-color: SeaGreen;
 	--button-background-color: #F3FFF3;/*#F3FFF3#E5FFE5*/
 	--hover-color: DarkGreen;
-	--active-color: MediumSeaGreen;
+	--active-color: #C7F0C7;
 	--font-color: #003000;
 	}
 
@@ -81,9 +81,19 @@ body {
     	margin: 5px auto;
     	border-radius: 5px;
     	border: 1px solid var(--basic-color);
-    	background-color: var(--basic-color);
-    	color: white;
+    	background-color: var(--button-background-color);
+    	color: var(--basic-color);
 	}
+		#left-column input[type=submit]:hover {
+			border: 1px solid var(--hover-color);
+			color: var(--hover-color);
+		}
+		#left-column input[type=submit]:active {
+			border: 1px solid var(--hover-color);
+			background-color: var(--active-color);
+			color: var(--hover-color);
+			outline: none;
+		}
 
 #center-column {
 	background-color: #FFFFFF;

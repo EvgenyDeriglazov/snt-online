@@ -1,4 +1,5 @@
 from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth.forms import AuthenticationForm
 #from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
