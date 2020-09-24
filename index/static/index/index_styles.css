@@ -109,6 +109,25 @@ body {
 		text-align: center;
 	}
 
+	#center-column input[type=submit] {
+    	/*margin: 5px auto;*/
+    	padding: 6px;
+    	border-radius: 5px;
+    	border: 1px solid var(--basic-color);
+    	background-color: var(--button-background-color);
+    	color: var(--basic-color);
+	}
+		#center-column input[type=submit]:hover {
+			border: 1px solid var(--hover-color);
+			color: var(--hover-color);
+		}
+		#center-column input[type=submit]:active {
+			border: 1px solid var(--hover-color);
+			background-color: var(--active-color);
+			color: var(--hover-color);
+			outline: none;
+		}
+
 	.center-column-wrapper {
 		display: flex;
 		flex-wrap: wrap;
@@ -167,12 +186,28 @@ body {
 			/*background-color: var(--active-color);*/
 		}
 
+	.center-column-pagination {
+		text-align: center;
+		font-size: 14px;
+		margin: 10px 0;
+	}
+
+	span .center-column-step-links {
+		text-align: center;
+		color: green;
+	}
+
+	span .center-column-current {
+		text-align: center;
+		color: red;
+	}
+
 	.center-column-back-link {
-		text-align:center;
+		text-align: center;
 		font-weight: bold;
 		font-size: 14px;
-		margin-bottom: 0;
-		align-self: flex-end;
+		margin: 10px 0;
+		/*align-self: flex-end;*/
 	}
 		.center-column-back-link a {
 			text-decoration: none;

@@ -15,13 +15,17 @@ from django.db import IntegrityError
 class ElectricityPaymentsPage(LandPlotPage):
     """View to display electricity page."""
     template_name = "electricity_payments_page.html"
+    #paginate_by = 3
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        #context = super(ElectricityPaymentsPage, self).get_context_data(object_list=[], **kwargs)
+        #context = super().get_context_data(object_list=None, **kwargs)
         context['e_counter'] = e_counter(context['land_plot'])
-        context['payment_data_list'] = e_counter_records_with_e_payments_list(
+        context['e_payments_list'] = e_counter_records_with_e_payments_list(
         	context['e_counter'], context['land_plot']
         	)
+        #context = super(ElectricityPaymentsPage, self).get_context_data(object_list=obj_list, **kwargs)
         return context
 
 class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):

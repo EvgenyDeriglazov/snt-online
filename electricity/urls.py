@@ -9,6 +9,10 @@ urlpatterns = [
         ElectricityPaymentsPage.as_view(),
         name='electricity'
         ),
+    #path(
+    #    'electricity/page<int:page>/',
+    #    ElectricityPaymentsPage.as_view()
+    #    ),
 	path(
         'electricity/record-id-<int:record_id>/',
         ECounterRecordDetailsPage.as_view(),

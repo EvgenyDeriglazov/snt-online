@@ -1,37 +1,26 @@
 {% extends "base_generic.html" %}
 <!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
-<div id="center-column">
-<!-- <h4 align="center">Электроэнергия</h4>
-    <p>Участок {{ land_plot.plot_number }}</p> -->
-
-<!--    {% if e_counter %}
-    <p>Электросчетчик {{ e_counter.model_name }},
-    {{ e_counter.get_model_type_display|lower }},
-    серийный номер {{ e_counter.sn }},
-    дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
-    {% endif %} -->
-
+<div id="center-column" align="center">
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
-    (показания)</h4>
-    <p>Дата показаний: {{ record.rec_date|date:"d.m.y."  }}</p>
+    (показания на {{ record.rec_date|date:"d.m.y." }})</h4>
+    <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     {% if counter_type == "single" %}
     <p>Показания: {{ record.s }} квт/ч</p>
     {% elif counter_type == "double" %}
-    <p>День (T1): {{ record.t1 }}<br>
-    Ночь (T2): {{ record.t2 }}<p>
+    <p>День (T1): {{ record.t1 }}</p>
+    <p>Ночь (T2): {{ record.t2 }}</p>
     {% endif %}
 
     {% if form %}
-    <p><a href="{% url 'delete-e-counter-record' land_plot.id record.id %}">Удалить показания</a></p>
        <form action="" method="post">
         {% csrf_token %}
-           <!--  {% if form.errors %} -->
-             {{ form.errors }}
-           <!--{% endif %} -->
         {{ form }}
         <p><input type="submit" value="Сформировать квитанцию"></p>
         </form> 
+         <p><a href="{% url 'delete-e-counter-record' land_plot.id record.id %}">
+            <input type="submit" value="Удалить показания">
+        </a></p>
     {% else %}
 
     <a href="{% url 'e-payment-details' land_plot.id e_payment.id %}">Квитанция</a>
@@ -47,7 +36,9 @@
     {% elif e_payment.status == "paid" or e_payment.status == "payment_confirmed" %}
         <p><a href="{% url 'e-payment-details' land_plot.id e_payment.id %}">Детали платежа</a></p>
     {% endif %}
+    <div class="center-column-back-link">
 	<a href="{% url 'electricity' land_plot.id %}">Назад</a>
+    </div>
 </div>
 {% endblock %}
 
