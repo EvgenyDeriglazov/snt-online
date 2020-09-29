@@ -1,3 +1,4 @@
+/* ROOT STYLES */
 body {
 	margin: 0;
 	padding: 0;
@@ -6,40 +7,73 @@ body {
 	color: #003000;
 }
 
-button {
-	width: 150px;
-	border-radius: 3px;
-    border: 1px solid var(--basic-color);
-    margin: 5px auto;
-	text-align: center;
-	font-size: 13px;
-	padding: 5px 0px;
-	/*font-weight: bold;*/
-	background-color: var(--button-background-color);
-	color: var(--basic-color);
-}
-	button:hover {
-		border: 1px solid var(--hover-color);
-		color: var(--hover-color);
-	}
-	button:active {
-		border: 1px solid var(--hover-color);
-		background-color: var(--active-color);
-		color: var(--hover-color);
-		outline: none;
-	}
-	button:focus {
-		background-color: var(--button-background-color);
-		color: var(--basic-color);
-		outline: none;
-	}
-
 :root {
 	--basic-color: SeaGreen;
 	--button-background-color: #F3FFF3;/*#F3FFF3#E5FFE5*/
 	--hover-color: DarkGreen;
 	--active-color: #C7F0C7;
 	--font-color: #003000;
+	}
+
+/* LINK ELEMENTS */
+.button-link {
+	border-radius: 5px;
+    border: 1px solid var(--basic-color);
+    margin: 5px auto;
+	text-align: center;
+	font-size: 13px;
+	padding: 6px;
+	background-color: var(--button-background-color);
+	color: var(--basic-color);
+	text-decoration: none;
+	display: inline-block;
+}
+	.button-link:hover {
+		border: 1px solid var(--hover-color);
+		color: var(--hover-color);
+	}
+	.button-link:active {
+		border: 1px solid var(--hover-color);
+		background-color: var(--active-color);
+		color: var(--hover-color);
+		/*outline: none;*/
+	}
+
+.back-link {
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	margin: 10px auto;
+	color: var(--basic-color);
+	text-decoration: none;
+	display: block;
+}
+	.back-link:hover {
+		color: var(--hover-color);
+	}
+
+/* FORM ELEMENTS */
+input[type=submit] {
+    margin: 5px auto;
+    border-radius: 5px;
+    border: 1px solid var(--basic-color);
+    background-color: var(--button-background-color);
+    color: var(--basic-color);
+}
+	input[type=submit]:hover {
+		border: 1px solid var(--hover-color);
+		color: var(--hover-color);
+	}
+	input[type=submit]:active {
+		border: 1px solid var(--hover-color);
+		background-color: var(--active-color);
+		color: var(--hover-color);
+		outline: none;
+	}
+	input[type=submit]:focus {
+		background-color: var(--button-background-color);
+		color: var(--basic-color);
+		outline: none;
 	}
 
 #top-bar {
@@ -53,22 +87,6 @@ button {
 	#top-bar a {
 		text-decoration: none;
 		color: white;
-	}
-
-#menu-container {
-	padding: 5px 0;
-
-}
-
-	#menu-container a {
-		color: black;
-		font-size: 14px;
-		margin-right: 20px;
-		text-decoration: none;
-	}
-
-	#menu-container a:hover {
-		color: #202020;
 	}
 
 #central-container {
@@ -104,24 +122,6 @@ button {
     	border: 1px solid var(--basic-color);
     	border-radius: 5px;
 	}
-
-	#left-column input[type=submit] {
-    	margin: 5px auto;
-    	border-radius: 5px;
-    	border: 1px solid var(--basic-color);
-    	background-color: var(--button-background-color);
-    	color: var(--basic-color);
-	}
-		#left-column input[type=submit]:hover {
-			border: 1px solid var(--hover-color);
-			color: var(--hover-color);
-		}
-		#left-column input[type=submit]:active {
-			border: 1px solid var(--hover-color);
-			background-color: var(--active-color);
-			color: var(--hover-color);
-			outline: none;
-		}
 
 #center-column {
 	background-color: #FFFFFF;
@@ -172,7 +172,7 @@ button {
 	}
 		.center-column-wrapper a {
 			text-decoration: none;
-			color: var(--font-color);
+			/*color: var(--font-color);*/
 		}
 
 	.center-column-block {
@@ -190,6 +190,8 @@ button {
     	margin: 5px auto;
     	font-size: 14px;
     	padding: 3px 3px;
+    	text-decoration: none;
+    	color: var(--font-color);
 	}
 		.center-column-item h5 {
 			text-align: center;
@@ -220,21 +222,6 @@ button {
 			/*background-color: var(--active-color);*/
 		}
 
-	.center-column-back-link {
-		text-align: center;
-		font-weight: bold;
-		font-size: 14px;
-		margin: 10px 0;
-		/*align-self: flex-end;*/
-	}
-		.center-column-back-link a {
-			text-decoration: none;
-			color: var(--basic-color);
-		}
-		.center-column-back-link a:hover {
-			color: var(--hover-color);
-		}
-
 .info-container {
 	
 }
@@ -245,6 +232,7 @@ button {
 	padding: 8px 0;
 	font-size: 12px;
 }
+
 
 /*
 @media (max-width: 830px) {

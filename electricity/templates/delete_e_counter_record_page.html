@@ -6,10 +6,10 @@
     (удаление показаний)</h4>
     <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     {% if counter_type == "single" %}
-    <p>Показания: {{ record.s }} квт/ч</p>
+    <p>Показание: {{ record.s }} квт/ч</p>
     {% elif counter_type == "double" %}
-    <p>День (T1): {{ record.t1 }}</p>
-    <p>Ночь (T2): {{ record.t2 }}</p>
+    <p>Показание день (T1): {{ record.t1 }}</p>
+    <p>Показание день (T1): {{ record.t2 }}</p>
     {% endif %}
     
     <form action="" method="post">
@@ -18,9 +18,9 @@
         <p><input type="submit" value="Удалить"></p>
     </form>
 
-	<div class="center-column-back-link">
-    <a href="{% url 'e-counter-record-details' land_plot.id record.id %}">Назад</a>
-    </div>
+    <a href="{% url 'e-counter-record-details' land_plot.id record.id %}" class="back-link">
+    Назад
+    </a>
 
 </div>
 {% endblock %}

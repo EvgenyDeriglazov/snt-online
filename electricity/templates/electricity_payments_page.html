@@ -6,10 +6,8 @@
     (электроэнергия-показания)</h4>
     <div class="center-column-wrapper">
         <div class="center-column-block">
-            <a href="{% url 'new-e-counter-record' land_plot.id %}">
-            <div class="center-column-button-item">
+            <a href="{% url 'new-e-counter-record' land_plot.id %}" class="button-link">
                 Новые показания
-            </div>
 	        </a>
         {% for item in e_payments_list %}
     	    {% if item.0 == None %}
@@ -37,9 +35,9 @@
         {% endfor %}
         </div>
 	</div>
-   <div class="center-column-back-link">
-    <a href="{% url 'land-plot' land_plot.id %}">Назад</a>
-    </div> 
+    
+   <a href="{% url 'land-plot' land_plot.id %}" class="back-link">Назад</a> 
+    
 </div>
 {% endblock %}
 

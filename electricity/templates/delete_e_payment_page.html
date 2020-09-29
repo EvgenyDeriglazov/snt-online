@@ -1,59 +1,51 @@
 {% extends "base_generic.html" %}
 <!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
-<div id="center-column">
-<!-- <h4 align="center">Электроэнергия</h4>
-    <p>Участок {{ land_plot.plot_number }}</p> -->
-
-<!--    {% if e_counter %}
-    <p>Электросчетчик {{ e_counter.model_name }},
-    {{ e_counter.get_model_type_display|lower }},
-    серийный номер {{ e_counter.sn }},
-    дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
-    {% endif %} -->
-
+<div id="center-column" align="center">
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (удаление квитанции)</h4>
     <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     
     {% if counter_type == "single" %}
-
     <p> Дата оплаты: 
         {% with payment_date=e_payment.payment_date %}
         {{ payment_date|default_if_none:"-" }}
         {{ payment_date|date:"d.m.y" }}
-        {% endwith %}<br>
-        Статус: {{ e_payment.get_status_display|lower }}<br>
-        Новые показания: {{ e_payment.s_new }} квт/ч<br>
-        Предыдущие показания: {{ e_payment.s_prev }} квт/ч<br>
-        Расход: {{ e_payment.s_cons }} квт/ч<br>
-        Сумма: {{ e_payment.s_amount }} р.<br>
-        Итог: {{ e_payment.sum_total }} р.<br></p>
+        {% endwith %}</p>
+        <p>Статус: {{ e_payment.get_status_display|lower }}</p>
+        <p>Показание: {{ e_payment.s_new }} квт/ч</p>
+        <p>Предыдущее показание: {{ e_payment.s_prev }} квт/ч</p>
+        <p>Потрачено: {{ e_payment.s_cons }} квт/ч</p>
+        <p>Итог: {{ e_payment.sum_total }} р.</p>
 
     {% elif counter_type == "double" %}
-
-    <p>Новые показания день (T1): {{ e_payment.t1_new }} квт/ч<br>
-    Новые показания ночь (T2): {{ e_payment.t2_new }} квт/ч<br>
-    Предыдущие показания день (T1): {{ e_payment.t1_prev }} квт/ч<br>
-    Предыдущие показания ночь (T2): {{ e_payment.t2_prev }} квт/ч<br>
-    Расход день (T1): {{ e_payment.t1_cons }} квт/ч<br>
-    Расход ночь (T2): {{ e_payment.t2_cons }} квт/ч<br>
-    Сумма день (T1): {{ e_payment.t1_amount }} р.<br>
-    Сумма ночь (T2): {{ e_payment.t2_amount }} р.<br>
-    Итог: {{ e_payment.sum_total }} р.<br></p>
+    <p> Дата оплаты: 
+        {% with payment_date=e_payment.payment_date %}
+        {{ payment_date|default_if_none:"-" }}
+        {{ payment_date|date:"d.m.y" }}
+        {% endwith %}</p>
+    <p>Показание день (T1): {{ e_payment.t1_new }} квт/ч</p>
+    <p>Показание ночь (T2): {{ e_payment.t2_new }} квт/ч</p>
+    <p>Предыдущее показание день (T1): {{ e_payment.t1_prev }} квт/ч</p>
+    <p>Предыдущее показание ночь (T2): {{ e_payment.t2_prev }} квт/ч</p>
+    <p>Потрачено день (T1): {{ e_payment.t1_cons }} квт/ч</p>
+    <p>Потрачено ночь (T2): {{ e_payment.t2_cons }} квт/ч</p>
+    <p>Сумма день (T1): {{ e_payment.t1_amount }} р.</p>
+    <p>Сумма ночь (T2): {{ e_payment.t2_amount }} р.</p>
+    <p>Итог: {{ e_payment.sum_total }} р.</p>
 
     {% endif %}
     
     <form action="" method="post">
         {% csrf_token %}
-      <!--  {% if form.errors %} -->
-            {{ form.errors }}
-    <!--{% endif %} -->
         {{ form }}
         <p><input type="submit" value="Удалить"></p>
     </form>
 
-	<a href="{% url 'e-counter-record-details' land_plot.id record.id %}">Назад</a>
+	<a href="{% url 'e-counter-record-details' land_plot.id record.id %}" class="back-link">
+    Назад
+    </a>
+    
 </div>
 {% endblock %}
 

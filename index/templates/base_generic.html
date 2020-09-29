@@ -9,15 +9,11 @@
             {% endif %}
         </title>
 		<meta charset="utf-8">
-		<!-- Add additional CSS in static file -->
   		{% load static %}
   		<link rel="stylesheet" href="{% static '../static/index/index_styles.css' %}" type="text/css" media="screen">
 	</head>
 
     {% load index_extratags %}
-    <!-- |verbose_name - returns Model._meta.verbose_name -->
-    <!-- |verbose_name_plural - returns Model._meta.verbose_name_plural -->
-    <!-- |str - returns Model.__str__() -->
 
 	<body>
 		<div id="top-bar">
