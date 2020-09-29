@@ -6,29 +6,48 @@
     (показания на {{ record.rec_date|date:"d.m.y." }})</h4>
     <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     {% if counter_type == "single" %}
-    <p>Показания: {{ record.s }} квт/ч</p>
+    <p>Показание: {{ record.s }} квт/ч</p>
     {% elif counter_type == "double" %}
-    <p>День (T1): {{ record.t1 }}</p>
-    <p>Ночь (T2): {{ record.t2 }}</p>
+    <p>Показание день (T1): {{ record.t1 }} квт/ч</p>
+    <p>Показание ночь (T2): {{ record.t2 }} квт/ч</p>
     {% endif %}
 
     {% if form %}
        <form action="" method="post">
         {% csrf_token %}
         {{ form }}
-        <p><input type="submit" value="Сформировать квитанцию"></p>
+        <p>
+            <input type="submit" value="Сформировать квитанцию">
+        </p>
         </form> 
          <p><a href="{% url 'delete-e-counter-record' land_plot.id record.id %}">
-            <input type="submit" value="Удалить показания">
+            <button>
+                Удалить показания
+            </button>
         </a></p>
     {% else %}
-   
+      
+            {% if counter_type == "single" %}
+            <p>Предыдущее показание: {{ e_payment.s_prev }} квт/ч</p>
+            <p>Потрачено: {{ e_payment.s_cons }} квт/ч</p>
+            {% elif counter_type == "double" %}
+            <p>Предыдущее показание (день): {{ e_payment.t1_prev }} квт/ч</p>
+            <p>Предыдущее показание (ночь): {{ e_payment.t2_prev }} квт/ч</p>
+            <p>Потрачено (день): {{ e_payment.t1_cons }} квт/ч</p>
+            <p>Потрачено (ночь): {{ e_payment.t2_cons }} квт/ч</p>
+            <p>Сумма (день): {{ e_payment.t1_amount }} р.</p>
+            <p>Сумма (ночь): {{ e_payment.t2_amount }} р.</p>
+            {% endif %}
+            <p>Итог: {{ e_payment.sum_total }} р.</p>
+
     {% endif %}
 
     {% if e_payment.status == "not_paid" %}
         <p>
         <a href="{% url 'pay-e-payment' land_plot.id e_payment.id %}">
-            <input type="submit" value="Оплатить по QR коду">
+            <button>
+            Оплатить по QR коду
+            </button>
         </a>
         </p>
         <p>
@@ -37,11 +56,15 @@
         </a>
         </p>
     {% elif e_payment.status == "paid" or e_payment.status == "payment_confirmed" %}
-        <p>
-        <a href="{% url 'e-payment-details' land_plot.id e_payment.id %}">
-            <input type="submit" value="Детали платежа">
-        </a>
-        </p>
+        
+            
+                <a href="{% url 'e-payment-details' land_plot.id e_payment.id %}">
+                <button>
+                Детали платежа
+                </button>
+                </a>
+         
+        
     {% endif %}
     <div class="center-column-back-link">
 	<a href="{% url 'electricity' land_plot.id %}">Назад</a>

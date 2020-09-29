@@ -6,6 +6,34 @@ body {
 	color: #003000;
 }
 
+button {
+	width: 150px;
+	border-radius: 3px;
+    border: 1px solid var(--basic-color);
+    margin: 5px auto;
+	text-align: center;
+	font-size: 13px;
+	padding: 5px 0px;
+	/*font-weight: bold;*/
+	background-color: var(--button-background-color);
+	color: var(--basic-color);
+}
+	button:hover {
+		border: 1px solid var(--hover-color);
+		color: var(--hover-color);
+	}
+	button:active {
+		border: 1px solid var(--hover-color);
+		background-color: var(--active-color);
+		color: var(--hover-color);
+		outline: none;
+	}
+	button:focus {
+		background-color: var(--button-background-color);
+		color: var(--basic-color);
+		outline: none;
+	}
+
 :root {
 	--basic-color: SeaGreen;
 	--button-background-color: #F3FFF3;/*#F3FFF3#E5FFE5*/
@@ -127,6 +155,12 @@ body {
 			color: var(--hover-color);
 			outline: none;
 		}
+		#center-column input[type=submit]:focus {
+			background-color: var(--button-background-color);
+			color: var(--basic-color);
+			outline: none;
+		}
+	
 
 	.center-column-wrapper {
 		display: flex;
@@ -185,22 +219,6 @@ body {
 		.center-column-button-item:active {
 			/*background-color: var(--active-color);*/
 		}
-
-	.center-column-pagination {
-		text-align: center;
-		font-size: 14px;
-		margin: 10px 0;
-	}
-
-	span .center-column-step-links {
-		text-align: center;
-		color: green;
-	}
-
-	span .center-column-current {
-		text-align: center;
-		color: red;
-	}
 
 	.center-column-back-link {
 		text-align: center;
