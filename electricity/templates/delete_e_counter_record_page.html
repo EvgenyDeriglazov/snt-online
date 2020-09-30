@@ -1,21 +1,20 @@
 {% extends "base_generic.html" %}
-<!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column" align="center">
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (удаление показаний)</h4>
     <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     {% if counter_type == "single" %}
-    <p>Показание: {{ record.s }} квт/ч</p>
+        <p>Показание: {{ record.s }} квт/ч</p>
     {% elif counter_type == "double" %}
-    <p>Показание день (T1): {{ record.t1 }}</p>
-    <p>Показание день (T1): {{ record.t2 }}</p>
+        <p>Показание день (T1): {{ record.t1 }}</p>
+        <p>Показание день (T1): {{ record.t2 }}</p>
     {% endif %}
     
     <form action="" method="post">
         {% csrf_token %}
         {{ form }}
-        <p><input type="submit" value="Удалить"></p>
+        <input type="submit" value="Удалить">
     </form>
 
     <a href="{% url 'e-counter-record-details' land_plot.id record.id %}" class="back-link">

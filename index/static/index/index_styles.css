@@ -51,6 +51,15 @@ body {
 	.back-link:hover {
 		color: var(--hover-color);
 	}
+/* BORDERS */ 
+.solid-border-1px {
+	border: 1px solid var(--basic-color);
+}
+
+/* MARGINS */
+.no-margin-bottom {
+	margin-bottom: 0;
+}
 
 /* FORM ELEMENTS */
 input[type=submit] {
@@ -76,6 +85,29 @@ input[type=submit] {
 		outline: none;
 	}
 
+input[type=number] {
+    	width: 100px;
+    	margin: 5px 5px;
+    	border: 1px solid var(--basic-color);
+    	border-radius: 5px;
+    	-webkit-appearance: textfield;
+    	-moz-appearance: textfield;
+    	-o-appearance: textfield;
+    	-ms-appearance: textfield;
+}
+	input[type=number]:focus {
+    	outline: none;
+	}
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+    	-webkit-appearance: none;
+	}
+
+.field-error {
+	font-size: 12px;
+	color: red;
+}
+
 #top-bar {
 	background-color: var(--basic-color);
 	color: white;
@@ -83,7 +115,6 @@ input[type=submit] {
 	font-size: 16px;
 	font-weight: bold;
 }
-
 	#top-bar a {
 		text-decoration: none;
 		color: white;
@@ -115,13 +146,15 @@ input[type=submit] {
     border-radius: 5px;
     /*margin: auto;*/
 }
-
 	#left-column input[type=text], input[type=password] {
     	width: 100px;
     	margin: 5px 5px;
     	border: 1px solid var(--basic-color);
     	border-radius: 5px;
 	}
+		#left-column input[type=text], input[type=password]:focus {
+    		outline: none;
+		}
 
 #center-column {
 	background-color: #FFFFFF;
@@ -136,37 +169,17 @@ input[type=submit] {
 	#center-column h3 {
 		text-align: center;
 	}
-
-	#center-column input[type=submit] {
-    	/*margin: 5px auto;*/
-    	padding: 6px;
-    	border-radius: 5px;
-    	border: 1px solid var(--basic-color);
-    	background-color: var(--button-background-color);
-    	color: var(--basic-color);
+	#center-column p {
+		font-size: 15px;
 	}
-		#center-column input[type=submit]:hover {
-			border: 1px solid var(--hover-color);
-			color: var(--hover-color);
-		}
-		#center-column input[type=submit]:active {
-			border: 1px solid var(--hover-color);
-			background-color: var(--active-color);
-			color: var(--hover-color);
-			outline: none;
-		}
-		#center-column input[type=submit]:focus {
-			background-color: var(--button-background-color);
-			color: var(--basic-color);
-			outline: none;
-		}
-	
+	#center-column input[type=submit] {
+		padding: 6px;
+	}
 
 	.center-column-wrapper {
 		display: flex;
 		flex-wrap: wrap;
-		margin: 5px auto;
-		/*background: black;*/
+		margin: 0 auto;
 		max-width: 700px;
 		justify-content: space-around;
 	}
@@ -174,6 +187,16 @@ input[type=submit] {
 			text-decoration: none;
 			/*color: var(--font-color);*/
 		}
+
+	.center-column-qr-block {
+		padding: 5px;
+	}
+
+	.center-column-qr-details-block {
+		flex-grow: 1;
+		padding: 5px;
+		font-size: 14px;
+	}
 
 	.center-column-block {
 		display: flex;
@@ -222,9 +245,6 @@ input[type=submit] {
 			/*background-color: var(--active-color);*/
 		}
 
-.info-container {
-	
-}
 
 #bottom-bar {
 	background-color: var(--basic-color);

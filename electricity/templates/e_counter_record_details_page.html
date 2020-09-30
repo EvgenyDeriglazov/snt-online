@@ -1,5 +1,4 @@
 {% extends "base_generic.html" %}
-<!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column" align="center">
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
@@ -16,7 +15,7 @@
        <form action="" method="post">
         {% csrf_token %}
         {{ form }}
-            <input type="submit" value="Сформировать квитанцию">
+        <input type="submit" value="Сформировать квитанцию">
         </form> 
         <p>
             <a href="{% url 'delete-e-counter-record' land_plot.id record.id %}" class="button-link">
@@ -36,7 +35,7 @@
             <p>Сумма день (Т1): {{ e_payment.t1_amount }} р.</p>
             <p>Сумма ночь (Т2): {{ e_payment.t2_amount }} р.</p>
             {% endif %}
-            <p>Итог: {{ e_payment.sum_total }} р.</p>
+            <p><b>Итог: {{ e_payment.sum_total }} р.</b></p>
 
     {% endif %}
 

@@ -1,5 +1,4 @@
 {% extends "base_generic.html" %}
-<!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column">
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
@@ -9,34 +8,36 @@
             <a href="{% url 'new-e-counter-record' land_plot.id %}" class="button-link">
                 Новые показания
 	        </a>
-        {% for item in e_payments_list %}
-    	    {% if item.0 == None %}
-    	    <div class="center-column-item">Показания отсутствуют</div>
-    	    {% else %}
-    	    <a href="{% url 'e-counter-record-details' land_plot.id item.0.id %}">
-    	    <div class="center-column-item">
-                Дата: {{ item.0.rec_date|date:"d.m.Y." }}<br>
-                {% if e_counter.model_type == "single" %}
-                    Показания: {{ item.0.s }} квт/ч<br>
-                {% else %}
-                    День(T1): {{ item.0.t1 }} квт/ч<br>
-                    Ночь(T2): {{ item.0.t2 }} квт/ч<br>
-                {% endif %}
-                {% if item.1 %}
-                    Статус: {{ item.1.get_status_display }}<br>
-                    Сумма: {{ item.1.sum_total }} р.<br>
-                {% else %}
-                    Статус: -<br>
-                    Сумма: -<br>
-                {% endif %}
-            </div>
-    	    </a>
-    	    {% endif %}
-        {% endfor %}
+            {% for item in e_payments_list %}
+    	       {% if item.0 == None %}
+    	           <div class="center-column-item">Показания отсутствуют</div>
+    	       {% else %}
+    	           <a href="{% url 'e-counter-record-details' land_plot.id item.0.id %}">
+    	               <div class="center-column-item">
+                            Дата: {{ item.0.rec_date|date:"d.m.Y." }}<br>
+                            {% if e_counter.model_type == "single" %}
+                                Показания: {{ item.0.s }} квт/ч<br>
+                            {% else %}
+                                День(T1): {{ item.0.t1 }} квт/ч<br>
+                                Ночь(T2): {{ item.0.t2 }} квт/ч<br>
+                            {% endif %}
+                            {% if item.1 %}
+                                Статус: {{ item.1.get_status_display|lower }}<br>
+                                Сумма: {{ item.1.sum_total }} р.<br>
+                            {% else %}
+                                Статус: -<br>
+                                Сумма: -<br>
+                            {% endif %}
+                        </div>
+    	           </a>
+    	       {% endif %}
+            {% endfor %}
         </div>
 	</div>
     
-   <a href="{% url 'land-plot' land_plot.id %}" class="back-link">Назад</a> 
+   <a href="{% url 'land-plot' land_plot.id %}" class="back-link">
+   Назад
+  </a> 
     
 </div>
 {% endblock %}

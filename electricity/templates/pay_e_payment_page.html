@@ -1,59 +1,67 @@
 {% extends "base_generic.html" %}
-<!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column">
-<!-- <h4 align="center">Электроэнергия</h4>
-    <p>Участок {{ land_plot.plot_number }}</p> -->
-
-<!--    {% if e_counter %}
-    <p>Электросчетчик {{ e_counter.model_name }},
-    {{ e_counter.get_model_type_display|lower }},
-    серийный номер {{ e_counter.sn }},
-    дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
-    {% endif %} -->
-
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (оплата по QR коду)</h4>
-    <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}</p>
     
-    {% if counter_type == "single" %}
-
-    <p> Дата оплаты: {{ e_payment.payment_date|date:"d.m.y." }}<br>
-        Статус: {{ e_payment.status|lower }}<br>
-        Новые показания: {{ e_payment.s_new }} квт/ч<br>
-        Предыдущие показания: {{ e_payment.s_prev }} квт/ч<br>
-        Расход: {{ e_payment.s_cons }} квт/ч<br>
-        Сумма: {{ e_payment.s_amount }} р.<br>
-        Итог: {{ e_payment.sum_total }} р.<br></p>
-
-    {% elif counter_type == "double" %}
-
-    <p> Дата оплаты: {{ e_payment.payment_date|date:"d.m.y." }}<br>
-    Статус: {{ e_payment.get_status_display|lower }}<br>
-    Новые показания день (T1): {{ e_payment.t1_new }} квт/ч<br>
-    Новые показания ночь (T2): {{ e_payment.t2_new }} квт/ч<br>
-    Предыдущие показания день (T1): {{ e_payment.t1_prev }} квт/ч<br>
-    Предыдущие показания ночь (T2): {{ e_payment.t2_prev }} квт/ч<br>
-    Расход день (T1): {{ e_payment.t1_cons }} квт/ч<br>
-    Расход ночь (T2): {{ e_payment.t2_cons }} квт/ч<br>
-    Сумма день (T1): {{ e_payment.t1_amount }} р.<br>
-    Сумма ночь (T2): {{ e_payment.t2_amount }} р.<br>
-    Итог: {{ e_payment.sum_total }} р.<br></p>
-
-    {% endif %}
-
-    {% load qr_code %}
-    <p>{% qr_from_text qr_pay_data size=2 image_format="png" %}</p>
-    <p><b>После успешной уплаты, укажите, что квитанция оплачена.</b></p>
+    <div class="center-column-wrapper solid-border-1px">
+        <div class="center-column-qr-block">
+            <p>Дата показаний: {{ record.rec_date|date:"d.m.y." }}<br>
+            Дата оплаты: {{ e_payment.payment_date|date:"d.m.y." }}<br>
+            Статус: {{ e_payment.get_status_display|lower }}<br></p>
+            {% load qr_code %}
+            <p>{% qr_from_text qr_pay_data size=2 image_format="png" %}</p>
+        </div>
+        <div class="center-column-qr-details-block">
+            {% if counter_type == "single" %}
+                <p>СНТ "{{ snt_list.0.name }}"<br> 
+                ИНН {{ snt_list.0.inn }}<br> 
+                р/с {{ snt_list.0.personal_acc }}<br>
+                {{ snt_list.0.bank_name }}<br>
+                КПП {{ snt_list.0.kpp }}<br>
+                БИК {{ snt_list.0.bic }}<br>
+                к/с {{ snt_list.0.corresp_acc }}<br>
+                ФИО: {{ land_plot.owner }}<br>
+                Адрес: участок № {{ land_plot }} СНТ "{{ snt_list.0.name }}"<br>
+                Показание: {{ e_payment.s_new }} квт/ч<br>
+                Предыдущее показание: {{ e_payment.s_prev }} квт/ч<br>
+                Расход: {{ e_payment.s_cons }} квт/ч<br>
+                Итог: {{ e_payment.sum_total }} р.<br></p>
+            {% elif counter_type == "double" %}
+                 <p>СНТ "{{ snt_list.0.name }}"<br> 
+                ИНН {{ snt_list.0.inn }}<br> 
+                р/с {{ snt_list.0.personal_acc }}<br>
+                {{ snt_list.0.bank_name }}<br>
+                КПП {{ snt_list.0.kpp }}<br>
+                БИК {{ snt_list.0.bic }}<br>
+                к/с {{ snt_list.0.corresp_acc }}<br>
+                ФИО: {{ land_plot.owner }}<br>
+                Адрес: участок № {{ land_plot }} СНТ "{{ snt_list.0.name }}"<br>
+                Показание день (T1): {{ e_payment.t1_new }} квт/ч<br>
+                Показание ночь (T2): {{ e_payment.t2_new }} квт/ч<br>
+                Предыдущее показание день (Т1): {{ e_payment.t1_prev }} квт/ч<br>
+                Предыдущее показание ночь (Т2): {{ e_payment.t2_prev }} квт/ч<br>
+                Потрачено день (Т1): {{ e_payment.t1_cons }} квт/ч<br>
+                Потрачено ночь (Т2): {{ e_payment.t2_cons }} квт/ч<br>
+                Сумма день (T1): {{ e_payment.t1_amount }} р.<br>
+                Сумма ночь (T2): {{ e_payment.t2_amount }} р.<br>
+                Итог: {{ e_payment.sum_total }} р.<br></p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="center-column-wrapper">
+        <p align="center"><b>После успешной оплаты, нажмите кнопку оплачено.</b></p>
+    </div>
+    <div class="center-column-wrapper">
     <form action="" method="post">
         {% csrf_token %}
-      <!--  {% if form.errors %} -->
-    <!--{% endif %} -->
         {{ form }}
-        <p><input type="submit" value="Оплачено"></p>
+        <input type="submit" value="Оплачено" align="center">
     </form>
-
-	<a href="{% url 'e-counter-record-details' land_plot.id record.id %}">Назад</a>
+    </div>
+    <a href="{% url 'e-counter-record-details' land_plot.id record.id %}" class="back-link">
+    Назад
+    </a>
 </div>
 {% endblock %}
 

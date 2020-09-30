@@ -1,31 +1,18 @@
 {% extends "base_generic.html" %}
-<!-- Normally the template name is relative to the template loader’s root directory -->
 {% block center-column %}
 <div id="center-column">
-<!-- <h4 align="center">Электроэнергия</h4>
-    <p>Участок {{ land_plot.plot_number }}</p> -->
-
-<!--    {% if e_counter %}
-    <p>Электросчетчик {{ e_counter.model_name }},
-    {{ e_counter.get_model_type_display|lower }},
-    серийный номер {{ e_counter.sn }},
-    дата установки/приемки к учету {{ e_counter.reg_date|date:"d.m.Y" }}</p>
-    {% endif %} -->
-
     <h4 align="center">Участок {{ land_plot.plot_number }}<br>
     (внесение новых показаний)</h4>
     <p>Э/счетчик {{ e_counter }}, номер {{ e_counter.sn }}</p>
-
     <form action="" method="post">
     {% csrf_token %}
     {% for field in form %}
         {% if not field.is_hidden %}
             <div class="fieldWrapper">
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-                {% if field.help_text %}
-                    <p class="help">{{ field.help_text|safe }}</p>
-                {% endif %}
+                <p class="no-margin-bottom">{{ field.label_tag }} {{ field }}</p>
+                    {% for error in field.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
             </div>
         {% else %}
             {{ field }}
@@ -34,7 +21,9 @@
     <p><input type="submit" value="Сохранить"></p>
     </form>
 
-	<a href="{% url 'electricity' land_plot.id %}">Назад</a>
+	<a href="{% url 'electricity' land_plot.id %}" class="back-link">
+    Назад
+    </a>
 </div>
 {% endblock %}
 
