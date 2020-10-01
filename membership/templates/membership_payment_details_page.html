@@ -1,12 +1,15 @@
 {% extends "base_generic.html" %}
 {% block center-column %}
 <div id="center-column">
-    <h4 align="center">Участок {{ land_plot.plot_number }}<br>
-    {% if m_payment.status == 'not_paid' %}
-    (оплата по QR коду)
-    {% else %}
-    (квитанция)
-    {% endif %}</h4>
+    <h4 align="center">
+        Участок {{ land_plot.plot_number }}<br>
+        {% if m_payment.status == 'not_paid' %}
+            (оплата по QR коду)
+        {% else %}
+            (квитанция)
+        {% endif %}
+    </h4>
+    
     <div class="center-column-wrapper solid-border-1px">
         <div class="center-column-qr-block">
             <p>Период: {{ m_payment.get_month_period_display }} {{ m_payment.year_period }} г.<br>
@@ -31,18 +34,19 @@
             </p>
         </div>
     </div>
-        {% if m_payment.status == 'not_paid' %}
-            <div class="center-column-wrapper">
-                <p align="center"><b>После успешной оплаты, нажмите кнопку оплачено.</b></p>
-            </div>
-            <div class="center-column-wrapper">
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" value="Оплачено" align="center">
-                </form>
-            </div>
-        {% endif %}
+
+    {% if m_payment.status == 'not_paid' %}
+        <div class="center-column-wrapper">
+            <p align="center"><b>После успешной оплаты, нажмите кнопку оплачено.</b></p>
+        </div>
+        <div class="center-column-wrapper">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Оплачено" align="center">
+            </form>
+        </div>
+    {% endif %}
 
 	<a href="{% url 'membership-payments' land_plot.id %}" class="back-link">
     Назад

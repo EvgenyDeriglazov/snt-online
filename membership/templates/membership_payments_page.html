@@ -8,25 +8,24 @@
             <div class="center-column-block">
             {% for item in payment_data_list %}
                 <a href="{% url 'membership-payment-details' land_plot.id item.id %}">
-                <div class="center-column-item">
-                    Период: {{ item.get_month_period_display }} {{ item.year_period }} г.<br>
-                    Площадь участка: {{ item.plot_area }} м<sup>2</sup><br>
-                    Сумма: {{ item.amount }} р.<br>
-                    Статус: {{ item.get_status_display|lower }}<br>
-                    Дата оплаты: {{ item.payment_date|date:"d.m.y" }}<br>
-                </div>
-            </a>
+                    <div class="center-column-item">
+                        Период: {{ item.get_month_period_display }} {{ item.year_period }} г.<br>
+                        Площадь участка: {{ item.plot_area }} м<sup>2</sup><br>
+                        Сумма: {{ item.amount }} р.<br>
+                        Статус: {{ item.get_status_display|lower }}<br>
+                        Дата оплаты: {{ item.payment_date|date:"d.m.y" }}<br>
+                    </div>
+                </a>
             {% empty %}
-            <div class="center-column-block">
-                Квитанции не найдены
-            </div>
+                <div class="center-column-block">
+                    Квитанции не найдены
+                </div>
             {% endfor %}
             </div>
         </div>
-            
 
 	<a href="{% url 'land-plot' land_plot.id %}" class="back-link">
-    Назад
+        Назад
     </a>
 </div>
 {% endblock %}

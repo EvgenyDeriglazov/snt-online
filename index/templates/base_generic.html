@@ -40,21 +40,23 @@
 
     				{% if next %}
         				{% if user.is_authenticated %}
-        				<p>У вас нет доступа к этой странице.</p>
+        					<p>У вас нет доступа к этой странице.</p>
         				{% else %}
-        				<p>Для просмотра этой страницы необходимо авторизироваться.</p>
+        					<p>Для просмотра этой страницы необходимо авторизироваться.</p>
         				{% endif %}
     				{% endif %}
     				
     				{% if user.is_authenticated %}
         				<p>{{ user_name }}<br>
                         {% for land_plot in land_plots %}
-                        <a href="{% url 'land-plot' land_plot.id %}"> участок {{ land_plot }}</a><br>
+                        	<a href="{% url 'land-plot' land_plot.id %}" class="plot-link"> УЧАСТОК {{ land_plot }}</a>
                         {% empty %}
-                        за вами не числится ни одного участка<br>
+                        	за вами не числится ни одного участка<br>
                         {% endfor %}
-                        <a href="{% url 'logout' %}">Выход</a> <!-- ?next={{ request.path }} -->
         				</p>
+        				<a href="{% url 'logout' %}"class="button-link">
+        					Выход
+        				</a> <!-- ?next={{ request.path }} -->
         			{% else %}
     					<form method="post" action="{% url 'login' %}">
         				{% csrf_token %}
@@ -64,7 +66,7 @@
         				<input type="submit" value="Войти">
         				<input type="hidden" name="next" value="{{ next }}">
         				<p>
-        				<a href="#">Забыли пароль?</a>
+        				<a href="#" class="back-link">Забыли пароль?</a>
         				</p>
     					</form>
     				{% endif %}

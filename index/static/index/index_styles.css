@@ -20,13 +20,14 @@ sup {
 	}
 
 /* LINK ELEMENTS */
+/* in id elements some overrides implemented */
 .button-link {
 	border-radius: 5px;
     border: 1px solid var(--basic-color);
     margin: 5px auto;
+    padding: 1px 7px;
 	text-align: center;
 	font-size: 13px;
-	padding: 6px;
 	background-color: var(--button-background-color);
 	color: var(--basic-color);
 	text-decoration: none;
@@ -55,17 +56,30 @@ sup {
 	.back-link:hover {
 		color: var(--hover-color);
 	}
+
+.plot-link {
+	font-weight: bold;
+	font-size: 14px;
+	margin: 10px auto;
+	color: var(--basic-color);
+	text-decoration: none;
+	display: block;
+}
+	.plot-link:hover {
+		color: var(--hover-color);
+	}
 /* BORDERS */ 
 .solid-border-1px {
 	border: 1px solid var(--basic-color);
 }
 
-/* MARGINS */
+/* MARGINS and PADDINGS */
 .no-margin-bottom {
 	margin-bottom: 0;
 }
 
 /* FORM ELEMENTS */
+/* in id elements some overrides implemented */
 input[type=submit] {
     margin: 5px auto;
     border-radius: 5px;
@@ -141,8 +155,9 @@ input[type=number] {
 }
 
 #left-column {
+	/*flex: none;*/
 	background-color: #FFFFFF;
-	width: 150px;
+	width: 180px;
 	padding: 0 18px;
 	max-height: 300px;
     margin: 0 5px;
@@ -177,6 +192,10 @@ input[type=number] {
 		font-size: 15px;
 	}
 	#center-column input[type=submit] {
+		padding: 6px;
+	}
+
+	#center-column .button-link {
 		padding: 6px;
 	}
 
@@ -296,10 +315,19 @@ input[type=number] {
 		font-size: 14px;
 		font-weight: bold;
 	}
-}
+}*/
 
-@media (max-width: 360px) {
+@media (max-width: 600px) {
 	#top-bar {
 		font-size: 12px;
 	}
-} */
+
+	#flex-container {
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+	#center-column {
+		margin-top: 10px;
+	}
+}
