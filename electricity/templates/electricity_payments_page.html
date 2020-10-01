@@ -14,7 +14,7 @@
     	       {% else %}
     	           <a href="{% url 'e-counter-record-details' land_plot.id item.0.id %}">
     	               <div class="center-column-item">
-                            Дата: {{ item.0.rec_date|date:"d.m.Y." }}<br>
+                            Дата показаний: {{ item.0.rec_date|date:"d.m.y." }}<br>
                             {% if e_counter.model_type == "single" %}
                                 Показания: {{ item.0.s }} квт/ч<br>
                             {% else %}
@@ -22,11 +22,13 @@
                                 Ночь(T2): {{ item.0.t2 }} квт/ч<br>
                             {% endif %}
                             {% if item.1 %}
-                                Статус: {{ item.1.get_status_display|lower }}<br>
                                 Сумма: {{ item.1.sum_total }} р.<br>
+                                Статус: {{ item.1.get_status_display|lower }}<br>
+                                Дата оплаты: {{item.1.payment_date|date:"d.m.y" }}<br>
                             {% else %}
-                                Статус: -<br>
                                 Сумма: -<br>
+                                Статус: -<br>
+                                Дата оплаты: -<br>
                             {% endif %}
                         </div>
     	           </a>

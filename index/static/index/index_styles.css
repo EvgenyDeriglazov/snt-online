@@ -7,6 +7,10 @@ body {
 	color: #003000;
 }
 
+sup {
+	font-size: 50%;
+}
+
 :root {
 	--basic-color: SeaGreen;
 	--button-background-color: #F3FFF3;/*#F3FFF3#E5FFE5*/
@@ -207,7 +211,7 @@ input[type=number] {
 
 	.center-column-item {
 		min-height: 80px;
-		width: 150px;
+		width: 170px;
 		border-radius: 3px;
     	border: 1px solid var(--basic-color);
     	margin: 5px auto;
@@ -224,7 +228,7 @@ input[type=number] {
 			background-color: var(--button-background-color);
 		}
 
-	.center-column-button-item {
+	.center-column-big-frame-link {
 		width: 150px;
 		border-radius: 3px;
     	border: 1px solid var(--basic-color);
@@ -232,17 +236,14 @@ input[type=number] {
 		text-align: center;
 		font-size: 14px;
 		padding: 5px 0px;
-		/*font-weight: bold;*/
 		background-color: var(--button-background-color);
 		color: var(--basic-color);
 	}
-		.center-column-button-item:hover {
-			/*background-color: var(--hover-color);*/
+		.center-column-big-frame-link:hover {
 			border: 1px solid var(--hover-color);
 			color: var(--hover-color);
 		}
-		.center-column-button-item:active {
-			/*background-color: var(--active-color);*/
+		.center-column-big-frame-link:active {
 		}
 
 
