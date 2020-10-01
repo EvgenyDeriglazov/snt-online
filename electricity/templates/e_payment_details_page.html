@@ -22,10 +22,11 @@
                 к/с {{ snt_list.0.corresp_acc }}<br>
                 ФИО: {{ land_plot.owner }}<br>
                 Адрес: участок № {{ land_plot }} СНТ "{{ snt_list.0.name }}"<br>
+                Взнос за э/энергию <br>
                 Показание: {{ e_payment.s_new }} квт/ч<br>
                 Предыдущее показание: {{ e_payment.s_prev }} квт/ч<br>
                 Расход: {{ e_payment.s_cons }} квт/ч<br>
-                Итог: {{ e_payment.sum_total }} р.<br></p>
+                Итого: {{ e_payment.sum_total }} р.<br></p>
             {% elif counter_type == "double" %}
                  <p>СНТ "{{ snt_list.0.name }}"<br> 
                 ИНН {{ snt_list.0.inn }}<br> 
@@ -44,7 +45,7 @@
                 Потрачено ночь (Т2): {{ e_payment.t2_cons }} квт/ч<br>
                 Сумма день (T1): {{ e_payment.t1_amount }} р.<br>
                 Сумма ночь (T2): {{ e_payment.t2_amount }} р.<br>
-                Итог: {{ e_payment.sum_total }} р.<br></p>
+                Итого: {{ e_payment.sum_total }} р.<br></p>
             {% endif %}
         </div>
     </div>

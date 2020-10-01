@@ -9,10 +9,7 @@
             {% for item in payment_data_list %}
                 <a href="{% url 'membership-payment-details' land_plot.id item.id %}">
                 <div class="center-column-item">
-                    Год: {{ item.year_period }}<br>
-                    {% if item.month_period != "" %}
-                    Месяц: {{ item.get_month_period_display }}<br>
-                    {% endif %}
+                    Период: {{ item.get_month_period_display }} {{ item.year_period }} г.<br>
                     Площадь участка: {{ item.plot_area }} м<sup>2</sup><br>
                     Сумма: {{ item.amount }} р.<br>
                     Статус: {{ item.get_status_display|lower }}<br>
