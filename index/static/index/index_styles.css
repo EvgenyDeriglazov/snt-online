@@ -126,6 +126,7 @@ input[type=number] {
 	color: red;
 }
 
+/* IDs and Classes */
 #top-bar {
 	background-color: var(--basic-color);
 	color: white;
@@ -153,17 +154,18 @@ input[type=number] {
 	margin: 0 auto;
 	position: relative;
 }
+	.fixed-container .bottom-bar-link a {
+		text-align: right;
+	}
 
 #left-column {
-	/*flex: none;*/
 	background-color: #FFFFFF;
-	width: 180px;
+	min-width: 200px;
 	padding: 0 18px;
 	max-height: 300px;
     margin: 0 5px;
     border: 1px solid var(--basic-color);
     border-radius: 5px;
-    /*margin: auto;*/
 }
 	#left-column input[type=text], input[type=password] {
     	width: 100px;
@@ -174,13 +176,30 @@ input[type=number] {
 		#left-column input[type=text], input[type=password]:focus {
     		outline: none;
 		}
+	.left-column-wrapper {
+		padding: 0;
+	}
+	.left-column-form-row {
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+	}
+		.label {
+			flex: 1;
+			font-size: 14px;
+			color: var(--font-color);
+			padding: 5px 0;
+		}
+		.form {
+			flex: 2;
+		}
 
 #center-column {
 	background-color: #FFFFFF;
 	margin: 0 5px;
 	padding: 0 18px;
 	max-width: 760px;
-	min-height: 500px;
+	min-height: calc(100vh - 91px);
     border: 1px solid var(--basic-color);
     border-radius: 5px;
     flex-grow: 1;
@@ -272,6 +291,24 @@ input[type=number] {
 	padding: 8px 0;
 	font-size: 12px;
 }
+	.bottom-bar-link {
+		color: white;
+		text-decoration: none;
+		margin-left: 10px;
+	}
+		.bottom-bar-link:hover {
+			color: var(--active-color);
+		}
+		.bottom-bar-link:active {
+			color: #99e499;
+		}
+	.bottom-bar-address {
+		flex-grow: 1;
+	}
+	.bottom-bar-links {
+		flex-grow: 2;
+		text-align: right;
+	}
 
 
 /*
@@ -318,16 +355,31 @@ input[type=number] {
 }*/
 
 @media (max-width: 600px) {
-	#top-bar {
-		font-size: 12px;
+	#bottom-bar {
+		padding: 8px 25px;
 	}
-
 	#flex-container {
 		flex-wrap: wrap;
 		align-items: flex-start;
 	}
-
-	#center-column {
-		margin-top: 10px;
+	.fixed-container {
+		text-align: center;
 	}
+	#center-column {
+		width: 250px;
+		max-width: 250px;
+		margin: auto;
+	}
+	#left-column {
+		width: 250px;
+		margin: auto auto 10px auto;
+
+	}
+	.button-link {
+		margin: 5px auto 20px auto;
+	}
+	.bottom-bar-links {
+		text-align: center;
+	}
+
 }

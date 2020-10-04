@@ -54,19 +54,38 @@
                         	за вами не числится ни одного участка<br>
                         {% endfor %}
         				</p>
+        				<div class="left-column-form-row">
         				<a href="{% url 'logout' %}"class="button-link">
         					Выход
         				</a> <!-- ?next={{ request.path }} -->
+        				</div>
         			{% else %}
     					<form method="post" action="{% url 'login' %}">
         				{% csrf_token %}
-        				<p>Логин {{ auth_form.username }}<br>
-        				Пароль {{ auth_form.password }}<br>
-        				</p>
-        				<input type="submit" value="Войти">
-        				<input type="hidden" name="next" value="{{ next }}">
+        					<div class="left-column-wrapper">
+        						<div class="left-column-form-row">
+        							<div class="label">
+        								Логин
+        							</div>
+        							<div class="form">
+        								{{ auth_form.username }}
+        							</div>
+        						</div>
+        						<div class="left-column-form-row">
+        							<div class="label">
+        								Пароль 
+        							</div>
+        							<div class="form">
+        								{{ auth_form.password }}
+        							</div>
+        						</div>
+        						<div class="left-column-form-row">
+        							<input type="submit" value="Войти">
+        						</div>
+        						<input type="hidden" name="next" value="{{ next }}">
+        					</div>
         				<p>
-        				<a href="#" class="back-link">Забыли пароль?</a>
+        					<a href="#" class="back-link">Забыли пароль?</a>
         				</p>
     					</form>
     				{% endif %}
@@ -80,12 +99,18 @@
 		</div>
 		{% block bottom-bar %}
 		<div id="bottom-bar">
-			<div class="fixed-container">
+			<div class="fixed-container" id="flex-container">
+				<div class="bottom-bar-address">
                 {% if snt_list %}
                 {{ snt_list.0.address}}, СНТ "{{ snt_list.0.name }}"
                 {% else %}
                 СНТ Онлайн
                 {% endif %}
+            	</div>
+            	<div class="bottom-bar-links">
+                <a href="{% url 'snt-bank-details' %}" class="bottom-bar-link">Реквизиты</a>
+                <a href="{% url 'snt-contacts' %}" class="bottom-bar-link">Контакты</a>
+            	</div>
             </div>
 		</div>
 		{% endblock bottom-bar %}
