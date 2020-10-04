@@ -160,7 +160,7 @@ input[type=number] {
 
 #left-column {
 	background-color: #FFFFFF;
-	min-width: 200px;
+	width: 200px;
 	padding: 0 18px;
 	max-height: 300px;
     margin: 0 5px;
