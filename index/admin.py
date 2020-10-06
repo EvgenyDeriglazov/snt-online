@@ -22,4 +22,4 @@ class LandPlotAdmin(admin.ModelAdmin):
 	list_display = (
 		'plot_number', 'plot_area', 'owner',
 		)
-	admin_order_field = '-plot_number'
+	ordering = ['plot_number']
