@@ -84,21 +84,21 @@ class MRateModelTest(TestCase):
         field = obj._meta.get_field('month_period')
         MONTH_PERIOD_CHOICES = [
         ('', ''),
-        ('Jan', 'Январь'),
-        ('Feb', 'Февраль'),
-        ('Mar', 'Март'),
-        ('Apr', 'Апрель'),
-        ('May', 'Май'),
-        ('Jun', 'Июнь'),
-        ('Jul', 'Июль'),
-        ('Aug', 'Август'),
-        ('Sep', 'Сентябрь'),
-        ('Oct', 'Октябрь'),
-        ('Nov', 'Ноябрь'),
-        ('Dec', 'Декабрь'),
+        ('1', 'Январь'),
+        ('2', 'Февраль'),
+        ('3', 'Март'),
+        ('4', 'Апрель'),
+        ('5', 'Май'),
+        ('6', 'Июнь'),
+        ('7', 'Июль'),
+        ('8', 'Август'),
+        ('9', 'Сентябрь'),
+        ('10', 'Октябрь'),
+        ('11', 'Ноябрь'),
+        ('12', 'Декабрь'),
         ]
         self.assertEqual(field.verbose_name, "Месяц")
-        self.assertEqual(field.max_length, 3)
+        self.assertEqual(field.max_length, 2)
         self.assertEqual(
             field.help_text,
             "Выберите месяц, если начисления"
