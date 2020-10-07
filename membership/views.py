@@ -7,7 +7,7 @@ from membership.models import *
 from membership.forms import *
 from index.views import get_model_by_user, LandPlotPage
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 

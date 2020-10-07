@@ -1,6 +1,9 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 from index.models import LandPlot, Snt
 from membership.validators import *
 from decimal import *
@@ -106,10 +109,15 @@ class MPayment(models.Model):
      # Custom methods
     def calculate(self):
         """Calculates e_payment."""
-        rate = MRate.objects.filter(
-            year_period__exact=self.year_period,
-            month_period__exact=self.month_period,
-            ).get()
+        try:
+            rate = MRate.objects.filter(
+                year_period__exact=self.year_period,
+                month_period__exact=self.month_period,
+                ).get()
+        except MRate.DoesNotExist:
+            message = f"Тариф {self.get_month_period_display()} " 
+            message += f"{self.year_period} не найден"
+            raise ValidationError(_(message))
         self.plot_area = self.land_plot.plot_area
         self.rate = rate.rate
         self.amount = Decimal(self.plot_area / 100) * self.rate

@@ -11,6 +11,8 @@
 # coverage report
 
 from django.test import TestCase
+from django.core.exceptions import ValidationError
+from djnago.http import Http404
 from index.models import *
 from membership.models import *
 from django.contrib.auth.models import User
@@ -208,8 +210,8 @@ class MPaymentModelTest(TestCase):
     def test_calculate_year_month_period(self):
         """Test for calculate() custom method with year-month period."""
         #Test rate and month period change
-        MRate.objects.filter(id=1).update(rate=100, month_period='Jan')
-        MPayment.objects.filter(id=1).update(month_period='Jan')
+        MRate.objects.filter(id=1).update(rate=100, month_period='1')
+        MPayment.objects.filter(id=1).update(month_period='1')
         obj = MPayment.objects.get(id=1)
         self.assertEqual(obj.amount, Decimal(3000.00))
         obj.calculate()
@@ -221,6 +223,15 @@ class MPaymentModelTest(TestCase):
         obj.calculate()
         self.assertEqual(obj.plot_area, 1200)
         self.assertEqual(obj.amount, Decimal(1200.00))
+
+    def test_missing_m_rate_in_calculate_method(self):
+        """Calculate() method should raise Http404."""
+        MRate.objects.filter(id=1).update(year_period='2021')
+        obj = MPayment.objects.get(id=1)
+        with self.assertRaises(ValidationError):
+            obj.calculate() 
+
+        pass
     
     def test_save(self):
         """Test for save() custom methods."""
@@ -228,13 +239,13 @@ class MPaymentModelTest(TestCase):
         MRate.objects.create(
             date=datetime.date.today(),
             year_period='2020',
-            month_period='Jan',
+            month_period='1',
             rate=50,
             snt=Snt.objects.get(id=1),
             )
         MPayment.objects.create(
             year_period='2020',
-            month_period='Jan',
+            month_period='1',
             land_plot=LandPlot.objects.get(id=1),
             )
         obj = MPayment.objects.get(id=2)

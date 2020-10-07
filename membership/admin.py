@@ -20,7 +20,7 @@ class MRateAdmin(admin.ModelAdmin):
 
     def period_rate(self, obj):
         return obj.rate
-    period_rate.short_descrition = "размер взноса за сотку"
+    period_rate.short_description = "размер взноса за сотку"
 
 @admin.register(MPayment)
 class MPaymentAdmin(admin.ModelAdmin):
