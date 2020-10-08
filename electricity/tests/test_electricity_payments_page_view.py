@@ -72,6 +72,10 @@ class ElectricityPage(TestCase):
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/electricity/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует"
+            )
 
     # Test URLconf name and template
     def test_electricity_page_url_conf_name(self):

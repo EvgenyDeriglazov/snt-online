@@ -19,7 +19,7 @@
 # test_db.json
 # then move the json file to appname.fixtures directory
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, tag
 from index.models import *
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -63,6 +63,10 @@ class TestLandPlotPage(TestCase):
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует"
+            )
 
     def test_land_plot_page_url_conf_name(self):
         """"""
