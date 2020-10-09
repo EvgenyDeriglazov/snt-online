@@ -72,6 +72,9 @@ class ECounterRecordDetailsPage(TestCase):
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/electricity/record-id-3/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует")
 
     # Test URLconf name and template
     def test_record_details_page_url_conf_name(self):
@@ -114,6 +117,10 @@ class ECounterRecordDetailsPage(TestCase):
             follow=True,
             )
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "У вас уже есть квитанция для этого показания"
+            )
         # Delete EPayment and try to create again
         EPayment.objects.filter(id=3).delete()
         self.assertEqual(

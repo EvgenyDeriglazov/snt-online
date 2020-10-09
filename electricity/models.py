@@ -438,9 +438,9 @@ class ECounterRecord(models.Model):
                         rec_date__gt=last_record.rec_date,
                         ).delete()
                 else:
-                    raise ValidationError(_(
-                        "У вас есть квитанции с неподтвержденной оплатой"
-                        ))
+                    answer = "У вас есть неоплаченные квитанции,"
+                    answer += " либо квитанции с неподтвержденной оплатой."
+                    raise Http404(answer)
             else:
                 EPayment.objects.create(
                     s_new=self.s,
@@ -459,9 +459,7 @@ class ECounterRecord(models.Model):
                     rec_date__gt=self.e_counter.reg_date,
                     ).delete()
         else:
-            raise ValidationError(_(
-                "У вас уже есть квитанция для этого показания"
-                ))
+            raise Http404("У вас уже есть квитанция для этого показания")
     
 class ERate(models.Model):
     """Represents electricity rate in rub per 1kwh to make

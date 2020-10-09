@@ -59,10 +59,7 @@ class ECounterRecordDetailsPage(LoginRequiredMixin, DetailView):
         if 'record_id' in kwargs:
             e_record = ECounterRecord.objects.get(id=kwargs['record_id'])
             #form = CreateEPaymentForm(request.POST)
-            try:
-                e_payment = e_record.create_e_payment()
-            except ValidationError as e:
-                raise Http404(e.message)
+            e_payment = e_record.create_e_payment()
             return HttpResponseRedirect(
                 reverse(
                     'e-counter-record-details', kwargs={
