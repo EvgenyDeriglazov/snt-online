@@ -72,6 +72,10 @@ class PayEPaymentPage(TestCase):
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/pay/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует"
+            )
 
     # Test URLconf name and template
     def test_pay_e_payment_page_url_conf_name(self):
@@ -112,7 +116,22 @@ class PayEPaymentPage(TestCase):
             follow=True
             )
         self.assertEqual(response.status_code, 200)
-        # Check that e_payment was deleted
+        self.assertEqual(
+            EPayment.objects.filter(
+                id=3, status__exact="paid"
+                ).exists(),
+            True
+            )
+
+    def test_pay_e_payment_post_method_errors(self):
+        """Submit the form to server."""
+        # response is a TemplateResponse object
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/electricity/e-payment-id-3/pay/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             EPayment.objects.filter(
                 id=3, status__exact="paid"
@@ -121,8 +140,20 @@ class PayEPaymentPage(TestCase):
             )
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/pay/')
         self.assertEqual(response.status_code, 404)
-
-
+        self.assertEqual(
+            response.context['exception'],
+            "Квитанция уже оплачена"
+            )
+        response = self.client.post(
+            '/plot-id-1/electricity/e-payment-id-3/pay/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Квитанция уже оплачена"
+            )
+        
     # Test context content and data
     def test_pay_e_payment_page_context_content(self):
         """Test all content[keys] exist in response."""

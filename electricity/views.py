@@ -97,7 +97,7 @@ class CreateNewECounterRecordPage(LandPlotPage):
         if form.is_valid():
             try:
                 new_rec = form.save()
-            except IntegrityError as e:
+            except IntegrityError:
                 raise Http404(
                     "Показания на определенную дату можно добавить только один раз"
                     )
@@ -132,7 +132,7 @@ class DeleteECounterRecordPage(ECounterRecordDetailsPage):
             land_plot__exact=context['land_plot'],
             e_counter_record__exact=context['record'],
             ).exists():
-            raise Http404("У вас уже есть квитанция")
+            raise Http404("У вас уже есть квитанция для этих показаний")
         else:
             context['form'] = DeleteECounterRecordForm()
 
@@ -202,7 +202,9 @@ class DeleteEPaymentPage(EPaymentDetailsPage):
                         )
                     )
             else:
-                raise Http404("Статус записи изменился")
+                message = "Статус записи изменился на 'оплачено' "
+                message += "или 'оплата подтверждена'"
+                raise Http404(message)
         else:
             raise Http404("Данные записи не найдены")
 
@@ -233,7 +235,7 @@ class PayEPaymentPage(EPaymentDetailsPage):
                         )
                     )
             else:
-                raise Http404("Статус записи изменился")
+                raise Http404("Квитанция уже оплачена")
         else:
             raise Http404("Данные записи не найдены")
 

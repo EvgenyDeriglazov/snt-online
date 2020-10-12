@@ -38,43 +38,47 @@ class DeleteEPaymentPage(TestCase):
     fixtures = ['test_db.json']
 
     # Test URL access
-    def test_pay_e_payment_page_url_by_unauthenticated_user(self):
+    def test_del_e_payment_page_url_by_unauthenticated_user(self):
         """Test unauthenticated user access to owner user data."""
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 302)
 
-    def test_pay_e_payment_page_url_by_super_user(self):
+    def test_del_e_payment_page_url_by_super_user(self):
         """Test super user access to owner user data."""
         self.client.login(username='admin', password='admin')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 404)
     
-    def test_pay_e_payment_page_url_by_chairman_user(self):
+    def test_del_e_payment_page_url_by_chairman_user(self):
         """Test chairman user access to owner user data."""
         self.client.login(username='chairman2', password='pswd2000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 404)
 
-    def test_pay_e_payment_page_url_by_accountant_user(self):
+    def test_del_e_payment_page_url_by_accountant_user(self):
         """Test accountant user access to owner user data."""
         self.client.login(username='accountant2', password='pswd4000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 404)
 
-    def test_pay_e_payment_page_url_by_true_owner_user(self):
+    def test_del_e_payment_page_url_by_true_owner_user(self):
         """Test owner access to his record details data."""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 200)
 
-    def test_pay_e_payment_page_url_by_fake_owner_user(self):
+    def test_del_e_payment_page_url_by_fake_owner_user(self):
         """Test owner access to other owner electricity data."""
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует"
+            )
 
     # Test URLconf name and template
-    def test_pay_e_payment_page_url_conf_name(self):
+    def test_del_e_payment_page_url_conf_name(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get(
@@ -85,7 +89,7 @@ class DeleteEPaymentPage(TestCase):
             )
         self.assertEqual(response.status_code, 200)
 
-    def test_pay_e_payment_page_template(self):
+    def test_del_e_payment_page_template(self):
         """"""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
@@ -119,8 +123,51 @@ class DeleteEPaymentPage(TestCase):
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
         self.assertEqual(response.status_code, 404)
 
+    def test_del_e_payment_post_method_raises_http404_paid(self):
+        """Test for 'paid' status."""
+        # response is a TemplateResponse object
+        # Set status as paid
+        obj = EPayment.objects.get(id=3)
+        obj.paid()
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/electricity/e-payment-id-3/delete/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 404)
+        message = "Статус записи изменился на 'оплачено' "
+        message += "или 'оплата подтверждена'"
+        self.assertEqual(
+            response.context['exception'],
+            message
+            )
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_del_e_payment_post_method_raises_http404_payment_confirmed(self):
+        """Check for 'payment_confirmed' status."""
+        # response is a TemplateResponse object
+        # Set status as payment_confirmed
+        obj = EPayment.objects.get(id=3)
+        obj.paid()
+        obj.payment_confirmed()
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/electricity/e-payment-id-3/delete/',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 404)
+        message = "Статус записи изменился на 'оплачено' "
+        message += "или 'оплата подтверждена'"
+        self.assertEqual(
+            response.context['exception'],
+            message
+            )
+        response = self.client.get('/plot-id-1/electricity/e-payment-id-3/')
+        self.assertEqual(response.status_code, 200)
+
     # Test context content and data
-    def test_pay_e_payment_page_context_content(self):
+    def test_del_e_payment_page_context_content(self):
         """Test all content[keys] exist in response."""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')
@@ -134,7 +181,7 @@ class DeleteEPaymentPage(TestCase):
         self.assertIn('e_payment', response.context)
         self.assertIn('form', response.context)
 
-    def test_pay_e_payment_page_context_data(self):
+    def test_del_e_payment_page_context_data(self):
         """Verify context data is correct."""
         self.client.login(username='owner1', password='pswd5000')
         response = self.client.get('/plot-id-1/electricity/e-payment-id-3/delete/')

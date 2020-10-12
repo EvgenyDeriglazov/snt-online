@@ -72,6 +72,10 @@ class CreateNewECounterRecordPage(TestCase):
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/electricity/new-record/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует"
+            )
 
     # Test URLconf name and template
     def test_by_kwargs_create_new_record_page_url_conf_name(self):
@@ -105,6 +109,7 @@ class CreateNewECounterRecordPage(TestCase):
     # Test POST method
 #    def test_create_new_record_post_method(self):
 #        """Submit the form to server."""
+# TRY TO CHECK CONSTRAINT (DATE)
 #        # response is a TemplateResponse object
 #        self.client.login(username='owner1', password='pswd5000')
 #        land_plot_1 = LandPlot.objects.get(id=1)
