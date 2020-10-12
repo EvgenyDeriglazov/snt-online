@@ -188,7 +188,7 @@ class ECounterRecord(models.Model):
         """Custom method to check model form fields
         to restrict mixing_up e_counters. And check
         s, t1, t2 fields values."""
-        if self.check_e_counter_vs_land_plot():
+        if self.e_counter.land_plot == self.land_plot:
             if self.e_counter.model_type == "single":
                 if self.e_counter_single_type_fields_ok():
                     model_type = "single"
@@ -241,7 +241,7 @@ class ECounterRecord(models.Model):
     def save(self, *args, **kwargs):
         """Custom save method checks fields data before saving."""
         model_type = ""
-        if self.check_e_counter_vs_land_plot():
+        if self.e_counter.land_plot == self.land_plot:
             if self.e_counter.model_type == "single":
                 if self.e_counter_single_type_fields_ok():
                     model_type = "single"
@@ -346,14 +346,7 @@ class ECounterRecord(models.Model):
                 return True
             else:
                 return False
-
-    def check_e_counter_vs_land_plot(self):
-        """Check that e_counter is correct and belongs to land_plot."""
-        if self.e_counter.land_plot == self.land_plot:
-            return True
-        else:
-            return False
-    
+   
     # create_e_payment() method
     def no_e_payment(self):
         """Checks that e_counter_record has no e_payment record."""
@@ -426,9 +419,9 @@ class ECounterRecord(models.Model):
                         rec_date__gt=last_record.rec_date,
                         ).delete()
                 else:
-                    answer = "У вас есть неоплаченные квитанции,"
-                    answer += " либо квитанции с неподтвержденной оплатой."
-                    raise Http404(answer)
+                    message = "У вас есть неоплаченные квитанции,"
+                    message += " либо квитанции с неподтвержденной оплатой."
+                    raise Http404(message)
             else:
                 EPayment.objects.create(
                     s_new=self.s,
@@ -641,7 +634,7 @@ class EPayment(models.Model):
         try:
             rate = ERate.objects.latest('date')
         except ERate.DoesNotExist:
-            raise ValidationError(_("Данные текущего тарифа не найдены"))
+            raise Http404("Данные текущего тарифа не найдены")
         if self.s_new != None and self.s_prev != None:
             self.s_cons = self.s_new - self.s_prev
             self.s_amount = self.s_cons * rate.s

@@ -660,9 +660,9 @@ class ECounterRecordModelTest(TestCase):
         # Test first if/else results and second else result
         obj = ECounterRecord.objects.get(id=1)
         obj.create_e_payment()
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             obj.create_e_payment()
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             obj.create_e_payment()
         all_payments = EPayment.objects.all()
         self.assertEqual(len(all_payments), 1)
@@ -693,9 +693,9 @@ class ECounterRecordModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         second_obj = ECounterRecord.objects.get(id=2)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             second_obj.create_e_payment()
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             second_obj.create_e_payment()
         # Test third if result
         EPayment.objects.filter(id=1).update(
@@ -748,9 +748,9 @@ class ECounterRecordModelTest(TestCase):
             )
         obj = ECounterRecord.objects.get(id=1)
         obj.create_e_payment()
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             obj.create_e_payment()
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             obj.create_e_payment()
         all_payments = EPayment.objects.all()
         self.assertEqual(len(all_payments), 1)
@@ -781,9 +781,9 @@ class ECounterRecordModelTest(TestCase):
             e_counter=ECounter.objects.get(id=1),
             )
         second_obj = ECounterRecord.objects.get(id=2)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             second_obj.create_e_payment()
-        with self.assertRaisesRegex(ValidationError, ''):
+        with self.assertRaisesRegex(Http404, ''):
             second_obj.create_e_payment()
         # Test third if result
         EPayment.objects.filter(id=1).update(
@@ -820,30 +820,70 @@ class ECounterRecordModelTest(TestCase):
         self.assertEqual(all_payments[1].t1_amount, Decimal('700.00'))
         self.assertEqual(all_payments[1].t2_amount, Decimal('500.00'))
         self.assertEqual(all_payments[1].sum_total, Decimal('1200.00'))
- 
-    def test_check_e_counter_vs_land_plot(self):
-        """Test check_e_counter_vs_land_plot() method."""
-        #Prepare data
-        LandPlot.objects.create(
-            plot_number="1",
-            plot_area=8000,
+
+    def test_clean_fields_land_plot_vs_e_counter(self):
+        """Test clean_fields() land_plot vs e_counter.""" 
+        land_plt = LandPlot.objects.create(
+            plot_number="11",
+            plot_area=6000,
             snt=Snt.objects.get(id=1),
             owner=Owner.objects.get(id=1),
             )
-        ECounter.objects.create(
-            reg_date=datetime.date.today(),
-            model_name="test2",
-            sn="sn1234",
-            model_type="single",
-            s=100,
+        obj = ECounterRecord.objects.get(id=1)
+        obj.land_plot = land_plt
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+
+    def test_clean_fields_single_type(self):
+        """Test clean_fields() single type."""
+        obj = ECounterRecord.objects.get(id=1)
+        obj.s = None
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+
+    def test_clean_fields_double_type(self):
+        """Test clean_fields() double type."""
+        obj = ECounterRecord.objects.get(id=1)
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+            
+    def test_clean_fields_single_type_check_vs_latest_record(self):
+        """Test clean_fields() single type vs latest record."""
+        ECounterRecord.objects.filter(id=1).update(
+            rec_date=datetime.date.today() - datetime.timedelta(days=1)
+            )
+        ECounterRecord.objects.create(
+            s=300,
             t1=None,
             t2=None,
-            land_plot=LandPlot.objects.get(id=2),
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
             )
-        obj = ECounterRecord.objects.get(id=1)
-        self.assertEqual(obj.check_e_counter_vs_land_plot(), True)
+        obj = ECounterRecord.objects.get(id=2)
+        obj.s = 200
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+
+    def test_clean_fields_double_type_check_vs_latest_record(self):
+        """Test clean_fields() double type vs latest record."""
+        ECounter.objects.filter(id=1).update(
+            model_type="double",
+            t1=100,
+            t2=100,
+            ) 
         ECounterRecord.objects.filter(id=1).update(
-            e_counter=ECounter.objects.get(id=2)
+            rec_date=datetime.date.today() - datetime.timedelta(days=1),
+            t1=200,
+            t2=200,
             )
-        obj = ECounterRecord.objects.get(id=1)
-        self.assertEqual(obj.check_e_counter_vs_land_plot(), False)
+        ECounterRecord.objects.create(
+            s=None,
+            t1=300,
+            t2=300,
+            land_plot=LandPlot.objects.get(id=1),
+            e_counter=ECounter.objects.get(id=1),
+            )
+        obj = ECounterRecord.objects.get(id=2)
+        obj.s = 200
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()

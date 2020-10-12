@@ -287,7 +287,7 @@ class EPaymentModelTest(TestCase):
  
     def test_get_absolute_url(self):
         obj = EPayment.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+        self.assertEquals(obj.get_absolute_url(), None)
         
     def test_calculate(self):
         """Test for calculate() custom method."""
@@ -330,7 +330,7 @@ class EPaymentModelTest(TestCase):
         obj.s_new = None
         obj.s_prev = None
         ERate.objects.filter(id=1).delete()
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             obj.calculate()
 
     def test_save(self):
