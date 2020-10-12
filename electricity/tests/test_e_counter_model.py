@@ -173,65 +173,53 @@ class ECounterModelTest(TestCase):
  
     def test_get_absolute_url(self):
         obj = ECounter.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
-
-    def test_is_single_method(self):
-        """Test is_single() custom model method."""
-        obj = ECounter.objects.get(id=1)
-        self.assertEquals(obj.is_single(), True)
-        obj.model_type = "double"
-        self.assertEquals(obj.is_single(), False)
-    
-    def test_is_double_method(self):
-        """Test is_double() custom model method."""
-        obj = ECounter.objects.get(id=1)
-        self.assertEquals(obj.is_double(), False)
-        obj.model_type = "double"
-        self.assertEquals(obj.is_double(), True) 
-
-    def test_single_type_fields_ok(self):
-        """Test single_type_fields_ok() model method."""
-        obj = ECounter.objects.get(id=1)
-        self.assertEquals(obj.single_type_fields_ok(), True)
-        obj.s = None
-        obj.t1 = 5
-        obj.t2 = 5
-        with self.assertRaises(ValidationError):
-            obj.single_type_fields_ok()
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.single_type_fields_ok()
-
-    def test_double_type_fields_ok(self):
-        """Test double_type_fields_ok() model method."""
-        obj = ECounter.objects.get(id=1)
-        with self.assertRaises(ValidationError):
-            obj.double_type_fields_ok()
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.double_type_fields_ok()
-        obj.s = None
-        obj.t1 = 5
-        obj.t2 = 5
-        self.assertEquals(obj.double_type_fields_ok(), True)
+        self.assertEquals(obj.get_absolute_url(), None)
 
     def test_save_single_type(self):
         """Test save() model method to save single type model."""
         obj = ECounter.objects.get(id=1)
-        self.assertEquals(obj.save(), None)
-        obj.model_type = "double"
-        with self.assertRaises(ValidationError):
-            obj.save()
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.save()
+        obj.s = 200
+        obj.t1 = 200
+        obj.t2 = 200
+        obj.save()
+        obj = ECounter.objects.get(id=1)
+        self.assertEqual(obj.s, 200)
+        self.assertEqual(obj.t1, None)
+        self.assertEqual(obj.t2, None)
 
     def test_save_double_type(self):
         """Test save() model method to save double type model."""
         obj = ECounter.objects.get(id=1)
         obj.model_type = "double"
-        with self.assertRaises(ValidationError):
-            obj.save()
-        with self.assertRaisesRegex(ValidationError, ''):
-            obj.save()
-        obj.s = None
+        obj.s = 300
         obj.t1 = 5
         obj.t2 = 5
-        self.assertEquals(obj.save(), None)
+        obj.save()
+        obj = ECounter.objects.get(id=1)
+        self.assertEqual(obj.s, None)
+        self.assertEqual(obj.t1, 5)
+        self.assertEqual(obj.t2, 5)
+
+    def test_clean_fields_for_single_type(self):
+        """Test clean_fields() custom method."""
+        obj = ECounter.objects.get(id=1)
+        obj.s = None
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+
+    def test_clean_fields_for_double_type(self):
+        """Test clean_fields() custom method."""
+        obj = ECounter.objects.get(id=1)
+        obj.model_type = "double"
+        # t1 = None, t2 = None
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+        # t1 = 10, t2 = None
+        obj.t1 = 10
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()
+        # t1 == None, t2 = 10
+        obj.t1 = None
+        obj.t2 = 10
+        with self.assertRaises(ValidationError):
+            obj.clean_fields()

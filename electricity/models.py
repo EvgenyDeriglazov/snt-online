@@ -82,54 +82,43 @@ class ECounter(models.Model):
          pass
 
     # Model custom methods
-    def is_single(self):
-        """Checks if model type is "single"."""
+    def clean_fields(self, exclude=None):
+        """Custom method to check and correct s, t1, t2 fields values."""
+        message = "Необходимо указать показания э/счетчика"
+        message += "  на момент установки/приемки к учету"
         if self.model_type == "single":
-            return True
-        else:
-            return False
-
-    def is_double(self):
-        """Checks if model type is "single"."""
-        if self.model_type == "double":
-            return True
-        else:
-            return False
-
-    def single_type_fields_ok(self):
-        """Validates data in s, t1 and t2 fields for single type model."""
-        error = ""
-        if self.s == None:
-            error = "Необходимо указать показания э/счетчика (один тариф)"\
-                + " на момент установки/приемки к учету в веб приложении"
-        if len(error) > 0:
-            raise ValidationError(_(error))
-        else:
-            return True
-
-    def double_type_fields_ok(self):
-        """Validates data in s, t1 and t2 fields for double type model."""
-        error = "" 
-        if self.t1 == None:
-            error += "Необходимо указать показания э/счетчика тариф Т1 (день)"\
-                + " на момент установки/приемки к учету в веб приложении"
-        if self.t2 == None:
-            error += "Необходимо указать показания э/счетчика тариф Т2 (ночь)"\
-                + " на момент установки/приемки к учету в веб приложении"
-        if len(error) > 0:
-            raise ValidationError(_(error))
-        else:
-            return True
+            if self.s == None:
+                raise ValidationError({
+                    's': _(message),
+                    })
+            else:
+                super().clean_fields(exclude=exclude)
+        elif self.model_type == "double":
+            if self.t1 == None and self.t2 == None:
+                raise ValidationError({
+                    't1': _(message),
+                    't2': _(message),
+                    })
+            elif self.t1 == None:
+                raise ValidationError({
+                    't1': _(message),
+                    })
+            elif self.t2 == None:
+                raise ValidationError({
+                    't2': _(message),
+                    })
+            else:
+                super().clean_fields(exclude=exclude)
 
     def save(self, *args, **kwargs):
         """Custom save method to prevent error in s, t1, t2, model_type fields."""
-        if self.is_single():
-            if self.single_type_fields_ok() == True:
-                self.t1 == None
-                self.t2 == None
+        if self.model_type == "single":
+            if self.s != None:
+                self.t1 = None
+                self.t2 = None
                 super().save(*args, **kwargs)
-        if self.is_double():
-            if self.double_type_fields_ok() == True:
+        if self.model_type == "double":
+            if self.t1 != None and self.t2 != None:
                 self.s = None
                 super().save(*args, **kwargs)
 
@@ -242,7 +231,6 @@ class ECounterRecord(models.Model):
                             ),
                         })
         else:
-            pass
             raise ValidationError({
                     'e_counter': _(
                         'Указан неверный счетчик'

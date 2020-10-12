@@ -81,6 +81,10 @@ class MembershipPaymentDetailsPage(TestCase):
         self.client.login(username='owner2', password='pswd6000')
         response = self.client.get('/plot-id-1/membership/m-payment-id-1/')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Такой страницы не существует"
+            )
 
     # Test URLconf name and template
     def test_membership_details_page_url_conf_name(self):
@@ -129,7 +133,29 @@ class MembershipPaymentDetailsPage(TestCase):
             MPayment.objects.filter(id=1, status__exact='paid').exists(),
             True
             )
-        
+    
+    def test_membership_details_page_post_method_http404(self):
+        """Test Http404() for paid status."""
+        self.client.login(username='owner1', password='pswd5000')
+        response = self.client.post(
+            '/plot-id-1/membership/m-payment-id-1/',
+            follow=True,
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            MPayment.objects.filter(id=1, status__exact='paid').exists(),
+            True
+            )    
+        response = self.client.post(
+            '/plot-id-1/membership/m-payment-id-1/',
+            follow=True,
+            )   
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.context['exception'],
+            "Квитанция уже оплачена"
+            )
+
     # Test context content and data
     def test_membership_details_page_context_keys(self):
         """Test all content[keys] exist in response."""

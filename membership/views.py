@@ -77,7 +77,7 @@ class MembershipPaymentDetailsPage(LoginRequiredMixin, DetailView):
                         )
                     )
             else:
-                raise Http404("Статус записи изменился")
+                raise Http404("Квитанция уже оплачена")
         else:
             raise Http404("Данные записи не найдены")
 
@@ -121,6 +121,6 @@ class TargetPaymentDetailsPage(LoginRequiredMixin, DetailView):
                         )
                     )
             else:
-                raise Http404("Статус записи изменился")
+                raise Http404("Квитанция уже оплачена")
         else:
             raise Http404("Данные записи не найдены")
