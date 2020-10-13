@@ -12,7 +12,7 @@
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from djnago.http import Http404
+from django.http import Http404
 from index.models import *
 from membership.models import *
 from django.contrib.auth.models import User
@@ -189,7 +189,7 @@ class MPaymentModelTest(TestCase):
  
     def test_get_absolute_url(self):
         obj = MPayment.objects.get(id=1)
-        self.assertEquals(obj.get_absolute_url(), "/data/land-plot-detail/1")
+        self.assertEquals(obj.get_absolute_url(), None)
     
     def test_calculate_year_period(self):
         """Test for calculate() custom method with year period."""
@@ -228,7 +228,7 @@ class MPaymentModelTest(TestCase):
         """Calculate() method should raise Http404."""
         MRate.objects.filter(id=1).update(year_period='2021')
         obj = MPayment.objects.get(id=1)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(Http404):
             obj.calculate() 
 
         pass

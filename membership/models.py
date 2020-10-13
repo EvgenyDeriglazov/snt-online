@@ -117,7 +117,7 @@ class MPayment(models.Model):
         except MRate.DoesNotExist:
             message = f"Тариф {self.get_month_period_display()} " 
             message += f"{self.year_period} не найден"
-            raise ValidationError(_(message))
+            raise Http404(message)
         self.plot_area = self.land_plot.plot_area
         self.rate = rate.rate
         self.amount = Decimal(self.plot_area / 100) * self.rate
